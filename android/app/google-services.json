@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "783341588943",
+    "firebase_url": "https://skypealike.firebaseio.com",
+    "project_id": "skypealike",
+    "storage_bucket": "skypealike.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783341588943:android:2bd8024e2cefea32ab42ba",
+        "android_client_info": {
+          "package_name": "com.skypealike.skypealike"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "783341588943-e7r3t1gq6tl9bv78sn1hur48uf731c1c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.skypealike.skypealike",
+            "certificate_hash": "4763eedda5540c5e5ab938e5c8b4fdbf230484ff"
+          }
+        },
+        {
+          "client_id": "783341588943-rvt1rvd7gjd1b3m0ilflg96plba66k6f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0AbxFigoEKLQ5R84FIShdHoUigCuOGSc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "783341588943-rvt1rvd7gjd1b3m0ilflg96plba66k6f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
