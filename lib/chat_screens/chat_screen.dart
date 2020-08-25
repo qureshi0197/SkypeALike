@@ -449,7 +449,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 hideEmojiContainer();
               }
             },
-            icon: Icon(Icons.face, color: UniversalVariables.blueColor),
+            icon: Icon(Icons.tag_faces, color: UniversalVariables.blueColor),
             
             ),
           
