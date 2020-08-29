@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
+import 'package:skypealike/enum/user_state.dart';
 import 'package:skypealike/page_views/chat_list_screen.dart';
+import 'package:skypealike/provider/user_provider.dart';
+import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -8,17 +13,75 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   int _page = 0;
   PageController pageController;
+  final AuthMethods _authMethods = AuthMethods();
+  UserProvider userProvider;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      userProvider = Provider.of<UserProvider>(context, listen: false);
+      await userProvider.refreshUser();
+
+      // 
+      _authMethods.setUserState(
+        userId: userProvider.getUser.uid,
+        userState: UserState.Online, 
+      );
+    });
+
+    WidgetsBinding.instance.addObserver(this);
     pageController = PageController();
   }
-  
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    String currentUserId =
+        (userProvider != null && userProvider.getUser != null)
+            ? userProvider.getUser.uid
+            : "";
+
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        currentUserId != null
+            ? _authMethods.setUserState(
+                userId: currentUserId, userState: UserState.Online)
+            : print("resume state");
+        break;
+      case AppLifecycleState.inactive:
+        currentUserId != null
+            ? _authMethods.setUserState(
+                userId: currentUserId, userState: UserState.Offline)
+            : print("inactive state");
+        break;
+      case AppLifecycleState.paused:
+        currentUserId != null
+            ? _authMethods.setUserState(
+                userId: currentUserId, userState: UserState.Waiting)
+            : print("paused state");
+        break;
+      case AppLifecycleState.detached:
+        currentUserId != null
+            ? _authMethods.setUserState(
+                userId: currentUserId, userState: UserState.Offline)
+            : print("detached state");
+        break;
+    }
+  }
+
   void onPageChanged(int page){
     setState(() {
       _page = page;
@@ -40,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           
           Container(child: ChatListScreen()),
-          Center(child: Text("Call Logs", style: TextStyle(color: UniversalVariables.greyColor),)),
+          // Center(child: Text("Call Logs", style: TextStyle(color: UniversalVariables.greyColor),)),
           Center(child: Text("Contact Screen", style: TextStyle(color: UniversalVariables.greyColor),)),
           
           ],
@@ -55,6 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: CupertinoTabBar(
             backgroundColor: Colors.white,
             items: <BottomNavigationBarItem>[
+              
               BottomNavigationBarItem(
                 icon: Icon(Icons.chat,
                     color: (_page == 0)
@@ -69,23 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           : Colors.grey),
                 ),
               ),
+
               BottomNavigationBarItem(
-                icon: Icon(Icons.call,
+                icon: Icon(Icons.contacts,
                     color: (_page == 1)
-                        ? UniversalVariables.lightBlueColor
-                        : UniversalVariables.greyColor),
-                title: Text(
-                  "Calls",
-                  style: TextStyle(
-                      fontSize: _labelFontSize,
-                      color: (_page == 1)
-                          ? UniversalVariables.lightBlueColor
-                          : Colors.grey),
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.contact_phone,
-                    color: (_page == 2)
                         ? UniversalVariables.lightBlueColor
                         : UniversalVariables.greyColor),
                 title: Text(

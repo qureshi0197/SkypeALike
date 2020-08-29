@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skypealike/provider/image_upload_provider.dart';
-import 'package:skypealike/resources/firebase_repository.dart';
+import 'package:skypealike/provider/user_provider.dart';
+import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/screens/home_screen.dart';
 import 'package:skypealike/screens/login_screen.dart';
 import 'package:skypealike/screens/search_screen.dart';
@@ -16,13 +16,17 @@ class SkypeAlike extends StatefulWidget {
 }
 
 class _SkypeAlikeState extends State<SkypeAlike> {
-  FirebaseRepository _repository = FirebaseRepository();
-  
+  // FirebaseRepository _repository = FirebaseRepository();
+  AuthMethods _authMethods = AuthMethods();
+
   @override
   Widget build(BuildContext context) {
     
-    return ChangeNotifierProvider<ImageUploadProvider>(
-      create: (context) => ImageUploadProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
       child: MaterialApp(
         title: "SkypeAlike",
         debugShowCheckedModeBanner: false,
@@ -34,7 +38,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
           brightness: Brightness.dark 
         ),
         home: FutureBuilder(
-          future: _repository.getCurrentUser(),
+          future: _authMethods.getCurrentUser(),
           builder: (context, AsyncSnapshot<FirebaseUser> snapshot){
             if (snapshot.hasData){
               return HomeScreen();

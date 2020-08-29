@@ -8,6 +8,8 @@ class Message {
   String message;
   Timestamp timestamp;
   String photoUrl;
+  
+  bool seenStatus;
 
 // When we handle simple text
   Message({
@@ -15,7 +17,9 @@ class Message {
     this.receiverId, 
     this.type, 
     this.message, 
-    this.timestamp
+    this.timestamp,
+    
+    this.seenStatus
     });
 
 // When we handle image message
@@ -25,7 +29,10 @@ class Message {
     this.message, 
     this.type, 
     this.timestamp, 
-    this.photoUrl});
+    this.photoUrl,
+
+    this.seenStatus,
+    });
 
   Map toMap() {
     var map = Map<String, dynamic>();
@@ -34,6 +41,8 @@ class Message {
     map['type'] = this.type;
     map['message'] = this.message;
     map['timestamp'] = this.timestamp;
+
+    map['seenStatus'] = this.seenStatus;
     return map;
   }
 
@@ -45,6 +54,8 @@ class Message {
     this.message = map['message'];
     this.timestamp = map['timestamp'];
     this.photoUrl = map['photoUrl'];
+    
+    this.seenStatus = map['seenStatus'];
   }
 
   Map toImageMap(){
@@ -55,6 +66,8 @@ class Message {
     map['message'] = this.message;
     map['timestamp'] = this.timestamp;
     map['photoUrl'] = this.photoUrl;
+
+    map['seenStatus'] = this.seenStatus;
     return map;
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skypealike/resources/firebase_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/screens/home_screen.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:skypealike/utils/universal_variables.dart';
@@ -12,7 +12,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
-  FirebaseRepository _repository = FirebaseRepository();
+  // FirebaseRepository _repository = FirebaseRepository();
+  final AuthMethods _authMethods = AuthMethods();
 
 
   bool isLoginButtonPressed = false;
@@ -57,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       isLoginButtonPressed = true;
     });
-    _repository.signIn().then((FirebaseUser user) {
+    _authMethods.signIn().then((FirebaseUser user) {
       // print("check1");
       if (user != null) {
         authenticateUser(user);
@@ -78,14 +79,14 @@ class _LoginScreenState extends State<LoginScreen> {
   // }
 
   void authenticateUser(FirebaseUser user){
-    _repository.authenticateUser(user).then((isNewUser){
+    _authMethods.authenticateUser(user).then((isNewUser){
 
       setState(() {
         isLoginButtonPressed = false;
       });
 
       if(isNewUser) {
-        _repository.addDataToDb(user).then((value)
+        _authMethods.addDataToDb(user).then((value)
         {
           Navigator.pushReplacement(context, 
             MaterialPageRoute(builder: (context){

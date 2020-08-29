@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +10,13 @@ import 'package:skypealike/enum/view_state.dart';
 import 'package:skypealike/models/message.dart';
 import 'package:skypealike/models/user.dart';
 import 'package:skypealike/provider/image_upload_provider.dart';
-import 'package:skypealike/resources/firebase_repository.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/utils/utilities.dart';
 import 'package:skypealike/widgets/appbar.dart';
 import 'package:skypealike/widgets/custom_tile.dart';
+import 'package:skypealike/resources/auth_methods.dart';
+import 'package:skypealike/resources/chat_methods.dart';
+import 'package:skypealike/resources/storage_methods.dart';
 
 
 
@@ -31,7 +31,10 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController textFieldController = TextEditingController();
-  FirebaseRepository _repository = FirebaseRepository();
+  // FirebaseRepository _repository = FirebaseRepository();
+  AuthMethods _authMethods = AuthMethods();
+  StorageMethods _storageMethods = StorageMethods();
+  ChatMethods _chatMethods = ChatMethods();
   ScrollController _listScrollController = ScrollController();
 
   bool isWriting = false;
@@ -47,7 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // TODO: implement initState
     super.initState();
 
-    _repository.getCurrentUser().then((user){
+    _authMethods.getCurrentUser().then((user){
       _currentUserId = user.uid;
 
       setState(() {
@@ -171,9 +174,6 @@ class _ChatScreenState extends State<ChatScreen> {
     
     Message _message = Message.fromMap(snapshot.data);
 
-
-
-
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: Container(
@@ -227,7 +227,12 @@ class _ChatScreenState extends State<ChatScreen> {
     // If image received is null then app should not crash
     // instead show the Text message
     : message.photoUrl != null 
-        ? CachedImage(url: message.photoUrl)
+        ? CachedImage(
+          message.photoUrl,
+          height: 250,
+          width: 250,
+          radius: 10,
+        )
         : Text("URL was null");
   }
 
@@ -352,7 +357,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   pickImage({@required ImageSource source}) async {
     File selectedImage = await Utils.pickImage(source: source);
-    _repository.uploadImage(
+    _storageMethods.uploadImage(
       image: selectedImage,
       receiverId: widget.receiver.uid,
       senderId: _currentUserId,
@@ -498,6 +503,8 @@ class _ChatScreenState extends State<ChatScreen> {
       message: text,
       timestamp: Timestamp.now(),
       type: text,
+
+      seenStatus: false,
     );
 
     setState(() {
@@ -506,7 +513,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     textFieldController.text = "";
     
-    _repository.addMessageToDb(_message, sender, widget.receiver);
+    _chatMethods.addMessageToDb(_message, sender, widget.receiver);
   }
 
   CustomAppBar customAppBar(context){
@@ -523,21 +530,17 @@ class _ChatScreenState extends State<ChatScreen> {
           style: TextStyle(color: UniversalVariables.blackColor),
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.video_call, color: UniversalVariables.greyColor,), 
-            onPressed: () {},
-            ),
+          // IconButton(
+          //   icon: Icon(Icons.video_call, color: UniversalVariables.greyColor,), 
+          //   onPressed: () {},
+          //   ),
           
-          IconButton(
-            icon: Icon(Icons.phone, color: UniversalVariables.greyColor), 
-            onPressed: () {},
-            ),
-
-
-
-
-
-        ],
+          // IconButton(
+          //   icon: Icon(Icons.phone, color: UniversalVariables.greyColor), 
+          //   onPressed: () {},
+          //   ),
+          
+          ],
     );
   }
 }
