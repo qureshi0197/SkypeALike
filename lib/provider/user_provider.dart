@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:skypealike/models/user.dart';
 import 'package:skypealike/resources/auth_methods.dart';

@@ -5,7 +5,6 @@ import 'package:skypealike/chat_screens/widgets/cached_image.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/user.dart';
 import 'package:skypealike/page_views/widgets/last_message_container.dart';
-import 'package:skypealike/page_views/widgets/online_dot_indicator.dart';
 import 'package:skypealike/provider/user_provider.dart';
 import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/resources/chat_methods.dart';
@@ -96,7 +95,7 @@ class ViewLayout extends StatelessWidget {
                     radius: 80,
                     isRound: true,
                   ),
-                  OnlineDotIndicator(uid: contact.uid),
+                  // OnlineDotIndicator(uid: contact.uid),
                   // Align(
                   //   alignment: Alignment.bottomRight,
                   //   child: OnlineDotIndicator(uid: contact.uid),

@@ -7,7 +7,7 @@ class Message {
   String type;
   String message;
   Timestamp timestamp;
-  String photoUrl;
+  // String photoUrl;
   
   bool seenStatus;
 
@@ -20,18 +20,6 @@ class Message {
     this.timestamp,
     
     this.seenStatus
-    });
-
-// When we handle image message
-  Message.imageMessage({
-    this.senderId, 
-    this.receiverId, 
-    this.message, 
-    this.type, 
-    this.timestamp, 
-    this.photoUrl,
-
-    this.seenStatus,
     });
 
   Map toMap() {
@@ -53,23 +41,35 @@ class Message {
     this.type = map['type'];
     this.message = map['message'];
     this.timestamp = map['timestamp'];
-    this.photoUrl = map['photoUrl'];
+    // this.photoUrl = map['photoUrl'];
     
     this.seenStatus = map['seenStatus'];
   }
 
-  Map toImageMap(){
-    var map = Map<String, dynamic>();
-    map['senderId'] = this.senderId;
-    map['receiverId'] = this.receiverId;
-    map['type'] = this.type;
-    map['message'] = this.message;
-    map['timestamp'] = this.timestamp;
-    map['photoUrl'] = this.photoUrl;
+// When we handle image message
+  // Message.imageMessage({
+  //   this.senderId, 
+  //   this.receiverId, 
+  //   this.message, 
+  //   this.type, 
+  //   this.timestamp, 
+  //   this.photoUrl,
 
-    map['seenStatus'] = this.seenStatus;
-    return map;
-  }
+  //   this.seenStatus,
+  //   });
+
+  // Map toImageMap(){
+  //   var map = Map<String, dynamic>();
+  //   map['senderId'] = this.senderId;
+  //   map['receiverId'] = this.receiverId;
+  //   map['type'] = this.type;
+  //   map['message'] = this.message;
+  //   map['timestamp'] = this.timestamp;
+  //   map['photoUrl'] = this.photoUrl;
+
+  //   map['seenStatus'] = this.seenStatus;
+  //   return map;
+  // }
 
 
 }

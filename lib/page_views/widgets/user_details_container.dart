@@ -1,38 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:skypealike/chat_screens/widgets/cached_image.dart';
-import 'package:skypealike/enum/user_state.dart';
 import 'package:skypealike/models/user.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
 import 'package:skypealike/provider/user_provider.dart';
 import 'package:skypealike/resources/auth_methods.dart';
-import 'package:skypealike/screens/login_screen.dart';
+import 'package:skypealike/screens/login_page.dart';
+import 'package:skypealike/services/http_service.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/appbar.dart';
 
-class UserDetailsContainer extends StatelessWidget {
+class UserDetailsContainer extends StatefulWidget {
+  bool tapped;
+
+  UserDetailsContainer(this.tapped);
+
+  @override
+  _UserDetailsContainerState createState() => _UserDetailsContainerState();
+}
+
+class _UserDetailsContainerState extends State<UserDetailsContainer> {
   final AuthMethods authMethods = AuthMethods();
 
+  HttpService httpService = HttpService();
+  var loading = false;
   @override
   Widget build(BuildContext context) {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
-
+    
     signOut() async {
-      final bool isLoggedOut = await AuthMethods().signOut();
-      if (isLoggedOut) {
-        // set userState to offline as the user logs out'
-        authMethods.setUserState(
-          userId: userProvider.getUser.uid,
-          userState: UserState.Offline,
-        );
-
-        // move the user to login screen
+      setState(() {
+        loading=true;
+      });
+      bool response = await httpService.logout();
+      if (response) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => Login()),
           (Route<dynamic> route) => false,
         );
+      setState(() {
+        loading=false;
+      });
+      Fluttertoast.showToast(
+          msg: 'Logout Successfull'
+        );
       }
+      else{
+        Fluttertoast.showToast(
+          msg: 'Logout Failed'
+        );
+      }
+      setState(() {
+        loading=false;
+      });
     }
 
     return Container(
@@ -47,10 +69,14 @@ class UserDetailsContainer extends StatelessWidget {
               ),
               onPressed: () => Navigator.maybePop(context),
             ),
-            title: UserCircle(),
+            title: UserCircle(true),
             centerTitle: true,
             actions: <Widget>[
-              FlatButton(
+              loading?Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(child: CircularProgressIndicator()),
+              )
+              :FlatButton(
                 onPressed: () => signOut(),
                 child: Text(
                   "Sign Out",

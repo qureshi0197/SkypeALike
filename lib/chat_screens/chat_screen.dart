@@ -1,8 +1,8 @@
-import 'dart:io';
+// import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:skypealike/chat_screens/widgets/cached_image.dart';
 import 'package:skypealike/constants/strings.dart';
@@ -11,9 +11,9 @@ import 'package:skypealike/models/message.dart';
 import 'package:skypealike/models/user.dart';
 import 'package:skypealike/provider/image_upload_provider.dart';
 import 'package:skypealike/utils/universal_variables.dart';
-import 'package:skypealike/utils/utilities.dart';
+// import 'package:skypealike/utils/utilities.dart';
 import 'package:skypealike/widgets/appbar.dart';
-import 'package:skypealike/widgets/custom_tile.dart';
+// import 'package:skypealike/widgets/custom_tile.dart';
 import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/resources/chat_methods.dart';
 import 'package:skypealike/resources/storage_methods.dart';
@@ -215,25 +215,23 @@ class _ChatScreenState extends State<ChatScreen> {
 
   getMessage(Message message){
  
-    return message.type != MESSAGE_TYPE_IMAGE
-      ? Text(
+    return Text(
       message.message,
       style: TextStyle(
         color: Colors.white,
         fontSize: 18,
       )
-
-    )
+    );
     // If image received is null then app should not crash
     // instead show the Text message
-    : message.photoUrl != null 
-        ? CachedImage(
-          message.photoUrl,
-          height: 250,
-          width: 250,
-          radius: 10,
-        )
-        : Text("URL was null");
+    // : message.photoUrl != null 
+    //     ? CachedImage(
+    //       message.photoUrl,
+    //       height: 250,
+    //       width: 250,
+    //       radius: 10,
+    //     )
+    //     : Text("URL was null");
   }
 
   Widget receiverLayout(Message message) {
@@ -270,122 +268,123 @@ class _ChatScreenState extends State<ChatScreen> {
         isWriting = val;
       });
     }
-// display for attachment(+) button knwonw as Modal
-  addMediaModal(context){
-    showModalBottomSheet(
-      context: context,
-      elevation: 0,
-      backgroundColor: Colors.white,
-      builder: (context) {
-        return Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              child: Row(
-                children: <Widget>[
-                  FlatButton(
-                    child: Icon(
-                      Icons.close,color: UniversalVariables.blackColor,
-                    ), 
-                    onPressed: () => Navigator.maybePop(context),
+  // display for attachment(+) button knwonw as Modal
+  // addMediaModal(context){
+  //   showModalBottomSheet(
+  //     context: context,
+  //     elevation: 0,
+  //     backgroundColor: Colors.white,
+  //     builder: (context) {
+  //       return Column(
+  //         children: <Widget>[
+  //           Container(
+  //             padding: EdgeInsets.symmetric(vertical: 15),
+  //             child: Row(
+  //               children: <Widget>[
+  //                 FlatButton(
+  //                   child: Icon(
+  //                     Icons.close,color: UniversalVariables.blackColor,
+  //                   ), 
+  //                   onPressed: () => Navigator.maybePop(context),
 
-                    ),
-                    Expanded(
-                      child: Align( alignment: Alignment.centerLeft,
-                        child: Text("Content and Tools", // title of modal
-                        style: TextStyle(
-                          color: UniversalVariables.blackColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
+  //                   ),
+  //                   Expanded(
+  //                     child: Align( alignment: Alignment.centerLeft,
+  //                       child: Text("Content and Tools", // title of modal
+  //                       style: TextStyle(
+  //                         color: UniversalVariables.blackColor,
+  //                         fontSize: 20,
+  //                         fontWeight: FontWeight.bold),
 
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            // Labels of every tile that is included in modal
-            Flexible(
-              child: ListView(
-                children: <Widget>[
-                  ModalTile(
-                    title: "Media",
-                    subtitle: "Share Photos",
-                    icon: Icons.image,
-                  ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //               ],
+  //             ),
+  //           ),
+  //           // Labels of every tile that is included in modal
+  //           Flexible(
+  //             child: ListView(
+  //               children: <Widget>[
+  //                 // ModalTile(
+  //                 //   title: "Media",
+  //                 //   subtitle: "Share Photos",
+  //                 //   icon: Icons.image,
+  //                 // ),
 
-                  // ModalTile(
-                  //   title: "File",
-                  //   subtitle: "Share Files",
-                  //   icon: Icons.tab,
-                  // ),
+  //                 // ModalTile(
+  //                 //   title: "File",
+  //                 //   subtitle: "Share Files",
+  //                 //   icon: Icons.tab,
+  //                 // ),
 
-                  // ModalTile(
-                  //   title: "Contact",
-                  //   subtitle: "Share Contacts",
-                  //   icon: Icons.contacts,
-                  // ),
+  //                 // ModalTile(
+  //                 //   title: "Contact",
+  //                 //   subtitle: "Share Contacts",
+  //                 //   icon: Icons.contacts,
+  //                 // ),
 
-                  // ModalTile(
-                  //   title: "Location",
-                  //   subtitle: "Share Location",
-                  //   icon: Icons.add_location,
-                  // ),
+  //                 // ModalTile(
+  //                 //   title: "Location",
+  //                 //   subtitle: "Share Location",
+  //                 //   icon: Icons.add_location,
+  //                 // ),
 
-                  // ModalTile(
-                  //   title: "Schedule Call",
-                  //   subtitle: "Schedule a skype call and get reminders",
-                  //   icon: Icons.schedule,
-                  // ),
+  //                 // ModalTile(
+  //                 //   title: "Schedule Call",
+  //                 //   subtitle: "Schedule a skype call and get reminders",
+  //                 //   icon: Icons.schedule,
+  //                 // ),
 
-                  // ModalTile(
-                  //   title: "Create Poll",
-                  //   subtitle: "Share Polls",
-                  //   icon: Icons.poll,
-                  // ),
+  //                 // ModalTile(
+  //                 //   title: "Create Poll",
+  //                 //   subtitle: "Share Polls",
+  //                 //   icon: Icons.poll,
+  //                 // ),
 
-                ],
-              ),
-              )
+  //               ],
+  //             ),
+  //             )
 
 
-          ],
-        );
-      }
-    );
-  }
+  //         ],
+  //       );
+  //     }
+  //   );
+  // }
 
-  pickImage({@required ImageSource source}) async {
-    File selectedImage = await Utils.pickImage(source: source);
-    _storageMethods.uploadImage(
-      image: selectedImage,
-      receiverId: widget.receiver.uid,
-      senderId: _currentUserId,
-      imageUploadProvider: _imageUploadProvider,
-    );
+  // pickImage({@required ImageSource source}) async {
+  //   File selectedImage = await Utils.pickImage(source: source);
+  //   _storageMethods.uploadImage(
+  //     image: selectedImage,
+  //     receiverId: widget.receiver.uid,
+  //     senderId: _currentUserId,
+  //     imageUploadProvider: _imageUploadProvider,
+  //   );
 
     
 
-  }
+  // }
 
 
   // Design of tiles in modal and with conditions to chhk 
   // if user is typing or not
     return Container(
       padding: EdgeInsets.all(10),
-      child: Row(
+      child: 
+      Row(
         children: <Widget>[
-          GestureDetector(
-            onTap: () => addMediaModal(context),
-            child: Container(
-              padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              gradient: UniversalVariables.fabGradient,
-              shape: BoxShape.circle,
-            ),
-      child: Icon(Icons.add_a_photo),
-    ),
-          ),
+    //       GestureDetector(
+    //         onTap: () => addMediaModal(context),
+    //         child: Container(
+    //           padding: EdgeInsets.all(5),
+    //         decoration: BoxDecoration(
+    //           gradient: UniversalVariables.fabGradient,
+    //           shape: BoxShape.circle,
+    //         ),
+    //   child: Icon(Icons.add_a_photo),
+    // ),
+    //       ),
       SizedBox(
         width: 5
         ),
@@ -463,21 +462,21 @@ class _ChatScreenState extends State<ChatScreen> {
         )
       ),
       
-      isWriting ? Container() : Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Icon(Icons.record_voice_over, 
-                color: UniversalVariables.greyColor,
-        )
-      ),
+      // isWriting ? Container() : Padding(
+      //   padding: EdgeInsets.symmetric(horizontal: 10),
+      //   child: Icon(Icons.record_voice_over, 
+      //           color: UniversalVariables.greyColor,
+      //   )
+      // ),
       
 
-      isWriting ? Container() 
-        : GestureDetector(
-          onTap: () => pickImage(source: ImageSource.camera),
-            child: Icon(Icons.camera_alt,
-            color: UniversalVariables.greyColor,
-            ),
-        ),
+      // isWriting ? Container() 
+      //   : GestureDetector(
+      //     onTap: () => pickImage(source: ImageSource.camera),
+      //       child: Icon(Icons.camera_alt,
+      //       color: UniversalVariables.greyColor,
+      //       ),
+      //   ),
 
       isWriting ? Container(
         margin: EdgeInsets.only(left: 10),
@@ -485,7 +484,7 @@ class _ChatScreenState extends State<ChatScreen> {
             gradient: UniversalVariables.fabGradient,
             shape: BoxShape.circle),
           child: IconButton(
-            icon: Icon(Icons.send, size: 15,), 
+            icon: Icon(Icons.send, size: 20, color: Colors.white,), 
             onPressed: () => sendMessage() ),
             ) 
             : Container(), 
@@ -547,52 +546,52 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
 // Function for Design of Modal Tile and its details
-class ModalTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
+// class ModalTile extends StatelessWidget {
+//   final String title;
+//   final String subtitle;
+//   final IconData icon;
 
-  const ModalTile({
-    @required this.title,
-    @required this.subtitle,
-    @required this.icon,
-  });
+//   const ModalTile({
+//     @required this.title,
+//     @required this.subtitle,
+//     @required this.icon,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: CustomTile(
-        mini: false,
-        leading: Container(
-          margin: EdgeInsets.only(right: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: UniversalVariables.receiverColor,
-          ),
-          padding: EdgeInsets.all(10),
-          child: Icon(
-            icon,
-            color: Colors.white70,
-            size: 38,
-          ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(
-            color: UniversalVariables.greyColor,
-            fontSize: 14,
-          ),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: UniversalVariables.blackColor,
-            fontSize: 18,
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: EdgeInsets.symmetric(horizontal: 15),
+//       child: CustomTile(
+//         mini: false,
+//         leading: Container(
+//           margin: EdgeInsets.only(right: 10),
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(15),
+//             color: UniversalVariables.receiverColor,
+//           ),
+//           padding: EdgeInsets.all(10),
+//           child: Icon(
+//             icon,
+//             color: Colors.white70,
+//             size: 38,
+//           ),
+//         ),
+//         subtitle: Text(
+//           subtitle,
+//           style: TextStyle(
+//             color: UniversalVariables.greyColor,
+//             fontSize: 14,
+//           ),
+//         ),
+//         title: Text(
+//           title,
+//           style: TextStyle(
+//             fontWeight: FontWeight.bold,
+//             color: UniversalVariables.blackColor,
+//             fontSize: 18,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

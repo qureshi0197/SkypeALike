@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:skypealike/constants/strings.dart';
-import 'package:skypealike/enum/user_state.dart';
 import 'package:skypealike/models/user.dart';
 import 'package:skypealike/utils/utilities.dart';
 
@@ -107,13 +106,13 @@ class AuthMethods {
     }
   }
 
-  void setUserState({@required String userId, @required UserState userState}) {
-    int stateNum = Utils.stateToNum(userState);
+  // void setUserState({@required String userId, @required UserState userState}) {
+  //   int stateNum = Utils.stateToNum(userState);
 
-    _userCollection.document(userId).updateData({
-      "state": stateNum,
-    });
-  }
+  //   _userCollection.document(userId).updateData({
+  //     "state": stateNum,
+  //   });
+  // }
   
   Stream<DocumentSnapshot> getUserStream({@required String uid}) =>
       _userCollection.document(uid).snapshots();

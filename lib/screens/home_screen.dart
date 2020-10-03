@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:skypealike/enum/user_state.dart';
 import 'package:skypealike/page_views/chat_list_screen.dart';
 import 'package:skypealike/provider/user_provider.dart';
-import 'package:skypealike/resources/auth_methods.dart';
+// import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,10 +12,10 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+class _HomeScreenState extends State<HomeScreen> {
   int _page = 0;
   PageController pageController;
-  final AuthMethods _authMethods = AuthMethods();
+  // final AuthMethods _authMethods = AuthMethods();
   UserProvider userProvider;
 
   @override
@@ -29,58 +28,58 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       await userProvider.refreshUser();
 
       // 
-      _authMethods.setUserState(
-        userId: userProvider.getUser.uid,
-        userState: UserState.Online, 
-      );
+      // _authMethods.setUserState(
+      //   userId: userProvider.getUser.uid,
+      //   userState: UserState.Online, 
+      // );
     });
 
-    WidgetsBinding.instance.addObserver(this);
-    pageController = PageController();
+    // WidgetsBinding.instance.addObserver(this);
+    // pageController = PageController();
   }
 
   @override
   void dispose() {
     super.dispose();
-    WidgetsBinding.instance.removeObserver(this);
+    // WidgetsBinding.instance.removeObserver(this);
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    String currentUserId =
-        (userProvider != null && userProvider.getUser != null)
-            ? userProvider.getUser.uid
-            : "";
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   String currentUserId =
+  //       (userProvider != null && userProvider.getUser != null)
+  //           ? userProvider.getUser.uid
+  //           : "";
 
-    super.didChangeAppLifecycleState(state);
+  //   super.didChangeAppLifecycleState(state);
 
-    switch (state) {
-      case AppLifecycleState.resumed:
-        currentUserId != null
-            ? _authMethods.setUserState(
-                userId: currentUserId, userState: UserState.Online)
-            : print("resume state");
-        break;
-      case AppLifecycleState.inactive:
-        currentUserId != null
-            ? _authMethods.setUserState(
-                userId: currentUserId, userState: UserState.Offline)
-            : print("inactive state");
-        break;
-      case AppLifecycleState.paused:
-        currentUserId != null
-            ? _authMethods.setUserState(
-                userId: currentUserId, userState: UserState.Waiting)
-            : print("paused state");
-        break;
-      case AppLifecycleState.detached:
-        currentUserId != null
-            ? _authMethods.setUserState(
-                userId: currentUserId, userState: UserState.Offline)
-            : print("detached state");
-        break;
-    }
-  }
+  //   switch (state) {
+  //     case AppLifecycleState.resumed:
+  //       currentUserId != null
+  //           ? _authMethods.setUserState(
+  //               userId: currentUserId, userState: UserState.Online)
+  //           : print("resume state");
+  //       break;
+  //     case AppLifecycleState.inactive:
+  //       currentUserId != null
+  //           ? _authMethods.setUserState(
+  //               userId: currentUserId, userState: UserState.Offline)
+  //           : print("inactive state");
+  //       break;
+  //     case AppLifecycleState.paused:
+  //       currentUserId != null
+  //           ? _authMethods.setUserState(
+  //               userId: currentUserId, userState: UserState.Waiting)
+  //           : print("paused state");
+  //       break;
+  //     case AppLifecycleState.detached:
+  //       currentUserId != null
+  //           ? _authMethods.setUserState(
+  //               userId: currentUserId, userState: UserState.Offline)
+  //           : print("detached state");
+  //       break;
+  //   }
+  // }
 
   void onPageChanged(int page){
     setState(() {
@@ -105,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           Container(child: ChatListScreen()),
           // Center(child: Text("Call Logs", style: TextStyle(color: UniversalVariables.greyColor),)),
           Center(child: Text("Contact Screen", style: TextStyle(color: UniversalVariables.greyColor),)),
-          
+          // Call Contact List Screen Here.
           ],
           controller: pageController,
           onPageChanged: onPageChanged,

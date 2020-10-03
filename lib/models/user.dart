@@ -4,7 +4,7 @@ class User {
   String email;
   String username;
   String status;
-  int state;
+  // int state;
   String profilePhoto;
 
   User({
@@ -13,7 +13,7 @@ class User {
     this.email,
     this.username,
     this.status,
-    this.state,
+    // this.state,
     this.profilePhoto,
   });
 
@@ -24,7 +24,7 @@ class User {
     data['email'] = user.email;
     data['username'] = user.username;
     data["status"] = user.status;
-    data["state"] = user.state;
+    // data["state"] = user.state;
     data["profile_photo"] = user.profilePhoto;
     return data;
   }
@@ -35,7 +35,7 @@ class User {
     this.email = mapData['email'];
     this.username = mapData['username'];
     this.status = mapData['status'];
-    this.state = mapData['state'];
+    // this.state = mapData['state'];
     this.profilePhoto = mapData['profile_photo'];
   }
 }
