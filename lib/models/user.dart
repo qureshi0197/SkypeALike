@@ -1,17 +1,20 @@
 class User {
-  String uid;
-  String name;
-  String email;
-  String username;
-  String status;
-  // int state;
-  String profilePhoto;
+  String uid = '';
+  String name = '';
+  String number = '';
+  String email = '';
+  String username = '';
+  String status = '';
+  String password = '';
+  String profilePhoto = '';
 
   User({
     this.uid,
     this.name,
+    this.number,
     this.email,
     this.username,
+    this.password,
     this.status,
     // this.state,
     this.profilePhoto,
@@ -21,8 +24,10 @@ class User {
     var data = Map<String, dynamic>();
     data['uid'] = user.uid;
     data['name'] = user.name;
+    data['number'] = user.number;
     data['email'] = user.email;
     data['username'] = user.username;
+    data['password'] = user.password;
     data["status"] = user.status;
     // data["state"] = user.state;
     data["profile_photo"] = user.profilePhoto;
@@ -30,12 +35,13 @@ class User {
   }
 
   User.fromMap(Map<String, dynamic> mapData) {
-    this.uid = mapData['uid'];
-    this.name = mapData['name'];
-    this.email = mapData['email'];
-    this.username = mapData['username'];
-    this.status = mapData['status'];
+    // this
+    // this.uid = mapData['uid'];
+    this.name = mapData['username'];
+    this.password = mapData['password'];
+    // this.username = mapData['username'];
+    // this.status = mapData['status'];
     // this.state = mapData['state'];
-    this.profilePhoto = mapData['profile_photo'];
+    // this.profilePhoto = mapData['profile_photo'];
   }
 }

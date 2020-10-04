@@ -13,7 +13,11 @@ import 'package:skypealike/resources/chat_methods.dart';
 // import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/appbar.dart';
 
+import '../models/message.dart';
+
 class ChatListScreen extends StatelessWidget {
+  var inbox;
+  ChatListScreen(this.inbox);
 
   CustomAppBar customAppBar(BuildContext context) {
     return CustomAppBar(
@@ -48,49 +52,47 @@ class ChatListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: customAppBar(context),
-      // floatingActionButton: 
-      
       floatingActionButton: NewChatButton(),
-      body: ChatListContainer(),
+      body: inbox == 'loading'
+          ? Center(child: CircularProgressIndicator())
+          : inbox == null
+              ? Center(
+                  child: Text('Please Retry'),
+                )
+              : ChatListContainer(inbox),
     );
   }
 }
 
 class ChatListContainer extends StatelessWidget {
+  List inbox = List();
+  ChatListContainer(this.inbox);
 
   final ChatMethods _chatMethods = ChatMethods();
   Stream<QuerySnapshot> check;
 
   @override
   Widget build(BuildContext context) {
-    final UserProvider userProvider = Provider.of<UserProvider>(context);
+    // final UserProvider userProvider = Provider.of<UserProvider>(context);
     return Container(
-      child: StreamBuilder<QuerySnapshot>(
-          stream: userProvider.getUser == null ? check : _chatMethods.fetchContacts(
-            userId: userProvider.getUser.uid,
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              var docList = snapshot.data.documents;
-              // print(docList);
-
-              if (docList.isEmpty) {
-                return QuietBox();
-              }
-              return ListView.builder(
+        child: inbox.isEmpty
+            ? Center(
+                child: Text('No Messages'),
+              )
+            : ListView.builder(
                 padding: EdgeInsets.all(10),
-                itemCount: docList.length,
+                itemCount: inbox.length,
                 itemBuilder: (context, index) {
-                  Contact contact = Contact.fromMap(docList[index].data);
-
+                  Contact contact = Contact.fromMap(inbox[index]);
+                  // Message = Message.fromMap(map)
                   return ContactView(contact);
-              },
-          );
-        }
-        return Center(child: CircularProgressIndicator(),);
-          }),
-    );
+                },
+              )
+        //   }
+        //   return Center(
+        //     child: CircularProgressIndicator(),
+        //   );
+        // }),
+        );
   }
 }
-
-

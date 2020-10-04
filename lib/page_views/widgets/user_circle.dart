@@ -6,9 +6,9 @@ import 'package:skypealike/provider/user_provider.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/utils/utilities.dart';
 
+import '../../main.dart';
 
 class UserCircle extends StatelessWidget {
-  
   bool tapped;
 
   UserCircle(this.tapped);
@@ -21,15 +21,16 @@ class UserCircle extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async {
-        if(tapped == false) {
+        if (tapped == false) {
           await showModalBottomSheet(
-        // tapped: true,
+            // tapped: true,
             context: context,
             backgroundColor: Colors.white,
             builder: (context) => UserDetailsContainer(true),
             isScrollControlled: true,
-          );          }
-        },
+          );
+        }
+      },
       child: Container(
         height: 40,
         width: 40,
@@ -42,7 +43,8 @@ class UserCircle extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: Text(
-                (userProvider.getUser) == null ? '' : Utils.getInitials(userProvider.getUser.name),
+                // '',
+                Utils.getInitials(user.name),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: UniversalVariables.lightBlueColor,

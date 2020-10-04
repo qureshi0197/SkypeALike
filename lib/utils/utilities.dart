@@ -1,16 +1,15 @@
 class Utils {
   static String getUsername(String email) {
-
     return "live:${email.split('@')[0]}";
-
   }
 
-  static String getInitials(String name){
-    List<String> nameSplit = name.split(" ");
-    String firstNameInitial = nameSplit[0][0];
-    String lastNameInitial = nameSplit[1][0];
+  static String getInitials(String name) {
+    return name[0].toUpperCase();
+    // List<String> nameSplit = name.split(" ");
+    // String firstNameInitial = nameSplit[0][0];
+    // String lastNameInitial = nameSplit[1][0];
 
-    return firstNameInitial + lastNameInitial;
+    // return firstNameInitial + lastNameInitial;
   }
 
   // static Future<File> pickImage({@required ImageSource source}) async {
@@ -29,7 +28,6 @@ class Utils {
 
   //   Img.Image image = Img.decodeImage(imageToCompress.readAsBytesSync());
   //   Img.copyResize(image, width: 500, height: 500);
-
 
   //   return new File('$path/img_$random.jpg')..writeAsBytesSync(Img.encodeJpg(image, quality: 85));
 
@@ -61,4 +59,3 @@ class Utils {
   //   }
   // }
 }
-

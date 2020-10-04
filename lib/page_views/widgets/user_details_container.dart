@@ -11,6 +11,8 @@ import 'package:skypealike/services/http_service.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/appbar.dart';
 
+import '../../main.dart';
+
 class UserDetailsContainer extends StatefulWidget {
   bool tapped;
 
@@ -28,10 +30,10 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
   @override
   Widget build(BuildContext context) {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
-    
+
     signOut() async {
       setState(() {
-        loading=true;
+        loading = true;
       });
       bool response = await httpService.logout();
       if (response) {
@@ -40,20 +42,15 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
           MaterialPageRoute(builder: (context) => Login()),
           (Route<dynamic> route) => false,
         );
-      setState(() {
-        loading=false;
-      });
-      Fluttertoast.showToast(
-          msg: 'Logout Successfull'
-        );
-      }
-      else{
-        Fluttertoast.showToast(
-          msg: 'Logout Failed'
-        );
+        setState(() {
+          loading = false;
+        });
+        Fluttertoast.showToast(msg: 'Logout Successfull');
+      } else {
+        Fluttertoast.showToast(msg: 'Logout Failed');
       }
       setState(() {
-        loading=false;
+        loading = false;
       });
     }
 
@@ -72,17 +69,19 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
             title: UserCircle(true),
             centerTitle: true,
             actions: <Widget>[
-              loading?Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(child: CircularProgressIndicator()),
-              )
-              :FlatButton(
-                onPressed: () => signOut(),
-                child: Text(
-                  "Sign Out",
-                  style: TextStyle(color: UniversalVariables.blueColor, fontSize: 18),
-                ),
-              )
+              loading
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : FlatButton(
+                      onPressed: () => signOut(),
+                      child: Text(
+                        "Sign Out",
+                        style: TextStyle(
+                            color: UniversalVariables.blueColor, fontSize: 18),
+                      ),
+                    )
             ],
           ),
           UserDetailsBody(),
@@ -95,22 +94,30 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
 class UserDetailsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final UserProvider userProvider = Provider.of<UserProvider>(context);
-    final User user = userProvider.getUser;
+    // final UserProvider userProvider = Provider.of<UserProvider>(context);
+    // final User user = userProvider.getUser;
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Row(
         children: [
-          CachedImage(
-            user.profilePhoto,
-            isRound: true,
-            radius: 50,
-          ),
-          SizedBox(width: 15),
+          // CachedImage(
+          //   user.profilePhoto,
+          //   isRound: true,
+          //   radius: 50,
+          // ),
+          // SizedBox(width: 15),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Text(
+                "username",
+                // style: TextStyle(
+                //   fontWeight: FontWeight.bold,
+                //   fontSize: 18,
+                //   color: UniversalVariables.blackColor,
+                // ),
+              ),
               Text(
                 user.name,
                 style: TextStyle(
@@ -121,8 +128,31 @@ class UserDetailsBody extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                user.email,
-                style: TextStyle(fontSize: 14, color: UniversalVariables.greyColor),
+                "number",
+                // style: TextStyle(
+                //   fontWeight: FontWeight.bold,
+                //   fontSize: 18,
+                //   color: UniversalVariables.blackColor,
+                // ),
+              ),
+              Text(
+                user.number,
+                style: TextStyle(
+                    fontSize: 14, color: UniversalVariables.greyColor),
+              ),
+              SizedBox(height: 10),
+              Text(
+                "password",
+                // style: TextStyle(
+                //   fontWeight: FontWeight.bold,
+                //   fontSize: 18,
+                //   color: UniversalVariables.blackColor,
+                // ),
+              ),
+              Text(
+                user.password,
+                style: TextStyle(
+                    fontSize: 14, color: UniversalVariables.greyColor),
               ),
             ],
           ),

@@ -18,7 +18,6 @@ class _LoginState extends State<Login> {
   String password = '';
   int response;
 
-
   Widget _usernameForm() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +34,7 @@ class _LoginState extends State<Login> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
-            onChanged: (String val){
+            onChanged: (String val) {
               username = val;
             },
             style: TextStyle(color: Colors.white),
@@ -72,13 +71,11 @@ class _LoginState extends State<Login> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
-            
-            onChanged: (String val){
+            onChanged: (String val) {
               password = val;
-              // setState(() {               
+              // setState(() {
               // });
             },
-            
             obscureText: true,
             style: TextStyle(
               color: Colors.white,
@@ -104,76 +101,70 @@ class _LoginState extends State<Login> {
   Widget _loginButton() {
     return loading
         ? Padding(
-          padding: const EdgeInsets.all(35.0),
-          child: Center(
+            padding: const EdgeInsets.all(35.0),
+            child: Center(
               child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
                 valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),
               ),
             ),
-        )
+          )
         : Container(
-          padding: EdgeInsets.symmetric(vertical: 25.0),
-          width: double.infinity,
-          child: RaisedButton(
-            elevation: 5.0,
-            onPressed: () async {
-              if((username.isEmpty) && password.isEmpty){
-                Fluttertoast.showToast(msg: 'Fields are Empty');
-                return;
-              }
-              if(username.isEmpty){
-                Fluttertoast.showToast(msg: 'Username is Empty');
-                return;
-              }
-              if(password.isEmpty){
-                Fluttertoast.showToast(msg: 'Pasword is Empty');
-                return;
-              }
+            padding: EdgeInsets.symmetric(vertical: 25.0),
+            width: double.infinity,
+            child: RaisedButton(
+              elevation: 5.0,
+              onPressed: () async {
+                if ((username.isEmpty) && password.isEmpty) {
+                  Fluttertoast.showToast(msg: 'Fields are Empty');
+                  return;
+                }
+                if (username.isEmpty) {
+                  Fluttertoast.showToast(msg: 'Username is Empty');
+                  return;
+                }
+                if (password.isEmpty) {
+                  Fluttertoast.showToast(msg: 'Pasword is Empty');
+                  return;
+                }
 
-              setState(() {
-                loading = true;
-              });
+                setState(() {
+                  loading = true;
+                });
 
-              response = await httpService.login(username, password);
+                response = await httpService.login(username, password);
 
-              if(response == 0){
-                Navigator.pushNamed(context, '/home_screen');
-              }
-              else if(response == 102){
-                Fluttertoast.showToast(
-                  msg:'Username Incorrect'
-                );
-              }else if(response == 109){
-                Fluttertoast.showToast(
-                  msg:'Password Incorrect'
-                );
-              }else{
-                Fluttertoast.showToast(
-                  msg:'Login Failed'
-                );
-              }
-              setState(() {
-                loading = false;
-              });
-            },
-            padding: EdgeInsets.all(15.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            color: Colors.white,
-            child: Text(
-              'LOGIN',
-              style: TextStyle(
-                color: Color(0xFF527DAA),
-                letterSpacing: 1.5,
-                fontSize: 18.0,
-                fontFamily: 'OpenSans',
-                fontWeight: FontWeight.bold,
+                if (response == 0) {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/home_screen', (route) => false);
+                } else if (response == 102) {
+                  Fluttertoast.showToast(msg: 'Username Incorrect');
+                } else if (response == 109) {
+                  Fluttertoast.showToast(msg: 'Password Incorrect');
+                } else {
+                  Fluttertoast.showToast(msg: 'Login Failed');
+                }
+                setState(() {
+                  loading = false;
+                });
+              },
+              padding: EdgeInsets.all(15.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              color: Colors.white,
+              child: Text(
+                'LOGIN',
+                style: TextStyle(
+                  color: Color(0xFF527DAA),
+                  letterSpacing: 1.5,
+                  fontSize: 18.0,
+                  fontFamily: 'OpenSans',
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-        );
+          );
   }
 
   @override
