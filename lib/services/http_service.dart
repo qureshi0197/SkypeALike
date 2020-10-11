@@ -91,6 +91,7 @@ class HttpService {
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
+      Fluttertoast.showToast(msg: "Server Error");
       return null;
     }
     var responseBody = jsonDecode(response.body);
@@ -143,4 +144,25 @@ class HttpService {
     // return responseBody;
   }
 
+  Future<dynamic> createContact(Contact contact) async {
+    SharedPreference sharedPreference = SharedPreference();
+    String session = await sharedPreference.session();
+    var body = jsonEncode(contact.toMap(contact));
+
+    var header = {"Cookie": session};
+    Response response;
+    
+      header['Content-Type'] = "application/json";
+      response = await post(SAVE_CONTACT, headers: header, body: body);
+    
+    print(response.body);
+    if (response.statusCode == 401) {
+      return 401;
+    } else if (response.statusCode != 200) {
+      Fluttertoast.showToast(msg: "Error saving contact");
+      return null;
+    }
+
+    return 200;
+  }
 }

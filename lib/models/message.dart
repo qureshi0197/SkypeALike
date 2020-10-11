@@ -6,7 +6,7 @@ class Message {
   String receiverId;
   String type;
   String message;
-  Timestamp timestamp;
+  String timestamp;
   // String photoUrl;
   
   bool seenStatus;
@@ -36,10 +36,10 @@ class Message {
 
   Message.fromMap(Map<String, dynamic> map) {
     
-    this.senderId = map['senderId'];
-    this.receiverId = map['receiverId'];
+    this.senderId = map['sender'];
+    this.receiverId = map['receiver'];
     this.type = map['type'];
-    this.message = map['message'];
+    this.message = map['text'];
     this.timestamp = map['timestamp'];
     // this.photoUrl = map['photoUrl'];
     

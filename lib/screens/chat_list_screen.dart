@@ -53,9 +53,11 @@ class ChatListScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: customAppBar(context),
       floatingActionButton: NewChatButton(),
-      body: inbox == 'loading'
-          ? Center(child: CircularProgressIndicator())
-          : inbox == null
+      body:
+      //  inbox == 'loading'
+          // ? Center(child: CircularProgressIndicator())
+          // : 
+          inbox == null
               ? Center(
                   child: Text('Please Retry'),
                 )
@@ -83,7 +85,11 @@ class ChatListContainer extends StatelessWidget {
                 padding: EdgeInsets.all(10),
                 itemCount: inbox.length,
                 itemBuilder: (context, index) {
-                  Contact contact = Contact.fromMap(inbox[index]);
+                  var contactInbox = {
+                    "number":inbox[index]['number'],
+                    "message":inbox[index]['message']['text']
+                  };
+                  Contact contact = Contact.fromMap(contactInbox);
                   // Message = Message.fromMap(map)
                   return ContactView(contact);
                 },

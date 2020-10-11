@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skypealike/db/db_test_page.dart';
 import 'package:skypealike/models/contact.dart';
-import 'package:skypealike/page_views/edit_contact_screen.dart';
+import 'package:skypealike/screens/edit_contact_screen.dart';
 import 'package:skypealike/provider/image_upload_provider.dart';
 import 'package:skypealike/provider/user_provider.dart';
 import 'package:skypealike/resources/auth_methods.dart';

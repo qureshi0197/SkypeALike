@@ -2,10 +2,13 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/constants/styles.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/custom_text_row.dart';
+
+import '../main.dart';
 
 class EditContact extends StatefulWidget {
   Contact contact;
@@ -37,6 +40,8 @@ class _EditContactState extends State<EditContact> {
 
   var company = TextEditingController.fromValue(TextEditingValue(text: ""));
 
+  bool loading = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -65,7 +70,38 @@ class _EditContactState extends State<EditContact> {
         backgroundColor: UniversalVariables.gradientColorEnd,
         actions: <Widget>[
           number.text.length == 11 ? 
-          IconButton(icon: Icon(Icons.check, color: Colors.white,), onPressed: null)
+          loading ? 
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircularProgressIndicator(),
+          ) : 
+          IconButton(
+            // onPressed: ,
+            icon: Icon(Icons.check, color: Colors.white), 
+            onPressed:() async {
+              setState(() {
+                loading = true;
+              });
+              
+              var response = await httpService.createContact(contact);
+              
+              
+
+              if(response == 401){
+                
+                Fluttertoast.showToast(msg: "Session Expired");
+                Navigator.pushNamedAndRemoveUntil(context, '/login_screen', (route) => false);
+                await sharedPreference.logout();
+
+              } else if(response == 200){
+                Fluttertoast.showToast(msg: "Contact Saved");
+                Navigator.pop(context);
+              }
+              loading = false;
+              setState(() {
+              });
+              }
+            )
           :
           IconButton(icon: Icon(Icons.check, color: Colors.grey,), onPressed: (){
             Fluttertoast.showToast(msg: 'Invalid Phone Number');
@@ -93,31 +129,37 @@ class _EditContactState extends State<EditContact> {
   }
 
   Widget _firstName() {
-    return customTextRow(icon: Icons.person, title: "First Name", onChnaged: (val){setState(() {});}, controller: firstName);
+    return customTextRow(icon: Icons.person, title: "First Name", 
+    onChnaged: (val){contact.first_name = val;}, controller: firstName);
   }
 
   Widget _lastName() {
-    return customTextRow(icon: Icons.person, title: "Last Name", onChnaged: (val){setState(() {});}, controller: lastName);
+    return customTextRow(icon: Icons.person, title: "Last Name", 
+    onChnaged: (val){contact.last_name = val;}, controller: lastName);
   }
 
   Widget _number() {
-    return customTextRow(icon: Icons.phone, title: "Phone Number", onChnaged: (val){setState(() {});}, controller: number,inputFormator: [
+    return customTextRow(icon: Icons.phone, title: "Phone Number", 
+    onChnaged: (val){contact.number = val;}, controller: number,inputFormator: [
       WhitelistingTextInputFormatter(RegExp(r"[0-9]"))
       
     ]);
   }
 
   Widget _email() {
-    return customTextRow(icon: Icons.email, title: "Email", onChnaged: (val){setState(() {});}, controller: email,inputFormator: [
+    return customTextRow(icon: Icons.email, title: "Email", 
+    onChnaged: (val){contact.email = val;}, controller: email,inputFormator: [
       // WhitelistingTextInputFormatter(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))
     ]);
   }
 
   Widget _address() {
-    return customTextRow(icon: Icons.location_on, title: "Address", onChnaged: (val){setState(() {});}, controller: address);
+    return customTextRow(icon: Icons.location_on, title: "Address", 
+    onChnaged: (val){contact.address = val;}, controller: address);
   }
 
   Widget _company() {
-    return customTextRow(icon: Icons.business, title: "Company", onChnaged: (val){setState(() {});}, controller: company);
+    return customTextRow(icon: Icons.business, title: "Company", 
+    onChnaged: (val){contact.company = val;}, controller: company);
   }
 }

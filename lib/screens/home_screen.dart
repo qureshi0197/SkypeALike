@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:skypealike/page_views/chat_list_screen.dart';
+import 'package:skypealike/screens/chat_list_screen.dart';
 import 'package:skypealike/provider/user_provider.dart';
 // import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:intl/intl.dart';
-import 'package:skypealike/page_views/contact_list_screen.dart';
+import 'package:skypealike/screens/contact_list_screen.dart';
 import '../main.dart';
 import '../services/http_service.dart';
 import '../services/http_service.dart';
@@ -26,9 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
   SharedPreference sharedPreference = SharedPreference();
   // final AuthMethods _authMethods = AuthMethods();
   UserProvider userProvider;
-  var inbox = [];
+  var inbox;
   HttpService httpService = HttpService();
   var loading = true;
+  var usersInbox = [];
 
   _convertTimeToTimeStamp(time) {
     // int timestamp;
@@ -41,118 +42,125 @@ class _HomeScreenState extends State<HomeScreen> {
     return val.millisecondsSinceEpoch;
   }
 
-  // _arrangeAllMessagesForInbox() {
-  //   var otherUserData = {};
-  //   var otherUserKeys = [];
-  //   if (inbox.containsKey('data')) {
-  //     Map val = inbox['data'];
-  //     val.forEach((key,value)
-  //       {
-  //       if (val[key]['direction'] == "outbound") {
-  //         if (!otherUserKeys.contains(val[key]["receiver"])) {
-  //           otherUserKeys.add(val[key]["receiver"]);
-  //         }
-  //         if (otherUserData.containsKey(val[key]["receiver"])) {
-  //           otherUserData[val[key]["receiver"]].add(val[key]);
-  //         } else {
-  //           otherUserData[val[key]["receiver"]] = [];
-  //         }
-  //       } else {
-  //         if (!otherUserKeys.contains(val[key]["receiver"])) {
-  //           otherUserKeys.add(val[key]["receiver"]);
-  //         }
-  //         if (otherUserData.containsKey(val[key]["sender"])) {
-  //           otherUserData[val[key]["sender"]].add(val[key]);
-  //         } else {
-  //           otherUserData[val["sender"]] = [];
-  //         }
-  //       }
-  //     });
-  //     // otherUserData.forEach((key, value) {
-  //     //   print(otherUserData[key]);
-  //     //   otherUserData = otherUserData[key].sort((a, b) =>
-  //     //       _convertTimeToTimeStamp(a['timestamp'])
-  //     //           .compareTo(_convertTimeToTimeStamp(b['timestamp'])));
-  //     //   print(otherUserData[key]);
-  //     // });
-  //   } else {
-  //     inbox = [];
-  //   }
-  //   return inbox;
-  // }
+  _arrangeAllMessagesForInbox() {
+    var otherUserData = {};
+    var otherUserKeys = [];
+    usersInbox = [];
+    if (inbox.containsKey('data')) {
+      Map val = inbox['data'];
+      // contact
+      val.forEach((key,value)
+      {
+        if (val[key]['direction'] == "outbound") {
+          if(!otherUserKeys.contains(val[key]["receiver"]))
+            otherUserKeys.add(val[key]["receiver"]);
+      //     if (!otherUserKeys.contains(val[key]["receiver"])) {
+      //       otherUserKeys.add(val[key]["receiver"]);
+          otherUserData[val[key]["receiver"]] = val[key];
+          // usersInbox.append();
+          }
+          
+      //     if(otherUserData.isEmpty){
+      //       otherUserData[val[key]["receiver"]] = [];
+      //     }
+      //     if(otherUserData.containsKey(val[key]["receiver"])){
+      //       otherUserData[val[key]["receiver"]].add(val[key]);
+      //     }
+      //     else if (otherUserData.containsKey(val[key]["receiver"])) {
+      //       otherUserData[val[key]["receiver"]].add(val[key]);
+      //     } 
+      //     else {
+      //       otherUserData[val[key]["receiver"]] = [];
+      //     }
+      //   } else {
+          // if (!otherUserKeys.contains(val[key]["sender"])) 
+          else{
+            if(!otherUserKeys.contains(val[key]["sender"]))
+              otherUserKeys.add(value);
+              // otherUserData[val[key]["receiver"]] = val[key];
+      //       otherUserKeys.add(val[key]["receiver"]);
+            otherUserData[val[key]["sender"]] = val[key];
+          }
+          
+      //     if(otherUserData.isEmpty){
+      //       otherUserData[val[key]["receiver"]] = [];
+      //     }
+      //     if(otherUserData.containsKey(val[key]["receiver"])){
+      //       // otherUserData[val[key]["receiver"]] = [];
+      //       otherUserData[val[key]["receiver"]].add(val[key]);
+      //     }
+      //     else if (otherUserData.containsKey(val[key]["sender"])) {
+      //       otherUserData[val[key]["sender"]].add(val[key]);
+      //     } 
+      //     else {
+      //       otherUserData[val["sender"]] = [];
+      //     }
+      //   }
+      });
+      print(otherUserData);
 
-  // getAllMessages() async {
-  //   inbox = await httpService.getAllMessages(null);
-  //   if (inbox == null) {
-  //     Fluttertoast.showToast(msg: 'Problem while fetching data from server');
-  //     return;
-  //   } else if (inbox == 401) {
-  //     Fluttertoast.showToast(msg: 'Session Expired. PLease Login again');
-  //     Navigator.pushNamedAndRemoveUntil(
-  //         context, '/login_screen', (route) => false);
-  //     await sharedPreference.logout();
-  //     return;
-  //   } else {
-  //     inbox = _arrangeAllMessagesForInbox();
-  //   }
+      otherUserData.forEach((key, value) {
+        usersInbox.add(
+          {
+            "number":key,
+            "message":value
+          }
+        );
+      // for()
+      //   // print(otherUserData[key]);
+      //   // print(
+      //     otherUserData[key].sort((a, b){
+      //       var aVal = (_convertTimeToTimeStamp(a['timestamp']));
+      //       var bVal = (_convertTimeToTimeStamp(b['timestamp']));
+            
+      //      return aVal.compareTo(bVal);
+      //       }
+      //       );
+      //       // );
+      //   // print(otherUserData[key]);
+      });
+      print(usersInbox);
+    } else {
+      inbox = [];
+    }
+    return [];
+  }
 
-  //   setState(() {
-  //     loading = false;
-  //   });
-  // }
+  getAllMessages() async {
+    inbox = await httpService.getAllMessages(null);
+    if (inbox == null) {
+      Fluttertoast.showToast(msg: 'Problem while fetching data from server');
+      return;
+    } else if (inbox == 401) {
+      Fluttertoast.showToast(msg: 'Session Expired. PLease Login again');
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/login_screen', (route) => false);
+      await sharedPreference.logout();
+      return;
+    } else {
+      _arrangeAllMessagesForInbox();
+    }
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   if (loading) {
-  //     inbox = 'loading';
-  //   }
-  // getAllMessages();
-  // }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (loading) {
+      inbox = 'loading';
+    }
+  getAllMessages();
+  }
 
   @override
   void dispose() {
     super.dispose();
     // WidgetsBinding.instance.removeObserver(this);
   }
-
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   String currentUserId =
-  //       (userProvider != null && userProvider.getUser != null)
-  //           ? userProvider.getUser.uid
-  //           : "";
-
-  //   super.didChangeAppLifecycleState(state);
-
-  //   switch (state) {
-  //     case AppLifecycleState.resumed:
-  //       currentUserId != null
-  //           ? _authMethods.setUserState(
-  //               userId: currentUserId, userState: UserState.Online)
-  //           : print("resume state");
-  //       break;
-  //     case AppLifecycleState.inactive:
-  //       currentUserId != null
-  //           ? _authMethods.setUserState(
-  //               userId: currentUserId, userState: UserState.Offline)
-  //           : print("inactive state");
-  //       break;
-  //     case AppLifecycleState.paused:
-  //       currentUserId != null
-  //           ? _authMethods.setUserState(
-  //               userId: currentUserId, userState: UserState.Waiting)
-  //           : print("paused state");
-  //       break;
-  //     case AppLifecycleState.detached:
-  //       currentUserId != null
-  //           ? _authMethods.setUserState(
-  //               userId: currentUserId, userState: UserState.Offline)
-  //           : print("detached state");
-  //       break;
-  //   }
-  // }
 
   void onPageChanged(int page) {
     setState(() {
@@ -166,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // _arrangeAllMessagesForInbox();
     // _convertTimeToTimeStamp(null);
     double _labelFontSize = 10;
 
@@ -173,16 +182,15 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       body: PageView(
         children: [
-          Container(
-              child:
-                  //  inbox == null
-                  //     ? Center(child: Text('Retry'))
-                  // :
-                  ChatListScreen(inbox)),
-          // Center(child: Text("Call Logs", style: TextStyle(color: UniversalVariables.greyColor),)),
+          loading ? Center(child: CircularProgressIndicator(),):Container(
+              child: 
+              // Text('data')),
+                   usersInbox.isEmpty
+                      ? Center(child: Text('No Messages'))
+                  :
+                  ChatListScreen(usersInbox)),
           Container(
               child: ContactListScreen()),
-          // Call Contact List Screen Here.
         ],
         controller: pageController,
         onPageChanged: onPageChanged,

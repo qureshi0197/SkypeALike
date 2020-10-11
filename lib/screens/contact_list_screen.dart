@@ -2,8 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
+import 'package:skypealike/main.dart';
 import 'package:skypealike/models/contact.dart';
-import 'package:skypealike/page_views/edit_contact_screen.dart';
+import 'package:skypealike/screens/edit_contact_screen.dart';
 import 'package:skypealike/page_views/widgets/add_contact_button.dart';
 import 'package:skypealike/page_views/widgets/pop_up_menu.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
@@ -93,6 +94,7 @@ class _ContactListContainerState extends State<ContactListContainer> {
             Fluttertoast.showToast(msg: "Session Expired");
             Navigator.pushNamedAndRemoveUntil(
                 context, '/login_screen', (route) => false);
+            sharedPreference.logout();
           }
            else {
             // var data = snapshot.data;

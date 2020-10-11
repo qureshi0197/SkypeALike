@@ -2,11 +2,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:skypealike/chat_screens/widgets/cached_image.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/enum/view_state.dart';
+import 'package:skypealike/main.dart';
+import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/message.dart';
 import 'package:skypealike/models/user.dart';
 import 'package:skypealike/provider/image_upload_provider.dart';
@@ -21,7 +24,7 @@ import 'package:skypealike/resources/storage_methods.dart';
 
 
 class ChatScreen extends StatefulWidget {
-  final User receiver;
+  final Contact receiver;
 
   ChatScreen({this.receiver});
   
@@ -36,6 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
   StorageMethods _storageMethods = StorageMethods();
   ChatMethods _chatMethods = ChatMethods();
   ScrollController _listScrollController = ScrollController();
+  bool loading = true;
 
   bool isWriting = false;
   bool showEmojiPicker = false;
@@ -43,25 +47,24 @@ class _ChatScreenState extends State<ChatScreen> {
   String _currentUserId;
   FocusNode textFieldFocus = FocusNode();
   ImageUploadProvider _imageUploadProvider;
+  Contact receiver;
+  var userChat = [];
+  // var loading = true;
 
+  // getMessages()async{
+
+  //   setState(() {
+  //   });
+  //   loading = false;
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    receiver = widget.receiver;
+    // getMessages();
 
-    _authMethods.getCurrentUser().then((user){
-      _currentUserId = user.uid;
-
-      setState(() {
-        sender = User(
-          uid: user.uid,
-          name: user.displayName,
-          profilePhoto: user.photoUrl,
-        );
-      });
-
-    });
   }
 
 
@@ -132,55 +135,79 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
   Widget messageList() {
-    return StreamBuilder(
-      stream: Firestore.instance
-          .collection(MESSAGES_COLLECTION)
-          .document(_currentUserId)
-          .collection(widget.receiver.uid)
-          .orderBy(TIMESTAMP_FIELD, descending: true)
-          .snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        // if snapshot has no data
-        if (snapshot.data == null) {
-          return Center(child: CircularProgressIndicator());
+    return FutureBuilder(
+      future: httpService.getAllMessages(null),
+      builder: (context, AsyncSnapshot<dynamic> snapshot) {
+        // if 
+        if (loading){
+          if(snapshot.connectionState.index == 1)
+            return Center(child: CircularProgressIndicator());
+          else{
+            loading=false;
+          }
         }
-
-
-        // This piece of code makes the chat room scroll down to 
-        // bottom as soon as user types something or new message arrives
-        // SchedulerBinding.instance.addPostFrameCallback((_) {
-        //   _listScrollController.animateTo(
-        //     _listScrollController.position.minScrollExtent,
-        //     duration: Duration(milliseconds: 250),
-        //     curve: Curves.easeInOut,
-        //   );
+        // else{
+        //   setState(() {
+        //     loading=false;
+        //   });
+        // }
+        // if (snapshot.h == 1) {
+        //   return Center(child: CircularProgressIndicator());
+        // }
+        if (snapshot.data == 401){
+          Fluttertoast.showToast(msg: "Session Expired");
+          Navigator.pushNamedAndRemoveUntil(context, '/login_screen', (Route route)=>false);
+          sharedPreference.logout();
+        }
+        if (snapshot.data == null){
+          // flutter
+          return Center(child: Text("No Messages"),);
+        }
+        var userChat = [];
+        snapshot.data['data'].forEach((key,val){
+          if(val['sender'] == receiver.number || val['receiver'] == receiver.number){
+            userChat.add(val);
+          }
+        });
+        // setState(() {
+        //   loading=false;
         // });
-
-
+        
+        // return userChat;
         return ListView.builder(
           padding: EdgeInsets.all(10),
-          itemCount: snapshot.data.documents.length,
+          itemCount: userChat.length,
           reverse: true,
-          controller: _listScrollController,
           itemBuilder: (context, index) {
-            return chatMessageItem(snapshot.data.documents[index]);
+            
+            return chatMessageItem(userChat[index]);
           },
         );
       },
     );
+    // return ListView.builder(
+    //       padding: EdgeInsets.all(10),
+    //       itemCount: userChat.length,
+    //       reverse: true,
+    //       itemBuilder: (context, index) {
+    //         return chatMessageItem(userChat[index]);
+    //       },
+    //     );
+
+    
   }
 
-  Widget chatMessageItem(DocumentSnapshot snapshot) {
+  Widget chatMessageItem(Map snapshot) {
     
-    Message _message = Message.fromMap(snapshot.data);
+    Message _message = Message.fromMap(snapshot);
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: Container(
-        alignment: _message.senderId == _currentUserId 
+        alignment: snapshot['direction'] == "outbound" 
           ? Alignment.centerRight 
           : Alignment.centerLeft,
-        child: _message.senderId == _currentUserId 
+        child: snapshot['direction'] == "outbound" 
           ? senderLayout(_message) 
           : receiverLayout(_message)
       ),
@@ -199,7 +226,7 @@ class _ChatScreenState extends State<ChatScreen> {
             maxWidth: MediaQuery.of(context).size.width * 0.65
             ),
       decoration: BoxDecoration(
-        color: UniversalVariables.sendMessageColor,
+        color: UniversalVariables.blueColor,
         borderRadius: BorderRadius.only(
           topLeft: messageRadius,
           topRight: messageRadius,
@@ -494,25 +521,25 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   sendMessage() {
-    var text = textFieldController.text;
+    // var text = textFieldController.text;
 
-    Message _message = Message(
-      receiverId: widget.receiver.uid,
-      senderId: sender.uid,
-      message: text,
-      timestamp: Timestamp.now(),
-      type: text,
+    // Message _message = Message(
+    //   receiverId: widget.receiver.uid,
+    //   senderId: sender.uid,
+    //   message: text,
+    //   timestamp: Timestamp.now(),
+    //   type: text,
 
-      seenStatus: false,
-    );
+    //   seenStatus: false,
+    // );
 
-    setState(() {
-      isWriting = false;
-    });
+    // setState(() {
+    //   isWriting = false;
+    // });
 
-    textFieldController.text = "";
+    // textFieldController.text = "";
     
-    _chatMethods.addMessageToDb(_message, sender, widget.receiver);
+    // _chatMethods.addMessageToDb(_message, sender, widget.receiver);
   }
 
   CustomAppBar customAppBar(context){
@@ -525,7 +552,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         centerTitle: false,
         title: Text(
-          widget.receiver.name,
+          receiver.first_name??receiver.last_name??receiver.number,
           style: TextStyle(color: UniversalVariables.blackColor),
         ),
         actions: <Widget>[
