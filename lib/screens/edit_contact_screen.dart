@@ -19,7 +19,6 @@ class EditContact extends StatefulWidget {
 }
 
 class _EditContactState extends State<EditContact> {
-
   Contact contact;
 
   var text_Field_height = 50.0;
@@ -46,7 +45,7 @@ class _EditContactState extends State<EditContact> {
   void initState() {
     // TODO: implement initState
     contact = widget.contact;
-    if(contact.number[0] == '+'){
+    if (contact.number[0] == '+') {
       contact.number = contact.number.substring(1);
       // contact.number = string[1];
     }
@@ -69,47 +68,46 @@ class _EditContactState extends State<EditContact> {
         ),
         backgroundColor: UniversalVariables.gradientColorEnd,
         actions: <Widget>[
-          number.text.length == 11 ? 
-          loading ? 
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(),
-          ) : 
-          IconButton(
-            // onPressed: ,
-            icon: Icon(Icons.check, color: Colors.white), 
-            onPressed:() async {
-              setState(() {
-                loading = true;
-              });
-              
-              var response = await httpService.createContact(contact);
-              
-              
+          number.text.length == 11
+              ? loading
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    )
+                  : IconButton(
+                      // onPressed: ,
+                      icon: Icon(Icons.check, color: Colors.white),
+                      onPressed: () async {
+                        setState(() {
+                          loading = true;
+                        });
 
-              if(response == 401){
-                
-                Fluttertoast.showToast(msg: "Session Expired");
-                Navigator.pushNamedAndRemoveUntil(context, '/login_screen', (route) => false);
-                await sharedPreference.logout();
+                        var response = await httpService.createContact(contact);
 
-              } else if(response == 200){
-                Fluttertoast.showToast(msg: "Contact Saved");
-                Navigator.pop(context);
-              }
-              loading = false;
-              setState(() {
-              });
-              }
-            )
-          :
-          IconButton(icon: Icon(Icons.check, color: Colors.grey,), onPressed: (){
-            Fluttertoast.showToast(msg: 'Invalid Phone Number');
-          })
+                        if (response == 401) {
+                          Fluttertoast.showToast(msg: "Session Expired");
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, '/login_screen', (route) => false);
+                          await sharedPreference.logout();
+                        } else if (response == 200) {
+                          Fluttertoast.showToast(msg: "Contact Saved");
+                          Navigator.pop(context);
+                        }
+                        loading = false;
+                        setState(() {});
+                      })
+              : IconButton(
+                  icon: Icon(
+                    Icons.check,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    Fluttertoast.showToast(msg: 'Invalid Phone Number');
+                  })
         ],
       ),
       body: SingleChildScrollView(
-              child: Padding(
+        child: Padding(
           padding: const EdgeInsets.fromLTRB(45, 15, 45, 15),
           child: Container(
             child: Column(
@@ -129,37 +127,66 @@ class _EditContactState extends State<EditContact> {
   }
 
   Widget _firstName() {
-    return customTextRow(icon: Icons.person, title: "First Name", 
-    onChnaged: (val){contact.first_name = val;}, controller: firstName);
+    return customTextRow(
+        icon: Icons.person,
+        title: "First Name",
+        onChnaged: (val) {
+          contact.first_name = val;
+        },
+        controller: firstName);
   }
 
   Widget _lastName() {
-    return customTextRow(icon: Icons.person, title: "Last Name", 
-    onChnaged: (val){contact.last_name = val;}, controller: lastName);
+    return customTextRow(
+        icon: Icons.person,
+        title: "Last Name",
+        onChnaged: (val) {
+          contact.last_name = val;
+        },
+        controller: lastName);
   }
 
   Widget _number() {
-    return customTextRow(icon: Icons.phone, title: "Phone Number", 
-    onChnaged: (val){contact.number = val;}, controller: number,inputFormator: [
-      WhitelistingTextInputFormatter(RegExp(r"[0-9]"))
-      
-    ]);
+    return customTextRow(
+        icon: Icons.phone,
+        title: "Phone Number",
+        onChnaged: (val) {
+          number.text = contact.number;
+        },
+        controller: number,
+        inputFormator: [WhitelistingTextInputFormatter(RegExp(r"[0-9]"))]);
   }
 
   Widget _email() {
-    return customTextRow(icon: Icons.email, title: "Email", 
-    onChnaged: (val){contact.email = val;}, controller: email,inputFormator: [
-      // WhitelistingTextInputFormatter(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))
-    ]);
+    return customTextRow(
+        icon: Icons.email,
+        title: "Email",
+        onChnaged: (val) {
+          contact.email = val;
+        },
+        controller: email,
+        inputFormator: [
+          // WhitelistingTextInputFormatter(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))
+        ]);
   }
 
   Widget _address() {
-    return customTextRow(icon: Icons.location_on, title: "Address", 
-    onChnaged: (val){contact.address = val;}, controller: address);
+    return customTextRow(
+        icon: Icons.location_on,
+        title: "Address",
+        onChnaged: (val) {
+          contact.address = val;
+        },
+        controller: address);
   }
 
   Widget _company() {
-    return customTextRow(icon: Icons.business, title: "Company", 
-    onChnaged: (val){contact.company = val;}, controller: company);
+    return customTextRow(
+        icon: Icons.business,
+        title: "Company",
+        onChnaged: (val) {
+          contact.company = val;
+        },
+        controller: company);
   }
 }

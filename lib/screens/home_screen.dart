@@ -42,124 +42,36 @@ class _HomeScreenState extends State<HomeScreen> {
     return val.millisecondsSinceEpoch;
   }
 
-  _arrangeAllMessagesForInbox() {
-    var otherUserData = {};
-    var otherUserKeys = [];
-    usersInbox = [];
-    if (inbox.containsKey('data')) {
-      Map val = inbox['data'];
-      // contact
-      val.forEach((key,value)
-      {
-        if (val[key]['direction'] == "outbound") {
-          if(!otherUserKeys.contains(val[key]["receiver"]))
-            otherUserKeys.add(val[key]["receiver"]);
-      //     if (!otherUserKeys.contains(val[key]["receiver"])) {
-      //       otherUserKeys.add(val[key]["receiver"]);
-          otherUserData[val[key]["receiver"]] = val[key];
-          // usersInbox.append();
-          }
-          
-      //     if(otherUserData.isEmpty){
-      //       otherUserData[val[key]["receiver"]] = [];
-      //     }
-      //     if(otherUserData.containsKey(val[key]["receiver"])){
-      //       otherUserData[val[key]["receiver"]].add(val[key]);
-      //     }
-      //     else if (otherUserData.containsKey(val[key]["receiver"])) {
-      //       otherUserData[val[key]["receiver"]].add(val[key]);
-      //     } 
-      //     else {
-      //       otherUserData[val[key]["receiver"]] = [];
-      //     }
-      //   } else {
-          // if (!otherUserKeys.contains(val[key]["sender"])) 
-          else{
-            if(!otherUserKeys.contains(val[key]["sender"]))
-              otherUserKeys.add(value);
-              // otherUserData[val[key]["receiver"]] = val[key];
-      //       otherUserKeys.add(val[key]["receiver"]);
-            otherUserData[val[key]["sender"]] = val[key];
-          }
-          
-      //     if(otherUserData.isEmpty){
-      //       otherUserData[val[key]["receiver"]] = [];
-      //     }
-      //     if(otherUserData.containsKey(val[key]["receiver"])){
-      //       // otherUserData[val[key]["receiver"]] = [];
-      //       otherUserData[val[key]["receiver"]].add(val[key]);
-      //     }
-      //     else if (otherUserData.containsKey(val[key]["sender"])) {
-      //       otherUserData[val[key]["sender"]].add(val[key]);
-      //     } 
-      //     else {
-      //       otherUserData[val["sender"]] = [];
-      //     }
-      //   }
-      });
-      print(otherUserData);
+  // getAllMessages() async {
+  //   inbox = await httpService.getAllMessages(null);
+  //   if (inbox == null) {
+  //     Fluttertoast.showToast(msg: 'Problem while fetching data from server');
+  //     return;
+  //   } else if (inbox == 401) {
+  //     Fluttertoast.showToast(msg: 'Session Expired. PLease Login again');
+  //     Navigator.pushNamedAndRemoveUntil(
+  //         context, '/login_screen', (route) => false);
+  //     await sharedPreference.logout();
+  //     return;
+  //   } else {
+  //     // _arrangeAllMessagesForInbox();
+  //   }
 
-      otherUserData.forEach((key, value) {
-        usersInbox.add(
-          {
-            "number":key,
-            "message":value
-          }
-        );
-      // for()
-      //   // print(otherUserData[key]);
-      //   // print(
-      //     otherUserData[key].sort((a, b){
-      //       var aVal = (_convertTimeToTimeStamp(a['timestamp']));
-      //       var bVal = (_convertTimeToTimeStamp(b['timestamp']));
-            
-      //      return aVal.compareTo(bVal);
-      //       }
-      //       );
-      //       // );
-      //   // print(otherUserData[key]);
-      });
-      print(usersInbox);
-    } else {
-      inbox = [];
-    }
-    return [];
-  }
-
-  getAllMessages() async {
-    inbox = await httpService.getAllMessages(null);
-    if (inbox == null) {
-      Fluttertoast.showToast(msg: 'Problem while fetching data from server');
-      return;
-    } else if (inbox == 401) {
-      Fluttertoast.showToast(msg: 'Session Expired. PLease Login again');
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/login_screen', (route) => false);
-      await sharedPreference.logout();
-      return;
-    } else {
-      _arrangeAllMessagesForInbox();
-    }
-
-    setState(() {
-      loading = false;
-    });
-  }
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
-    if (loading) {
-      inbox = 'loading';
-    }
-  getAllMessages();
+    // super.initState();
+    // if (loading) {
+    //   inbox = 'loading';
+    // }
+    // getAllMessages();
   }
 
   @override
   void dispose() {
     super.dispose();
-    // WidgetsBinding.instance.removeObserver(this);
   }
 
   void onPageChanged(int page) {
@@ -174,23 +86,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // _arrangeAllMessagesForInbox();
-    // _convertTimeToTimeStamp(null);
     double _labelFontSize = 10;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: PageView(
         children: [
-          loading ? Center(child: CircularProgressIndicator(),):Container(
-              child: 
-              // Text('data')),
-                   usersInbox.isEmpty
-                      ? Center(child: Text('No Messages'))
-                  :
-                  ChatListScreen(usersInbox)),
-          Container(
-              child: ContactListScreen()),
+          ChatListScreen(),
+          // loading
+          // ?
+          // Center(
+          //     child: CircularProgressIndicator(),
+          //   )
+          // :
+          Container(child: ContactListScreen()),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,

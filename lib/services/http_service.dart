@@ -18,6 +18,7 @@ class HttpService {
   static String MESSAGES = SERVER + 'message/all';
   static String GET_CONTACTS = SERVER + "contact/all";
   static String SAVE_CONTACT = SERVER + "contact/register";
+  static String SEND_MESSAGE = SERVER + "message/send";
 
   // toLoginMap()
   Future<bool> signOut() async {
@@ -124,8 +125,8 @@ class HttpService {
     }
     Map responseBody = jsonDecode(response.body);
     List<Contact> contacts = [];
-    if(responseBody.containsKey('data')){
-      responseBody['data'].forEach((key,value){
+    if (responseBody.containsKey('data')) {
+      responseBody['data'].forEach((key, value) {
         // Map contact = {
         //   'displayName': value['first_name'],
         //   'givenName': value['last_name'],
@@ -133,12 +134,11 @@ class HttpService {
         //   'postalAddresses': [value['address']],
         //   'company': value['company'],
         //   'emails': [value['email']],
-        // }; 
+        // };
         contacts.add(Contact.fromMap(value));
       });
       return contacts;
-
-    }else{
+    } else {
       return null;
     }
     // return responseBody;
@@ -151,10 +151,10 @@ class HttpService {
 
     var header = {"Cookie": session};
     Response response;
-    
-      header['Content-Type'] = "application/json";
-      response = await post(SAVE_CONTACT, headers: header, body: body);
-    
+
+    header['Content-Type'] = "application/json";
+    response = await post(SAVE_CONTACT, headers: header, body: body);
+
     print(response.body);
     if (response.statusCode == 401) {
       return 401;
@@ -163,6 +163,29 @@ class HttpService {
       return null;
     }
 
+    return 200;
+  }
+
+  Future<dynamic> sendMessage(message) async {
+    SharedPreference sharedPreference = SharedPreference();
+    String session = await sharedPreference.session();
+    var body = jsonEncode(message);
+
+    var header = {"Cookie": session};
+    Response response;
+
+    header['Content-Type'] = "application/json";
+    response = await post(SEND_MESSAGE, headers: header, body: body);
+
+    // print(response.body);
+    if (response.statusCode == 401) {
+      Fluttertoast.showToast(msg: 'Session Expired');
+      return 401;
+    } else if (response.statusCode != 200) {
+      Fluttertoast.showToast(msg: "Error sending message");
+      return null;
+    }
+    Fluttertoast.showToast(msg: "Message Sent");
     return 200;
   }
 }

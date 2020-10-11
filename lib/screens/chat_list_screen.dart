@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/enum/pop_up_menu_list.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/page_views/widgets/contact_view.dart';
@@ -12,12 +14,63 @@ import 'package:skypealike/provider/user_provider.dart';
 import 'package:skypealike/resources/chat_methods.dart';
 // import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/appbar.dart';
+import '../services/http_service.dart';
+import 'package:intl/intl.dart';
 
+import '../main.dart';
 import '../models/message.dart';
 
 class ChatListScreen extends StatelessWidget {
-  var inbox;
-  ChatListScreen(this.inbox);
+  // var inbox;
+  var loading = true;
+
+  var usersInbox = [];
+  // ChatListScreen(this.inbox);
+  _convertTimeToTimeStamp(time) {
+    // int timestamp;
+    // time = "Thu, 24 Sep 2020 05:51:09 GMT";
+    final formatter = DateFormat(r'''EEE, dd MMM yyyy hh:mm:ss''');
+    // print(DateTime.);
+    var val = (formatter.parse(time, true));
+    print(val);
+    val = (val.toLocal());
+    return val.millisecondsSinceEpoch;
+  }
+
+  _arrangeAllMessagesForInbox(data) {
+    var otherUserData = {};
+    var otherUserKeys = [];
+    usersInbox = [];
+    if (data.containsKey('data')) {
+      Map val = data['data'];
+      val.forEach((key, value) {
+        if (val[key]['direction'] == "outbound") {
+          if (!otherUserKeys.contains(val[key]["receiver"]))
+            otherUserKeys.add(val[key]["receiver"]);
+          otherUserData[val[key]["receiver"]] = val[key];
+        } else {
+          if (!otherUserKeys.contains(val[key]["sender"]))
+            otherUserKeys.add(value);
+          otherUserData[val[key]["sender"]] = val[key];
+        }
+      });
+      print(otherUserData);
+
+      otherUserData.forEach((key, value) {
+        usersInbox.add({"number": key, "message": value});
+      });
+      usersInbox.sort((a, b) {
+        var aTime = _convertTimeToTimeStamp(a['message']['timestamp']);
+        var bTime = _convertTimeToTimeStamp(b['message']['timestamp']);
+        return aTime.compareTo(bTime);
+      });
+      usersInbox = usersInbox.reversed.toList();
+      return usersInbox;
+    } else {
+      return [];
+    }
+    // return [];
+  }
 
   CustomAppBar customAppBar(BuildContext context) {
     return CustomAppBar(
@@ -53,15 +106,33 @@ class ChatListScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: customAppBar(context),
       floatingActionButton: NewChatButton(),
-      body:
-      //  inbox == 'loading'
-          // ? Center(child: CircularProgressIndicator())
-          // : 
-          inbox == null
-              ? Center(
-                  child: Text('Please Retry'),
-                )
-              : ChatListContainer(inbox),
+      body: FutureBuilder(
+          future: httpService.getAllMessages(null),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (loading) {
+              if (snapshot.connectionState.index == 1) {
+                loading = false;
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }
+            if (snapshot.data == 401) {
+              Fluttertoast.showToast(msg: "Session Expired");
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/login_screen', (Route route) => false);
+              sharedPreference.logout();
+            }
+            if (snapshot.data == null) {
+              return Center(
+                child: Text("No Messages"),
+              );
+            }
+            // inbox = snapshot.data;
+            usersInbox = _arrangeAllMessagesForInbox(snapshot.data);
+
+            return Container(child: ChatListContainer(usersInbox));
+          }),
     );
   }
 }
@@ -86,8 +157,8 @@ class ChatListContainer extends StatelessWidget {
                 itemCount: inbox.length,
                 itemBuilder: (context, index) {
                   var contactInbox = {
-                    "number":inbox[index]['number'],
-                    "message":inbox[index]['message']['text']
+                    "number": inbox[index]['number'],
+                    "message": inbox[index]['message']['text']
                   };
                   Contact contact = Contact.fromMap(contactInbox);
                   // Message = Message.fromMap(map)
