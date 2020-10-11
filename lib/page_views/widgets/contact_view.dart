@@ -81,11 +81,6 @@ class ViewLayout extends StatelessWidget {
               radius: 80,
               isRound: true,
             ),
-            // OnlineDotIndicator(uid: contact.uid),
-            // Align(
-            //   alignment: Alignment.bottomRight,
-            //   child: OnlineDotIndicator(uid: contact.uid),
-            // )
           ],
         ),
       ),

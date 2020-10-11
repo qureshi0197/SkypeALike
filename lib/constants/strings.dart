@@ -1,4 +1,6 @@
 
+import 'package:skypealike/services/http_service.dart';
+
 const String MESSAGES_COLLECTION = "messages";
 const String TIMESTAMP_FIELD = "timestamp";
 
@@ -11,4 +13,5 @@ const String EMAIL_FIELD = "email";
 
 const String FALSE_COLLECTION = "false";
 const String TRUE_COLLECTION = "true";
+HttpService httpService = HttpService();
 

@@ -111,48 +111,57 @@ class UserDetailsBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                "username",
-                // style: TextStyle(
-                //   fontWeight: FontWeight.bold,
-                //   fontSize: 18,
-                //   color: UniversalVariables.blackColor,
-                // ),
-              ),
-              Text(
-                user.name,
+                "Username",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: UniversalVariables.blackColor,
                 ),
               ),
-              SizedBox(height: 10),
               Text(
-                "number",
-                // style: TextStyle(
-                //   fontWeight: FontWeight.bold,
-                //   fontSize: 18,
-                //   color: UniversalVariables.blackColor,
-                // ),
-              ),
-              Text(
-                user.number,
+                user.name,
                 style: TextStyle(
-                    fontSize: 14, color: UniversalVariables.greyColor),
+                  // fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: UniversalVariables.greyColor,
+                ),
               ),
               SizedBox(height: 10),
               Text(
-                "password",
-                // style: TextStyle(
-                //   fontWeight: FontWeight.bold,
-                //   fontSize: 18,
-                //   color: UniversalVariables.blackColor,
-                // ),
+                "Phone Number",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: UniversalVariables.blackColor,
+                ),
+              ),
+              Row(
+                children: <Widget>[
+                  Text(
+                    "${user.number}",
+                    style: TextStyle(
+                        fontSize: 16, 
+                        color: UniversalVariables.greyColor
+                        ),
+                  ),
+                  IconButton(icon: Icon(Icons.edit), onPressed: null)
+                ],
+              ),
+              SizedBox(height: 10),
+              Text(
+                "Password",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: UniversalVariables.blackColor,
+                ),
               ),
               Text(
                 user.password,
                 style: TextStyle(
-                    fontSize: 14, color: UniversalVariables.greyColor),
+                    fontSize: 16, 
+                    color: UniversalVariables.greyColor
+                    ),
               ),
             ],
           ),

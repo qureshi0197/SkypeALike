@@ -27,6 +27,7 @@ dependencies:
   emoji_picker: ^0.1.0
   font_awesome_flutter: ^8.8.1
   multi_image_picker: ^4.7.12
+  email_validator: ^1.0.6
   image_picker: ^0.6.7+6
   path_provider: ^1.6.14
   path_provider_ex: ^1.0.1

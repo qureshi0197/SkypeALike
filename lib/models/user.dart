@@ -39,6 +39,7 @@ class User {
     // this.uid = mapData['uid'];
     this.name = mapData['username'];
     this.password = mapData['password'];
+    this.number = mapData['number'];
     // this.username = mapData['username'];
     // this.status = mapData['status'];
     // this.state = mapData['state'];

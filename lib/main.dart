@@ -1,18 +1,19 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skypealike/db/db_test_page.dart';
+import 'package:skypealike/models/contact.dart';
+import 'package:skypealike/page_views/edit_contact_screen.dart';
 import 'package:skypealike/provider/image_upload_provider.dart';
 import 'package:skypealike/provider/user_provider.dart';
 import 'package:skypealike/resources/auth_methods.dart';
+import 'package:skypealike/screens/add_contact_screen.dart';
 import 'package:skypealike/screens/home_screen.dart';
 import 'package:skypealike/screens/login_page.dart';
 import 'package:skypealike/screens/search_screen.dart';
-import 'package:skypealike/services/check_services.dart';
 import 'package:skypealike/utils/shared_preferences.dart';
 import 'package:splashscreen/splashscreen.dart';
 
-import 'models/user.dart';
 import 'models/user.dart';
 import 'utils/shared_preferences.dart';
 
@@ -47,6 +48,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
 
   @override
   Widget build(BuildContext context) {
+    // Contact contact = Contact(first_name: 'Abdullah Qureshi');
     // SharedPreference sharedPreference = SharedPreference();
     return MultiProvider(
       providers: [
@@ -60,11 +62,12 @@ class _SkypeAlikeState extends State<SkypeAlike> {
         routes: {
           '/search_screen': (context) => SearchScreen(),
           '/login_screen': (context) => Login(),
-          '/check_services': (context) => CheckServices(),
-          '/db_test_page': (context) => DBTestPage(),
-          '/home_screen': (context) => HomeScreen()
+          '/home_screen': (context) => HomeScreen(),
+          '/add_contact_screen':(context) => AddContect(),
+          // '/edit_contact_screen': (context) => EditContact(contact),
         },
         theme: ThemeData(primarySwatch: Colors.blue),
+        // home: EditContact(contact)));
         home: login == null
             ? Scaffold(
                 backgroundColor: Colors.white,

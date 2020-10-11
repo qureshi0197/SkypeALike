@@ -8,7 +8,7 @@ import 'package:skypealike/provider/user_provider.dart';
 // import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:intl/intl.dart';
-
+import 'package:skypealike/page_views/contact_list_screen.dart';
 import '../main.dart';
 import '../services/http_service.dart';
 import '../services/http_service.dart';
@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   SharedPreference sharedPreference = SharedPreference();
   // final AuthMethods _authMethods = AuthMethods();
   UserProvider userProvider;
-  var inbox;
+  var inbox = [];
   HttpService httpService = HttpService();
   var loading = true;
 
@@ -41,75 +41,75 @@ class _HomeScreenState extends State<HomeScreen> {
     return val.millisecondsSinceEpoch;
   }
 
-  _arrangeAllMessagesForInbox() {
-    var otherUserData = {};
-    var otherUserKeys = [];
-    if (inbox.containsKey('data')) {
-      for (var map in inbox['data']) {
-        if (map['direction'] == "outbound") {
-          if (!otherUserKeys.contains(map["receiver"])) {
-            otherUserKeys.add(map["receiver"]);
-          }
-          if (otherUserData.containsKey(map["receiver"])) {
-            otherUserData[map["receiver"]].add(map);
-          } else {
-            otherUserData[map["receiver"]] = [];
-          }
-        } else {
-          if (!otherUserKeys.contains(map["receiver"])) {
-            otherUserKeys.add(map["receiver"]);
-          }
-          if (otherUserData.containsKey(map["sender"])) {
-            otherUserData[map["sender"]].add(map);
-          } else {
-            otherUserData[map["sender"]] = [];
-          }
-        }
-      }
-      otherUserData.forEach((key, value) {
-        print(otherUserData[key]);
-        otherUserData = otherUserData[key].sort((a, b) =>
-            _convertTimeToTimeStamp(a['timestamp'])
-                .compareTo(_convertTimeToTimeStamp(b['timestamp'])));
-        print(otherUserData[key]);
-      });
-      // print(object)
-    } else {
-      inbox = [];
-    }
-    return inbox;
-  }
+  // _arrangeAllMessagesForInbox() {
+  //   var otherUserData = {};
+  //   var otherUserKeys = [];
+  //   if (inbox.containsKey('data')) {
+  //     Map val = inbox['data'];
+  //     val.forEach((key,value)
+  //       {
+  //       if (val[key]['direction'] == "outbound") {
+  //         if (!otherUserKeys.contains(val[key]["receiver"])) {
+  //           otherUserKeys.add(val[key]["receiver"]);
+  //         }
+  //         if (otherUserData.containsKey(val[key]["receiver"])) {
+  //           otherUserData[val[key]["receiver"]].add(val[key]);
+  //         } else {
+  //           otherUserData[val[key]["receiver"]] = [];
+  //         }
+  //       } else {
+  //         if (!otherUserKeys.contains(val[key]["receiver"])) {
+  //           otherUserKeys.add(val[key]["receiver"]);
+  //         }
+  //         if (otherUserData.containsKey(val[key]["sender"])) {
+  //           otherUserData[val[key]["sender"]].add(val[key]);
+  //         } else {
+  //           otherUserData[val["sender"]] = [];
+  //         }
+  //       }
+  //     });
+  //     // otherUserData.forEach((key, value) {
+  //     //   print(otherUserData[key]);
+  //     //   otherUserData = otherUserData[key].sort((a, b) =>
+  //     //       _convertTimeToTimeStamp(a['timestamp'])
+  //     //           .compareTo(_convertTimeToTimeStamp(b['timestamp'])));
+  //     //   print(otherUserData[key]);
+  //     // });
+  //   } else {
+  //     inbox = [];
+  //   }
+  //   return inbox;
+  // }
 
-  getAllMessages() async {
-    inbox = await httpService.getAllMessages(null);
-    if (inbox == null) {
-      Fluttertoast.showToast(msg: 'Problem while fetching data from server');
-      return;
-    } else if (inbox == 401) {
-      Fluttertoast.showToast(msg: 'Session Expired. PLease Login again');
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/login_screen', (route) => false);
-      await sharedPreference.logout();
-      return;
-    } else {
-      inbox = _arrangeAllMessagesForInbox();
-    }
+  // getAllMessages() async {
+  //   inbox = await httpService.getAllMessages(null);
+  //   if (inbox == null) {
+  //     Fluttertoast.showToast(msg: 'Problem while fetching data from server');
+  //     return;
+  //   } else if (inbox == 401) {
+  //     Fluttertoast.showToast(msg: 'Session Expired. PLease Login again');
+  //     Navigator.pushNamedAndRemoveUntil(
+  //         context, '/login_screen', (route) => false);
+  //     await sharedPreference.logout();
+  //     return;
+  //   } else {
+  //     inbox = _arrangeAllMessagesForInbox();
+  //   }
 
-    setState(() {
-      loading = false;
-    });
-  }
+  //   setState(() {
+  //     loading = false;
+  //   });
+  // }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    if (loading) {
-      inbox = 'loading';
-    }
-    // _convertTimeToTimeStamp(null);
-    getAllMessages();
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   if (loading) {
+  //     inbox = 'loading';
+  //   }
+  // getAllMessages();
+  // }
 
   @override
   void dispose() {
@@ -180,11 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   // :
                   ChatListScreen(inbox)),
           // Center(child: Text("Call Logs", style: TextStyle(color: UniversalVariables.greyColor),)),
-          Center(
-              child: Text(
-            "Contact Screen",
-            style: TextStyle(color: UniversalVariables.greyColor),
-          )),
+          Container(
+              child: ContactListScreen()),
           // Call Contact List Screen Here.
         ],
         controller: pageController,

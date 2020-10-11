@@ -1,6 +1,9 @@
 import 'dart:convert';
+// import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
+import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/post.dart';
 import 'package:skypealike/utils/shared_preferences.dart';
 
@@ -13,6 +16,8 @@ class HttpService {
   static String LOGIN = SERVER + 'customer/login';
   static String LOGOUT = SERVER + 'customer/logout';
   static String MESSAGES = SERVER + 'message/all';
+  static String GET_CONTACTS = SERVER + "contact/all";
+  static String SAVE_CONTACT = SERVER + "contact/register";
 
   // toLoginMap()
   Future<bool> signOut() async {
@@ -41,8 +46,11 @@ class HttpService {
       return null;
     }
     if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      var loginBody = jsonDecode(body);
+      loginBody['number'] = responseBody['number'];
       // If response will have the number
-      user = User.fromMap(jsonDecode(body));
+      user = User.fromMap(loginBody);
       await sharedPreference.login(response.headers['set-cookie']);
       // await sharedPreference.saveUserLogin()
     }
@@ -89,31 +97,50 @@ class HttpService {
     return responseBody;
   }
 
-  Future<List<Post>> getPosts() async {
-    Response response = await get(postsUrl);
-
-    if (response.statusCode == 200) {
-      List<dynamic> body = jsonDecode(response.body);
-
-      List<Post> posts =
-          body.map((dynamic item) => Post.fromJson(item)).toList();
-
-      return posts;
+  Future<dynamic> getAllContacts(time) async {
+    SharedPreference sharedPreference = SharedPreference();
+    String session = await sharedPreference.session();
+    var body = {
+      'timestamp': time // "2020-08-31 07:00:00"
+    };
+    // if (time == null) {
+    //   body = {};
+    // }
+    var header = {"Cookie": session};
+    Response response;
+    if (time == null) {
+      response = await post(GET_CONTACTS, headers: header);
     } else {
-      throw "Cant get Posts";
+      header['Content-Type'] = "application/json";
+      response = await post(GET_CONTACTS, headers: header, body: body);
     }
+    print(response.body);
+    if (response.statusCode == 401) {
+      return 401;
+    } else if (response.statusCode != 200) {
+      Fluttertoast.showToast(msg: "Error fetching contacts");
+      return null;
+    }
+    Map responseBody = jsonDecode(response.body);
+    List<Contact> contacts = [];
+    if(responseBody.containsKey('data')){
+      responseBody['data'].forEach((key,value){
+        // Map contact = {
+        //   'displayName': value['first_name'],
+        //   'givenName': value['last_name'],
+        //   'phones': [value['number']],
+        //   'postalAddresses': [value['address']],
+        //   'company': value['company'],
+        //   'emails': [value['email']],
+        // }; 
+        contacts.add(Contact.fromMap(value));
+      });
+      return contacts;
+
+    }else{
+      return null;
+    }
+    // return responseBody;
   }
 
-  Future<void> deletePost(int id) async {
-    Response response = await delete("$postsUrl/$id");
-
-    try {
-      if (response.statusCode == 200) {
-        print("Deleted!");
-        getPosts();
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
 }
