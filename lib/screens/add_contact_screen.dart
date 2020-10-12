@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
+import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/custom_text_row.dart';
@@ -53,9 +54,50 @@ class _AddContectState extends State<AddContect> {
 
   var firstNameHintText = "First Name";
 
+  var dbHelper;
+  
+  bool isUpdating;
+  
+  Future<List<Contact>> contacts;  
+  
+  // TextEditingController controller = TextEditingController();
+
+  // @override
+  // void initState() {
+  // }
+
   @override
   void initState() {
+    super.initState();
+    dbHelper = DatabaseHelper();
+    // isUpdating = false;
+    refreshList();
   }
+ 
+  refreshList() {
+    setState(() {
+      contacts = dbHelper.getContacts();
+    });
+  }
+ 
+  
+  // validate() {
+  //   if (formKey.currentState.validate()) {
+  //     formKey.currentState.save();
+  //     if (isUpdating) {
+  //       Employee e = Employee(curUserId, name);
+  //       dbHelper.update(e);
+  //       setState(() {
+  //         isUpdating = false;
+  //       });
+  //     } else {
+  //       Employee e = Employee(null, name);
+  //       dbHelper.save(e);
+  //     }
+  //     clearName();
+  //     refreshList();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +124,7 @@ class _AddContectState extends State<AddContect> {
                 loading = true;
               });
               
+              var db = dbHelper.createContacts();
               var response = await httpService.createContact(contact);
 
               if(response == 401){

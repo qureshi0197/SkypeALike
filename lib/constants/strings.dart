@@ -1,4 +1,5 @@
 
+import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/services/http_service.dart';
 
 const String MESSAGES_COLLECTION = "messages";

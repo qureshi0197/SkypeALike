@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skypealike/chat_screens/chat_screen.dart';
+import 'package:skypealike/screens/chat_screen.dart';
 import 'package:skypealike/chat_screens/widgets/cached_image.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/user.dart';
@@ -14,7 +14,7 @@ import 'package:skypealike/widgets/custom_tile.dart';
 
 class ContactView extends StatelessWidget {
   final Contact contact;
-  final AuthMethods _authMethods = AuthMethods();
+  // final AuthMethods _authMethods = AuthMethods();
   ContactView(this.contact);
 
   @override
@@ -42,7 +42,7 @@ class ContactView extends StatelessWidget {
 
 class ViewLayout extends StatelessWidget {
   final Contact contact;
-  final ChatMethods _chatMethods = ChatMethods();
+  // final ChatMethods _chatMethods = ChatMethods();
   int count;
 
   ViewLayout({@required this.contact});

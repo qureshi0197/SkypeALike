@@ -17,7 +17,7 @@ class UserCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserProvider userProvider = Provider.of<UserProvider>(context);
+    // final UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return GestureDetector(
       onTap: () async {

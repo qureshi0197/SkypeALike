@@ -5,20 +5,24 @@ class Contact  {
   Timestamp addedOn;
   String number,first_name,last_name,address,company,email,message;
   var avatar;
+  int id;
 
   Contact({
-    this.message,
+    this.id,
+    // this.message,
     this.first_name,
     this.last_name,
-    this.uid,
-    this.addedOn,
-    // this.suffix,
-    // this.familyName,
-    this.company,
-    this.avatar,
     this.email,
     this.number,
     this.address,
+    this.company,
+    // this.uid,
+    // this.addedOn,
+    // this.suffix,
+    // this.familyName,
+    
+    // this.avatar,
+    
     // this.avatar,
     // this.birthday,
     // this.androidAccountType,
@@ -41,9 +45,10 @@ class Contact  {
 
   Map toMap(Contact contact) {
     var data = Map<String, dynamic>();
-    data['contact_id'] = contact.uid;
-    data['added_on'] = contact.addedOn;
+    // data['contact_id'] = contact.uid;
+    // data['added_on'] = contact.addedOn;
 
+    data['id'] = contact.id;
     data['first_name'] = contact.first_name;
     data['last_name'] = contact.last_name;
     data['number'] = contact.number;
@@ -56,9 +61,10 @@ class Contact  {
 
   Contact.fromMap(Map<String, dynamic> mapData) {
     
-    this.uid = mapData['contact_id'];
-    this.addedOn = mapData["added_on"];
+    // this.uid = mapData['contact_id'];
+    // this.addedOn = mapData["added_on"];
     
+    this.id = mapData['id'];
     this.message = mapData['message'];
     this.first_name= mapData['first_name'];
     this.last_name =  mapData['last_name'];

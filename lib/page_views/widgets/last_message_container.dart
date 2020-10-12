@@ -25,7 +25,7 @@ class LastMessageContainer extends StatelessWidget {
             return SizedBox(
               width: MediaQuery.of(context).size.width * 0.65,
               child: Text(
-                message.message,
+                message.text,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(

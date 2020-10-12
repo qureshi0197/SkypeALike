@@ -27,15 +27,21 @@ class SharedPreference {
     }
   }
 
+  lastContactFetchedTimeStamp(time) async {
+    sp = await SharedPreferences.getInstance();
+    await sp.setString('contacts', time);
+  }
+
+  getLastContactFetchedTimeStamp() async {
+    sp = await SharedPreferences.getInstance();
+    return sp.getString('contacts') ?? null;
+  }
+
   session() async {
     sp = await SharedPreferences.getInstance();
     // try {
     // await sp.setBool('login', true);
     return sp.getString('session') ?? null;
-    //   return true;
-    // } catch (ex) {
-    //   return false;
-    // }
   }
 
   Future logout() async {

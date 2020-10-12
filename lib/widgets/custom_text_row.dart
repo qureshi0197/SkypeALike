@@ -3,16 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:skypealike/constants/styles.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 
-Widget customTextRow(
-    {@required IconData icon,
-    @required String title,
-    @required Function onChnaged,
-    @required controller,
-    List<TextInputFormatter> inputFormator,
-    int maxLength,
-    String hintText,
-    }) {
-      // if(maxLength)
+Widget customTextRow({
+  @required IconData icon,
+  @required String title,
+  @required Function onChnaged,
+  @required controller,
+  List<TextInputFormatter> inputFormator,
+  int maxLength,
+  String hintText,
+  bool enabled,
+}) {
+  // if(maxLength)
+  if (enabled == null) {
+    enabled = true;
+  }
   var text_field_icon_color = UniversalVariables.gradientColorEnd;
   var text_field_padding = const EdgeInsets.only(bottom: 15.0);
   var text_Field_height = 50.0;
@@ -36,10 +40,11 @@ Widget customTextRow(
           decoration: eBoxDecorationStyle,
           height: text_Field_height,
           child: TextField(
+            enabled: enabled,
             inputFormatters: inputFormator,
             controller: controller,
             onChanged: onChnaged,
-            style: eTextStyle,
+            style: enabled ? eTextStyle : dTextStyle,
             maxLength: maxLength,
             decoration: InputDecoration(
               // errorText: response == 102 ? userNotFonund:null,

@@ -34,6 +34,11 @@ final eTextStyle = TextStyle(
   fontFamily: 'OpenSans',
 );
 
+final dTextStyle = TextStyle(
+  color: UniversalVariables.greyColor,
+  fontFamily: 'OpenSans',
+);
+
 final eLabelStyle = TextStyle(
   color: UniversalVariables.gradientColorEnd,
   fontWeight: FontWeight.bold,

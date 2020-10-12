@@ -28,7 +28,7 @@ class SkypeAlike extends StatefulWidget {
 
 class _SkypeAlikeState extends State<SkypeAlike> {
   // FirebaseRepository _repository = FirebaseRepository();
-  AuthMethods _authMethods = AuthMethods();
+  // AuthMethods _authMethods = AuthMethods();
   bool login = null;
   checkLogin() async {
     login = await sharedPreference.checklogin();
@@ -53,7 +53,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
-        ChangeNotifierProvider(create: (_) => UserProvider()),
+        // ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MaterialApp(
         title: "SkypeAlike",

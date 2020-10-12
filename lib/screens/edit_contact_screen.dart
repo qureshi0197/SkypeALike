@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/constants/styles.dart';
+import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/custom_text_row.dart';
@@ -19,6 +20,7 @@ class EditContact extends StatefulWidget {
 }
 
 class _EditContactState extends State<EditContact> {
+
   Contact contact;
 
   var text_Field_height = 50.0;
@@ -41,20 +43,40 @@ class _EditContactState extends State<EditContact> {
 
   bool loading = false;
 
+  var dbHelper;
+
+  Future<List<Contact>> contacts;
+
+  
   @override
   void initState() {
     // TODO: implement initState
+    
+    dbHelper = DatabaseHelper();
+    // isUpdating = false;
+    
+
     contact = widget.contact;
+    
     if (contact.number[0] == '+') {
       contact.number = contact.number.substring(1);
       // contact.number = string[1];
     }
+
     firstName.text = contact.first_name;
     lastName.text = contact.last_name;
     number.text = contact.number;
     email.text = contact.email;
     address.text = contact.address;
     company.text = contact.company;
+  
+    refreshList();
+  }
+
+  refreshList() {
+    setState(() {
+      contacts = dbHelper.getContacts();
+    });
   }
 
   @override
@@ -82,7 +104,7 @@ class _EditContactState extends State<EditContact> {
                           loading = true;
                         });
 
-                        var response = await httpService.createContact(contact);
+                        var response = await httpService.updateContact(contact);
 
                         if (response == 401) {
                           Fluttertoast.showToast(msg: "Session Expired");
@@ -148,6 +170,7 @@ class _EditContactState extends State<EditContact> {
 
   Widget _number() {
     return customTextRow(
+        enabled: false,
         icon: Icons.phone,
         title: "Phone Number",
         onChnaged: (val) {

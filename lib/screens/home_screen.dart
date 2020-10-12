@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController pageController = PageController(initialPage: 0);
   SharedPreference sharedPreference = SharedPreference();
   // final AuthMethods _authMethods = AuthMethods();
-  UserProvider userProvider;
+  // UserProvider userProvider;
   var inbox;
   HttpService httpService = HttpService();
   var loading = true;

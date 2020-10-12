@@ -1,11 +1,9 @@
 // import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:skypealike/chat_screens/widgets/cached_image.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/enum/view_state.dart';
 import 'package:skypealike/main.dart';
@@ -34,9 +32,9 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController textFieldController = TextEditingController();
   // FirebaseRepository _repository = FirebaseRepository();
-  AuthMethods _authMethods = AuthMethods();
-  StorageMethods _storageMethods = StorageMethods();
-  ChatMethods _chatMethods = ChatMethods();
+  // AuthMethods _authMethods = AuthMethods();
+  // StorageMethods _storageMethods = StorageMethods();
+  // ChatMethods _chatMethods = ChatMethods();
   ScrollController _listScrollController = ScrollController();
   bool loading = true;
 
@@ -248,7 +246,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   getMessage(Message message) {
-    return Text(message.message,
+    return Text(message.text,
         style: TextStyle(
           color: Colors.white,
           fontSize: 18,
@@ -549,10 +547,13 @@ class _ChatScreenState extends State<ChatScreen> {
         style: TextStyle(color: UniversalVariables.blackColor),
       ),
       actions: <Widget>[
-        // IconButton(
-        //   icon: Icon(Icons.video_call, color: UniversalVariables.greyColor,),
-        //   onPressed: () {},
-        //   ),
+        IconButton(
+          icon: Icon(Icons.person_add, color: UniversalVariables.gradientColorEnd,),
+          
+          // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON 
+          // ELSE SHOW
+          onPressed: () => Navigator.pushNamed(context, '/add_contact_screen')
+          ),
 
         // IconButton(
         //   icon: Icon(Icons.phone, color: UniversalVariables.greyColor),

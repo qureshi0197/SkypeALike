@@ -17,7 +17,8 @@ class HttpService {
   static String LOGOUT = SERVER + 'customer/logout';
   static String MESSAGES = SERVER + 'message/all';
   static String GET_CONTACTS = SERVER + "contact/all";
-  static String SAVE_CONTACT = SERVER + "contact/register";
+  static String ADD_CONTACT = SERVER + "contact/register";
+  static String UPDATE_CONTACT = SERVER + "contact/modify";
   static String SEND_MESSAGE = SERVER + "message/send";
 
   // toLoginMap()
@@ -77,6 +78,7 @@ class HttpService {
     var body = {
       'timestamp': time // "2020-08-31 07:00:00"
     };
+
     // if (time == null) {
     //   body = {};
     // }
@@ -86,7 +88,7 @@ class HttpService {
       response = await post(MESSAGES, headers: header);
     } else {
       header['Content-Type'] = "application/json";
-      response = await post(MESSAGES, headers: header, body: body);
+      response = await post(MESSAGES, headers: header, body: jsonEncode(body));
     }
     print(response.body);
     if (response.statusCode == 401) {
@@ -101,6 +103,7 @@ class HttpService {
 
   Future<dynamic> getAllContacts(time) async {
     SharedPreference sharedPreference = SharedPreference();
+
     String session = await sharedPreference.session();
     var body = {
       'timestamp': time // "2020-08-31 07:00:00"
@@ -114,7 +117,7 @@ class HttpService {
       response = await post(GET_CONTACTS, headers: header);
     } else {
       header['Content-Type'] = "application/json";
-      response = await post(GET_CONTACTS, headers: header, body: body);
+      response = await post(GET_CONTACTS, headers: header, body: jsonEncode(body));
     }
     print(response.body);
     if (response.statusCode == 401) {
@@ -125,6 +128,7 @@ class HttpService {
     }
     Map responseBody = jsonDecode(response.body);
     List<Contact> contacts = [];
+    await sharedPreference.lastContactFetchedTimeStamp(time);
     if (responseBody.containsKey('data')) {
       responseBody['data'].forEach((key, value) {
         // Map contact = {
@@ -153,7 +157,29 @@ class HttpService {
     Response response;
 
     header['Content-Type'] = "application/json";
-    response = await post(SAVE_CONTACT, headers: header, body: body);
+    response = await post(ADD_CONTACT, headers: header, body: body);
+
+    print(response.body);
+    if (response.statusCode == 401) {
+      return 401;
+    } else if (response.statusCode != 200) {
+      Fluttertoast.showToast(msg: "Error saving contact");
+      return null;
+    }
+
+    return 200;
+  }
+
+  Future<dynamic> updateContact(Contact contact) async {
+    SharedPreference sharedPreference = SharedPreference();
+    String session = await sharedPreference.session();
+    var body = jsonEncode(contact.toMap(contact));
+
+    var header = {"Cookie": session};
+    Response response;
+
+    header['Content-Type'] = "application/json";
+    response = await post(UPDATE_CONTACT, headers: header, body: body);
 
     print(response.body);
     if (response.statusCode == 401) {

@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
-import 'package:skypealike/chat_screens/chat_screen.dart';
+import 'package:skypealike/screens/chat_screen.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/user.dart';
@@ -17,7 +17,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   // FirebaseRepository _repository = FirebaseRepository();
-  final AuthMethods _authMethods = AuthMethods();
+  // final AuthMethods _authMethods = AuthMethods();
 
   // List<User> userList;
   String query = "";

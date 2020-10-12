@@ -23,13 +23,13 @@ class UserDetailsContainer extends StatefulWidget {
 }
 
 class _UserDetailsContainerState extends State<UserDetailsContainer> {
-  final AuthMethods authMethods = AuthMethods();
+  // final AuthMethods authMethods = AuthMethods();
 
   HttpService httpService = HttpService();
   var loading = false;
   @override
   Widget build(BuildContext context) {
-    final UserProvider userProvider = Provider.of<UserProvider>(context);
+    // final UserProvider userProvider = Provider.of<UserProvider>(context);
 
     signOut() async {
       setState(() {

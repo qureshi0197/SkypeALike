@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UniversalVariables {
+
   
 // GLOBAL COLORS
   static final Color sendMessageColor = Colors.blue[200];
