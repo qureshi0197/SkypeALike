@@ -157,7 +157,7 @@ class DatabaseHelper{
         sender,
         status,
         text,
-        timestamp,
+        timestamp
         ]);
     
     List<Message> messages = [];

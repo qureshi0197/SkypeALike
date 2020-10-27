@@ -54,7 +54,7 @@ class _AddContectState extends State<AddContect> {
 
   var firstNameHintText = "First Name";
 
-  var dbHelper;
+  DatabaseHelper dbHelper = DatabaseHelper();
   
   bool isUpdating;
   
@@ -69,7 +69,7 @@ class _AddContectState extends State<AddContect> {
   @override
   void initState() {
     super.initState();
-    dbHelper = DatabaseHelper();
+    // dbHelper = DatabaseHelper();
     // isUpdating = false;
     refreshList();
   }
@@ -79,25 +79,6 @@ class _AddContectState extends State<AddContect> {
       contacts = dbHelper.getContacts();
     });
   }
- 
-  
-  // validate() {
-  //   if (formKey.currentState.validate()) {
-  //     formKey.currentState.save();
-  //     if (isUpdating) {
-  //       Employee e = Employee(curUserId, name);
-  //       dbHelper.update(e);
-  //       setState(() {
-  //         isUpdating = false;
-  //       });
-  //     } else {
-  //       Employee e = Employee(null, name);
-  //       dbHelper.save(e);
-  //     }
-  //     clearName();
-  //     refreshList();
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -124,9 +105,10 @@ class _AddContectState extends State<AddContect> {
                 loading = true;
               });
               
-              var db = dbHelper.createContacts();
+              
               var response = await httpService.createContact(contact);
-
+              dbHelper.createContact(contact);
+              
               if(response == 401){
                 
                 Fluttertoast.showToast(msg: "Session Expired");

@@ -12,7 +12,7 @@ import '../models/user.dart';
 
 class HttpService {
   final String postsUrl = "https://jsonplaceholder.typicode.com/posts";
-  static String SERVER = 'http://testing.intrelligent.com:8080/';
+  static String SERVER = 'http://142.93.112.179:80/';
   static String LOGIN = SERVER + 'customer/login';
   static String LOGOUT = SERVER + 'customer/logout';
   static String MESSAGES = SERVER + 'message/all';

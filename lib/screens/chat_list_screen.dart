@@ -1,24 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:provider/provider.dart';
 import 'package:skypealike/constants/strings.dart';
-// import 'package:skypealike/enum/pop_up_menu_list.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/page_views/widgets/contact_view.dart';
 import 'package:skypealike/page_views/widgets/new_chat_button.dart';
-import 'package:skypealike/page_views/widgets/pop_up_menu.dart';
-// import 'package:skypealike/page_views/widgets/quiet_box.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
-// import 'package:skypealike/provider/user_provider.dart';
-// import 'package:skypealike/resources/chat_methods.dart';
-// import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/appbar.dart';
-// import '../services/http_service.dart';
 import 'package:intl/intl.dart';
 
 import '../main.dart';
-import '../models/message.dart';
 
 class ChatListScreen extends StatelessWidget {
   // var inbox;

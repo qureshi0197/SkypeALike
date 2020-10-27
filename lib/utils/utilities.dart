@@ -4,6 +4,8 @@ class Utils {
   }
 
   static String getInitials(String name) {
+    if(name.length <1)
+      return '';
     return name[0].toUpperCase();
     // List<String> nameSplit = name.split(" ");
     // String firstNameInitial = nameSplit[0][0];

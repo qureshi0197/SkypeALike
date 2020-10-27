@@ -1,6 +1,5 @@
 // import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/main.dart';
@@ -9,7 +8,6 @@ import 'package:skypealike/screens/edit_contact_screen.dart';
 import 'package:skypealike/page_views/widgets/add_contact_button.dart';
 // import 'package:skypealike/page_views/widgets/pop_up_menu.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
-import 'package:skypealike/utils/shared_preferences.dart';
 import 'package:skypealike/widgets/appbar.dart';
 import 'package:intl/intl.dart';
 

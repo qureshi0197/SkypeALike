@@ -43,19 +43,17 @@ class _EditContactState extends State<EditContact> {
 
   bool loading = false;
 
-  var dbHelper;
-
   Future<List<Contact>> contacts;
 
-  
+  DatabaseHelper dbHelper = DatabaseHelper();
+    
   @override
   void initState() {
     // TODO: implement initState
     
-    dbHelper = DatabaseHelper();
+    // dbHelper = DatabaseHelper();
     // isUpdating = false;
     
-
     contact = widget.contact;
     
     if (contact.number[0] == '+') {
@@ -105,6 +103,7 @@ class _EditContactState extends State<EditContact> {
                         });
 
                         var response = await httpService.updateContact(contact);
+                        dbHelper.updateContact(contact);
 
                         if (response == 401) {
                           Fluttertoast.showToast(msg: "Session Expired");
