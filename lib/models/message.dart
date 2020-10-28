@@ -7,6 +7,7 @@ class Message {
   String status;
   String text;
   String timestamp;
+  int id;
 
 // When we handle simple text
   Message({
@@ -17,6 +18,7 @@ class Message {
     this.timestamp,
     this.status,
     this.text,
+    // this.id
     });
 
   Map toMap() {
@@ -28,6 +30,7 @@ class Message {
       'status': status,
       'text': text,
       'timestamp': timestamp,
+      // 'id': id,
     };
     return map;
   }
@@ -40,5 +43,6 @@ class Message {
     this.status = map['status'];
     this.text = map['text'];
     this.timestamp = map['timestamp'];
+    // this.id = map['id'];
   }
 }

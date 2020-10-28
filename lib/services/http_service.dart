@@ -79,9 +79,9 @@ class HttpService {
       'timestamp': time // "2020-08-31 07:00:00"
     };
 
-    // if (time == null) {
-    //   body = {};
-    // }
+    if (time == null) {
+      body = {};
+    }
     var header = {"Cookie": session};
     Response response;
     if (time == null) {
@@ -90,7 +90,7 @@ class HttpService {
       header['Content-Type'] = "application/json";
       response = await post(MESSAGES, headers: header, body: jsonEncode(body));
     }
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
@@ -119,7 +119,7 @@ class HttpService {
       header['Content-Type'] = "application/json";
       response = await post(GET_CONTACTS, headers: header, body: jsonEncode(body));
     }
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
@@ -159,7 +159,7 @@ class HttpService {
     header['Content-Type'] = "application/json";
     response = await post(ADD_CONTACT, headers: header, body: body);
 
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
@@ -181,7 +181,7 @@ class HttpService {
     header['Content-Type'] = "application/json";
     response = await post(UPDATE_CONTACT, headers: header, body: body);
 
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {

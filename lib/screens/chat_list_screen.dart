@@ -23,7 +23,7 @@ class ChatListScreen extends StatelessWidget {
     final formatter = DateFormat(r'''EEE, dd MMM yyyy hh:mm:ss''');
     // print(DateTime.);
     var val = (formatter.parse(time, true));
-    print(val);
+    // print(val);
     val = (val.toLocal());
     return val.millisecondsSinceEpoch;
   }
@@ -45,7 +45,7 @@ class ChatListScreen extends StatelessWidget {
           otherUserData[val[key]["sender"]] = val[key];
         }
       });
-      print(otherUserData);
+      // print(otherUserData);
 
       otherUserData.forEach((key, value) {
         usersInbox.add({"number": key, "message": value});

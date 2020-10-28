@@ -132,8 +132,8 @@ class _LoginState extends State<Login> {
                   loading = true;
                 });
 
-                // response = await httpService.login(username, password);  //? Will Uncomment Later
-                response = 0;  //! Will delete Later
+                response = await httpService.login(username, password);  //? Will Uncomment Later
+                // response = 0;  //! Will delete Later
 
                 if (response == 0) {
                   Navigator.pushNamedAndRemoveUntil(

@@ -74,7 +74,8 @@ class DatabaseHelper{
 
     await db.execute('''
       CREATE TABLE $message_table (
-        $sms_id TEXT PRIMARY KEY AUTOINCREMENT,
+        $id INTEGER PRIMARY KEY AUTOINCREMENT,
+        $sms_id TEXT,
         $direction TEXT,
         $receiver TEXT,
         $sender TEXT,

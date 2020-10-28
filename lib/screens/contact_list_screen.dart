@@ -1,5 +1,6 @@
 // import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/main.dart';
@@ -104,23 +105,23 @@ class _ContactListContainerState extends State<ContactListContainer> {
         // stream: null,
         future: httpService.getAllContacts(_formatDateTime(DateTime.now())),
         builder: (context, snapshot) {
-          // if(snapshot.connectionState.index == 1){
-          //   return Center(child: CircularProgressIndicator(),);
-          // }
-          // if (snapshot.data == null) {
-          //   return Center(child: Text('No Contacts'));
-          // }
-          //  if (snapshot.data == 401) {
-          //   Fluttertoast.showToast(msg: "Session Expired");
-          //   Navigator.pushNamedAndRemoveUntil(
-          //       context, '/login_screen', (route) => false);
-          //   sharedPreference.logout();
-          // }
-          //  else
+          if(snapshot.connectionState.index == 1){
+            return Center(child: CircularProgressIndicator(),);
+          }
+          if (snapshot.data == null) {
+            return Center(child: Text('No Contacts'));
+          }
+           if (snapshot.data == 401) {
+            Fluttertoast.showToast(msg: "Session Expired");
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/login_screen', (route) => false);
+            sharedPreference.logout();
+          }
+           else
             {
-            // var data = snapshot.data;
+            var data = snapshot.data;
 
-            // contactList = snapshot.data;
+            contactList = snapshot.data;
             if(snapshot.data != null && snapshot.data != 401)
             for(Contact contact in snapshot.data){
               dbHelper.createContact(contact);          
