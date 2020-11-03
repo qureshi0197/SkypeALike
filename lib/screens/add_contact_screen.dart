@@ -101,13 +101,15 @@ class _AddContectState extends State<AddContect> {
             // onPressed: ,
             icon: Icon(Icons.check, color: Colors.white), 
             onPressed:() async {
+
+              dbHelper.createContact(contact);
+              
               setState(() {
                 loading = true;
               });
               
               
               var response = await httpService.createContact(contact);
-              dbHelper.createContact(contact);
               
               if(response == 401){
                 

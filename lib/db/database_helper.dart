@@ -131,6 +131,13 @@ class DatabaseHelper{
     return contacts;
   }
 
+  Future<List<Map>> searchContact(Contact contact) async {
+    var dbClient = await db;
+    return await dbClient.query(contact_table, 
+    where: '$number = ?', 
+    whereArgs: [contact.number]);
+  }
+
   Future<int> updateContact(Contact contact) async {
     var dbClient = await db;
     return await dbClient.update(contact_table, contact.toMap(contact), 

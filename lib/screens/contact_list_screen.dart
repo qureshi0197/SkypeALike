@@ -93,7 +93,7 @@ class _ContactListContainerState extends State<ContactListContainer> {
   // }
 
   _formatDateTime(time) {
-    String formatter = DateFormat('yyyy-MMM-dd hh:mm:ss').format(time);
+    String formatter = DateFormat('yyyy-MM-dd hh:mm:ss').format(time);
     
     return formatter;
   }

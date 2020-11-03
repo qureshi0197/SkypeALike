@@ -11,6 +11,8 @@ import 'package:skypealike/screens/home_screen.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/appbar.dart';
 
+import 'edit_contact_screen.dart';
+
 class ChatScreen extends StatefulWidget {
   final Contact receiver;
 
@@ -28,7 +30,7 @@ class _ChatScreenState extends State<ChatScreen> {
   // ChatMethods _chatMethods = ChatMethods();
   ScrollController _listScrollController = ScrollController();
   bool loading = true;
-
+  bool contactFound = false;
   bool isWriting = false;
   bool showEmojiPicker = false;
   User sender;
@@ -43,11 +45,24 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future message;
 
+  _checkContact() async {
+    List contact = await dbHelper.searchContact(receiver);
+
+    if(contact.isNotEmpty){
+      receiver = Contact.fromMap(contact[0]);
+      contactFound = true;
+    }
+
+    setState(() {
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     receiver = widget.receiver;
+    _checkContact();
     // getMessages();
   }
 
@@ -416,12 +431,15 @@ class _ChatScreenState extends State<ChatScreen> {
         style: TextStyle(color: UniversalVariables.blackColor),
       ),
       actions: <Widget>[
-        IconButton(
+        contactFound ? Container() : IconButton(
           icon: Icon(Icons.person_add, color: UniversalVariables.gradientColorEnd,),
           
           // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON 
           // ELSE SHOW
-          onPressed: () => Navigator.pushNamed(context, '/add_contact_screen')
+          onPressed: () async {
+            await Navigator.push(context, MaterialPageRoute(builder: (context) => EditContact(receiver)));
+            await _checkContact();
+            }
           ),
 
         // IconButton(
