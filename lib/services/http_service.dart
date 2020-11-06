@@ -6,6 +6,8 @@ import 'package:http/http.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/post.dart';
 import 'package:skypealike/utils/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:skypealike/utils/utilities.dart';
 
 import '../main.dart';
 import '../models/user.dart';
@@ -119,6 +121,7 @@ class HttpService {
       header['Content-Type'] = "application/json";
       response = await post(GET_CONTACTS, headers: header, body: jsonEncode(body));
     }
+    time = Utils.formatDateTime(DateTime.now());
     // print(response.body);
     if (response.statusCode == 401) {
       return 401;

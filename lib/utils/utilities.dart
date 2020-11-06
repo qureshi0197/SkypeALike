@@ -1,4 +1,11 @@
+import 'package:skypealike/db/database_helper.dart';
+import 'package:skypealike/models/contact.dart';
+import 'package:intl/intl.dart';
+
 class Utils {
+
+  // Contact receiver;
+
   static String getUsername(String email) {
     return "live:${email.split('@')[0]}";
   }
@@ -7,57 +14,48 @@ class Utils {
     if(name.length <1)
       return '';
     return name[0].toUpperCase();
-    // List<String> nameSplit = name.split(" ");
-    // String firstNameInitial = nameSplit[0][0];
-    // String lastNameInitial = nameSplit[1][0];
-
-    // return firstNameInitial + lastNameInitial;
   }
 
-  // static Future<File> pickImage({@required ImageSource source}) async {
-  //   // ignore: deprecated_member_use
-  //   File selectedImage = await ImagePicker.pickImage(source: source);
-  //   // return selectedImage;
+  static Future<Contact> checkContact(Contact contact) async {
+    DatabaseHelper dbHelper = DatabaseHelper();
+    List contacts = await dbHelper.searchContact(contact);
 
-  //   return compressImage(selectedImage);
-  // }
+    if(contacts.isNotEmpty){
+      return Contact.fromMap(contacts[0]);
+    }
+    return null;
+  }
 
-  // static Future<File> compressImage(File imageToCompress) async {
+  static String checkNames(Contact contact){
+    
+    String title = '';
 
-  //   final tempDir = await getTemporaryDirectory();
-  //   final path = tempDir.path;
-  //   int random = Random().nextInt(1000);
 
-  //   Img.Image image = Img.decodeImage(imageToCompress.readAsBytesSync());
-  //   Img.copyResize(image, width: 500, height: 500);
+    if(contact.first_name.isNotEmpty){
+      title = contact.first_name;
+    }
+    if(contact.last_name.isNotEmpty){
+      if(title.isNotEmpty){
+        title = title + ' ' + contact.last_name;
+      }
+      else{
+        title = contact.last_name;
+      }
+    }
+    if(title.isEmpty){
+      title = contact.number;
+    }
 
-  //   return new File('$path/img_$random.jpg')..writeAsBytesSync(Img.encodeJpg(image, quality: 85));
+    return title;
+  }
 
-  // }
+  static String formatDateTime(DateTime time) {
+    if(time == null){
+      return null;
+    }
+    String formatter = DateFormat('yyyy-MM-dd HH:mm:ss').format(time);
+    
+    return formatter;
+  }
 
-  // static int stateToNum(UserState userState) {
-  //   switch (userState) {
-  //     case UserState.Offline:
-  //       return 0;
-
-  //     case UserState.Online:
-  //       return 1;
-
-  //     default:
-  //       return 2;
-  //   }
-  // }
-
-  // static UserState numToState(int number) {
-  //   switch (number) {
-  //     case 0:
-  //       return UserState.Offline;
-
-  //     case 1:
-  //       return UserState.Online;
-
-  //     default:
-  //       return UserState.Waiting;
-  //   }
-  // }
 }

@@ -9,6 +9,7 @@ import 'package:skypealike/models/message.dart';
 import 'package:skypealike/models/user.dart';
 import 'package:skypealike/screens/home_screen.dart';
 import 'package:skypealike/utils/universal_variables.dart';
+import 'package:skypealike/utils/utilities.dart';
 import 'package:skypealike/widgets/appbar.dart';
 
 import 'edit_contact_screen.dart';
@@ -45,25 +46,18 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future message;
 
-  _checkContact() async {
-    List contact = await dbHelper.searchContact(receiver);
-
-    if(contact.isNotEmpty){
-      receiver = Contact.fromMap(contact[0]);
-      contactFound = true;
-    }
-
-    setState(() {
-    });
-  }
 
   @override
-  void initState() {
+  void initState(){
     // TODO: implement initState
     super.initState();
     receiver = widget.receiver;
-    _checkContact();
-    // getMessages();
+    
+    if(receiver.first_name.isNotEmpty || receiver.last_name.isNotEmpty){
+      contactFound = true;
+    }
+
+    // _checkContact();
   }
 
   showKeyboard() => textFieldFocus.requestFocus();
@@ -427,7 +421,7 @@ class _ChatScreenState extends State<ChatScreen> {
               }),
       centerTitle: false,
       title: Text(
-        receiver.first_name ?? receiver.last_name ?? receiver.number,
+        Utils.checkNames(receiver),
         style: TextStyle(color: UniversalVariables.blackColor),
       ),
       actions: <Widget>[
@@ -438,7 +432,10 @@ class _ChatScreenState extends State<ChatScreen> {
           // ELSE SHOW
           onPressed: () async {
             await Navigator.push(context, MaterialPageRoute(builder: (context) => EditContact(receiver)));
-            await _checkContact();
+            // await _checkContact();
+            setState(() {
+              
+            });
             }
           ),
 

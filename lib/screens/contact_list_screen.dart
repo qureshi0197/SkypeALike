@@ -9,6 +9,7 @@ import 'package:skypealike/screens/edit_contact_screen.dart';
 import 'package:skypealike/page_views/widgets/add_contact_button.dart';
 // import 'package:skypealike/page_views/widgets/pop_up_menu.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
+import 'package:skypealike/utils/utilities.dart';
 import 'package:skypealike/widgets/appbar.dart';
 import 'package:intl/intl.dart';
 
@@ -71,7 +72,7 @@ class _ContactListContainerState extends State<ContactListContainer> {
   DatabaseHelper dbHelper = DatabaseHelper();
   String date;
   bool loading = true;
-
+  DateTime time;
   @override
   void initState() {
     super.initState();
@@ -81,36 +82,34 @@ class _ContactListContainerState extends State<ContactListContainer> {
 
   getLastfetchTime() async {
     date = await sharedPreference.getLastContactFetchedTimeStamp();
+    _convertStringToDateTime();
     setState(() {
       loading = false;
     });
   }
-  // getAllContacts() async {
-  //   List<Contact> _contacts = [];
 
-  //   setState(() {
-  //   });
-  // }
-
-  _formatDateTime(time) {
-    String formatter = DateFormat('yyyy-MM-dd hh:mm:ss').format(time);
-    
-    return formatter;
+  _convertStringToDateTime(){
+    if(date == null){
+      time = null;
+      return;  
+    }
+    DateFormat formatter = DateFormat('yyyy-MM-dd hh:mm:ss');
+    time = formatter.parse(date);
   }
-
 
   @override
   Widget build(BuildContext context) {
     return loading ? Center(child: CircularProgressIndicator()) : FutureBuilder(
         // stream: null,
-        future: httpService.getAllContacts(_formatDateTime(DateTime.now())),
+        future: httpService.getAllContacts(Utils.formatDateTime(time)),
         builder: (context, snapshot) {
-          if(snapshot.connectionState.index == 1){
-            return Center(child: CircularProgressIndicator(),);
-          }
-          if (snapshot.data == null) {
-            return Center(child: Text('No Contacts'));
-          }
+          time=DateTime.now();
+          // if(snapshot.connectionState.index == 1){
+          //   return Center(child: CircularProgressIndicator(),);
+          // }
+          // if (snapshot.data == null) {
+          //   return Center(child: Text('No Contacts'));
+          // }
            if (snapshot.data == 401) {
             Fluttertoast.showToast(msg: "Session Expired");
             Navigator.pushNamedAndRemoveUntil(
@@ -147,7 +146,7 @@ class _ContactListContainerState extends State<ContactListContainer> {
                     // var val = contact.phones.elementAt(0);
                     // val.
                     // print(contact.phones.elementAt(0));
-                    print(contact.email);
+                    // print(contact.email);
                     return ListTile(
                       trailing: IconButton(
                         onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>EditContact(contact))),

@@ -31,7 +31,7 @@ class Contact  {
   });
 
   initials(){
-    if(this.first_name != null && this.last_name.isNotEmpty != null)
+    if(this.first_name != null && this.last_name != null)
       return ((this.first_name?.isNotEmpty == true ? this.first_name[0] : "") +
             (this.last_name?.isNotEmpty == true ? this.last_name[0] : ""))
         .toUpperCase();

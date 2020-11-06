@@ -1,12 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
-import 'package:skypealike/screens/chat_screen.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/models/contact.dart';
-import 'package:skypealike/models/user.dart';
-import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/custom_tile.dart';
 

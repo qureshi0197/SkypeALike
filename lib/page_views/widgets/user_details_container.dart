@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
-import 'package:skypealike/chat_screens/widgets/cached_image.dart';
-import 'package:skypealike/models/user.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
-import 'package:skypealike/provider/user_provider.dart';
-import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/screens/login_page.dart';
 import 'package:skypealike/services/http_service.dart';
 import 'package:skypealike/utils/universal_variables.dart';
@@ -144,7 +139,7 @@ class UserDetailsBody extends StatelessWidget {
                         color: UniversalVariables.greyColor
                         ),
                   ),
-                  IconButton(icon: Icon(Icons.edit), onPressed: null)
+                  // IconButton(icon: Icon(Icons.edit), onPressed: null)
                 ],
               ),
               SizedBox(height: 10),

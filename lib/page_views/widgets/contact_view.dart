@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:skypealike/screens/chat_screen.dart';
-import 'package:skypealike/chat_screens/widgets/cached_image.dart';
 import 'package:skypealike/models/contact.dart';
-import 'package:skypealike/models/user.dart';
-import 'package:skypealike/page_views/widgets/last_message_container.dart';
-import 'package:skypealike/page_views/widgets/user_circle.dart';
-import 'package:skypealike/provider/user_provider.dart';
-import 'package:skypealike/resources/auth_methods.dart';
-import 'package:skypealike/resources/chat_methods.dart';
-import 'package:skypealike/utils/universal_variables.dart';
+import 'package:skypealike/utils/utilities.dart';
 import 'package:skypealike/widgets/custom_tile.dart';
 
 class ContactView extends StatelessWidget {
@@ -68,9 +60,8 @@ class ViewLayout extends StatelessWidget {
       title: Text(
         // ?. if contact is not null return name else return null
         // ?? if contact.name is not null return contact.name else return ..
-        contact.first_name != null?
-        contact.first_name+contact.last_name:
-        contact?.number ?? "..",
+        Utils.checkNames(contact),
+
         style:
             TextStyle(color: Colors.black, fontFamily: "Arial", fontSize: 19),
       ),
@@ -80,23 +71,6 @@ class ViewLayout extends StatelessWidget {
       //       senderId: userProvider.getUser.uid, receiverId: contact.uid),
       // ),
       leading: CircleAvatar(child: Text(contact.initials()))
-      // trailing: CircleAvatar(child: Text(contact.initials()))
-      // Padding(
-      //   padding: const EdgeInsets.only(right: 8.0),
-      //   child: Container(
-      //     decoration: BoxDecoration(
-      //       borderRadius: BorderRadius.circular(50),
-      //       color: UniversalVariables.blueColor,
-      //     ),
-      //     child: Padding(
-      //       padding: const EdgeInsets.all(8.0),
-      //       child: Text(
-      //         "$count",
-      //         style: TextStyle(color: Colors.white),
-      //       ),
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
