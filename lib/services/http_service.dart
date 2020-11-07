@@ -108,7 +108,9 @@ class HttpService {
 
     String session = await sharedPreference.session();
     var body = {
-      'timestamp': time // "2020-08-31 07:00:00"
+      'timestamp': time
+      // "2020-11-07 06:14:00"
+      // time // "2020-08-31 07:00:00"
     };
     // if (time == null) {
     //   body = {};
@@ -121,7 +123,7 @@ class HttpService {
       header['Content-Type'] = "application/json";
       response = await post(GET_CONTACTS, headers: header, body: jsonEncode(body));
     }
-    time = Utils.formatDateTime(DateTime.now());
+    time = Utils.formatDateTime(DateTime.now().toUtc());
     // print(response.body);
     if (response.statusCode == 401) {
       return 401;
@@ -166,7 +168,7 @@ class HttpService {
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: "Error saving contact");
+      // Fluttertoast.showToast(msg: "Error saving contact");
       return null;
     }
 

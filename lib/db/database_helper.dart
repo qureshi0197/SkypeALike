@@ -140,6 +140,7 @@ class DatabaseHelper{
 
   Future<int> updateContact(Contact contact) async {
     var dbClient = await db;
+    contact.number = '+'+contact.number;
     return await dbClient.update(contact_table, contact.toMap(contact), 
     where: '$number = ?', 
     whereArgs: [contact.number]);

@@ -21,7 +21,7 @@ class EditContact extends StatefulWidget {
 
 class _EditContactState extends State<EditContact> {
 
-  Contact contact;
+  Contact contact = Contact();
 
   var text_Field_height = 50.0;
 

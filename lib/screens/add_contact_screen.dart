@@ -22,7 +22,7 @@ class _AddContectState extends State<AddContect> {
 
   bool loading = false;
 
-  Contact contact;
+  Contact contact = Contact();
 
   var text_Field_height = 50.0;
 
@@ -102,11 +102,17 @@ class _AddContectState extends State<AddContect> {
             icon: Icon(Icons.check, color: Colors.white), 
             onPressed:() async {
 
-              dbHelper.createContact(contact);
+              Contact tempContect = Contact();
               
               setState(() {
                 loading = true;
               });
+              tempContect = contact;
+              tempContect.number = '+'+contact.number;
+
+              await dbHelper.createContact(tempContect);
+
+              // contact.number = contact.number.substring(1);
               
               
               var response = await httpService.createContact(contact);
@@ -117,12 +123,13 @@ class _AddContectState extends State<AddContect> {
                 Navigator.pushNamedAndRemoveUntil(context, '/login_screen', (route) => false);
                 await sharedPreference.logout();
 
-              } else if(response == 200){
+              } 
+              // else if(response == 200){
                 
                 Fluttertoast.showToast(msg: "Contact Saved");
                 Navigator.pop(context);
               
-              }
+              // }
               loading = false;
               setState(() {
               });
@@ -167,7 +174,12 @@ class _AddContectState extends State<AddContect> {
 
   Widget _number() {
     return customTextRow(hintText: numberHintText, icon: Icons.phone, title: "Phone Number", 
-    onChnaged: (val){contact.number = val;}, controller: number,inputFormator: [
+    onChnaged: (val){
+      contact.number = val;
+      setState(() {
+        
+      });
+      }, controller: number,inputFormator: [
       WhitelistingTextInputFormatter(RegExp(r"[0-9]"))
     ]);
   }
