@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
+import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
+import 'package:skypealike/models/message.dart';
 import 'package:skypealike/models/post.dart';
 import 'package:skypealike/utils/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -74,9 +76,10 @@ class HttpService {
     return true;
   }
 
-  Future<dynamic> getAllMessages(time) async {
+  Future<dynamic> getAllMessages(String time) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
+    // time = null;
     var body = {
       'timestamp': time // "2020-08-31 07:00:00"
     };
@@ -84,14 +87,18 @@ class HttpService {
     if (time == null) {
       body = {};
     }
+    
     var header = {"Cookie": session};
     Response response;
+    List<Message> messages = [];
+
     if (time == null) {
       response = await post(MESSAGES, headers: header);
     } else {
       header['Content-Type'] = "application/json";
       response = await post(MESSAGES, headers: header, body: jsonEncode(body));
     }
+    time = Utils.formatDateTime(DateTime.now().toUtc());
     // print(response.body);
     if (response.statusCode == 401) {
       return 401;
@@ -99,8 +106,18 @@ class HttpService {
       Fluttertoast.showToast(msg: "Server Error");
       return null;
     }
-    var responseBody = jsonDecode(response.body);
-    return responseBody;
+
+    await sharedPreference.lastMesgFetchedTimeStamp(time);
+    Map responseBody = jsonDecode(response.body);
+    // return responseBody;
+
+    if(responseBody.containsKey('data')){
+      Map responseData =  (responseBody['data']);
+      responseData.forEach((key, value){
+        messages.add(Message.fromMap(value));
+      });
+    }
+    return messages;
   }
 
   Future<dynamic> getAllContacts(time) async {
@@ -197,7 +214,8 @@ class HttpService {
     return 200;
   }
 
-  Future<dynamic> sendMessage(message) async {
+  Future<dynamic> sendMessage(Map message) async {
+    DatabaseHelper databaseHelper = DatabaseHelper();
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
     var body = jsonEncode(message);
@@ -216,7 +234,14 @@ class HttpService {
       Fluttertoast.showToast(msg: "Error sending message");
       return null;
     }
+    Map responseBody = jsonDecode(response.body);
+    responseBody['timestamp']=responseBody['created_at'];
+    responseBody['text']=message['message_text'];
+
+
     Fluttertoast.showToast(msg: "Message Sent");
+    Message dbMessage = Message.fromMap(responseBody);
+    await databaseHelper.createMessage(dbMessage);
     return 200;
   }
 }

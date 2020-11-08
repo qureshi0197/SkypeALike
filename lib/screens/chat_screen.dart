@@ -173,12 +173,18 @@ class _ChatScreenState extends State<ChatScreen> {
           );
         }
         var userChat = [];
-        snapshot.data['data'].forEach((key, val) {
-          if (val['sender'] == receiver.number ||
-              val['receiver'] == receiver.number) {
-            userChat.add(val);
+        for (Message message in snapshot.data) {
+          if (message.sender == receiver.number ||
+              message.receiver == receiver.number) {
+            userChat.add(message);
           }
-        });
+        }
+        // snapshot.data['data'].forEach((key, val) {
+        //   if (val['sender'] == receiver.number ||
+        //       val['receiver'] == receiver.number) {
+        //     userChat.add(val);
+        //   }
+        // });
         userChat = userChat.reversed.toList();
         // setState(() {
         //   loading=false;
@@ -205,18 +211,18 @@ class _ChatScreenState extends State<ChatScreen> {
     //     );
   }
 
-  Widget chatMessageItem(Map snapshot) {
-    Message _message = Message.fromMap(snapshot);
+  Widget chatMessageItem(Message message) {
+    // Message _message = Message.fromMap(snapshot);
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: Container(
-          alignment: snapshot['direction'] == "outbound"
+          alignment: message.direction == "outbound"
               ? Alignment.centerRight
               : Alignment.centerLeft,
-          child: snapshot['direction'] == "outbound"
-              ? senderLayout(_message)
-              : receiverLayout(_message)),
+          child: message.direction == "outbound"
+              ? senderLayout(message)
+              : receiverLayout(message)),
     );
   }
 

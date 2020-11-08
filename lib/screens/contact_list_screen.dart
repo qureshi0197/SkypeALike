@@ -77,25 +77,17 @@ class _ContactListContainerState extends State<ContactListContainer> {
   void initState() {
     super.initState();
 
-    getLastfetchTime();
+    _getLastfetchTime();
   }
 
-  getLastfetchTime() async {
+  _getLastfetchTime() async {
     date = await sharedPreference.getLastContactFetchedTimeStamp();
-    _convertStringToDateTime();
+    time = Utils.convertStringToDateTime(date);
     setState(() {
       loading = false;
     });
   }
 
-  _convertStringToDateTime(){
-    if(date == null){
-      time = null;
-      return;  
-    }
-    DateFormat formatter = DateFormat('yyyy-MM-dd hh:mm:ss');
-    time = formatter.parse(date);
-  }
 
   @override
   Widget build(BuildContext context) {

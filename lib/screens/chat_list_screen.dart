@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
+import 'package:skypealike/models/message.dart';
 import 'package:skypealike/page_views/widgets/contact_view.dart';
 import 'package:skypealike/page_views/widgets/new_chat_button.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
@@ -26,13 +27,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   
   var usersInbox = [];
+
+  List<Message> messageList = [];
   
   List<Contact> contacts = [];
+
+  String date;
+
+  DateTime time;
 
   @override
   void initState() {
     // TODO: implement initState
     _getAllDbContacts();
+    _getLastfetchTime();
   }
 
   _getAllDbContacts() async {
@@ -54,24 +62,25 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return val.millisecondsSinceEpoch;
   }
 
-  _arrangeAllMessagesForInbox(data) {
-    var otherUserData = {};
-    var otherUserKeys = [];
+  _arrangeAllMessagesForInbox(List<Message> messagesList) {
+    Map otherUserData = {};
+    List otherUserKeys = [];
     // String name;
     usersInbox = [];
-    if (data.containsKey('data')) {
-      Map val = data['data'];
-      val.forEach((key, value) {
-        if (val[key]['direction'] == "outbound") {
-          if (!otherUserKeys.contains(val[key]["receiver"]))
-            otherUserKeys.add(val[key]["receiver"]);
-          otherUserData[val[key]["receiver"]] = val[key];
+    // if (data.containsKey('data')) {
+    //   Map val = data['data'];
+      for (Message mesg in messagesList) {
+
+        if (mesg.direction == "outbound") {
+          if (!otherUserKeys.contains(mesg.receiver))
+            otherUserKeys.add(mesg.receiver);
+          otherUserData[mesg.receiver] = mesg;
         } else {
-          if (!otherUserKeys.contains(val[key]["sender"]))
-            otherUserKeys.add(value);
-          otherUserData[val[key]["sender"]] = val[key];
+          if (!otherUserKeys.contains(mesg.sender))
+            otherUserKeys.add(mesg);
+          otherUserData[mesg.sender] = mesg;
         }
-      });
+      }
       // print(otherUserData);
 
       otherUserData.forEach((key, value) async {
@@ -89,16 +98,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
       });
 
       usersInbox.sort((a, b) {
-        var aTime = _convertTimeToTimeStamp(a['message']['timestamp']);
-        var bTime = _convertTimeToTimeStamp(b['message']['timestamp']);
+        print(a['message'].timestamp);
+        var aTime = _convertTimeToTimeStamp(a['message'].timestamp);
+        var bTime = _convertTimeToTimeStamp(b['message'].timestamp);
         return aTime.compareTo(bTime);
       });
       usersInbox = usersInbox.reversed.toList();
       
       return usersInbox;
-    } else {
-        return [];
-    }
+    // else {
+    //     return [];
+    // }
     // return [];
   }
 
@@ -130,7 +140,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
     );
   }
 
-  
+
+  _getLastfetchTime() async {
+    date = await sharedPreference.getLastMesgFetchedTimeStamp();
+    time = Utils.convertStringToDateTime(date);
+    setState(() {
+      loading = false;
+    });
+  }  
 
   @override
   Widget build(BuildContext context) {
@@ -139,15 +156,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
       appBar: customAppBar(context),
       floatingActionButton: NewChatButton(),
       body: FutureBuilder(
-          future: httpService.getAllMessages(null),
+          future: httpService.getAllMessages(Utils.formatDateTime(time)),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             // if (loading) {
-              if (snapshot.connectionState.index == 1) {
-                // loading = false;
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+              time=DateTime.now();
+              // if (snapshot.connectionState.index == 1) {
+              //   // loading = false;
+              //   return Center(
+              //     child: CircularProgressIndicator(),
+              //   );
+              // }
             // }
             if (snapshot.data == 401) {
               Fluttertoast.showToast(msg: "Session Expired");
@@ -155,15 +173,38 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   context, '/login_screen', (Route route) => false);
               sharedPreference.logout();
             }
-            if (snapshot.data == null) {
-              return Center(
-                child: Text("No Messages"),
-              );
-            }
+            // if (snapshot.data == null) {
+            //   return Center(
+            //     child: Text("No Messages"),
+            //   );
+            // }
             // inbox = snapshot.data;
-            usersInbox = _arrangeAllMessagesForInbox(snapshot.data);
 
-            return Container(child: ChatListContainer(usersInbox));
+            // usersInbox = _arrangeAllMessagesForInbox(snapshot.data);
+            
+            var data = snapshot.data;
+
+            messageList = snapshot.data;
+            if(snapshot.data != null && snapshot.data != 401)
+            for(Message message in snapshot.data){
+              databaseHelper.createMessage(message);          
+            }
+
+            // usersInbox = _arrangeAllMessagesForInbox(snapshot.data);
+
+            return FutureBuilder(
+              future: databaseHelper.getMessages(),
+              builder: (context, snapshot){
+                if (snapshot.data != null)
+                  {messageList = snapshot.data;}
+                else
+                  {messageList = [];}
+                
+                usersInbox = _arrangeAllMessagesForInbox(messageList);
+                
+                return ChatListContainer(usersInbox);
+              },
+              );
           }),
     );
   }
@@ -185,11 +226,14 @@ class _ChatListContainerState extends State<ChatListContainer> {
   Widget build(BuildContext context) {
     // final UserProvider userProvider = Provider.of<UserProvider>(context);
     return Container(
-        child: widget.inbox.isEmpty
+        child: 
+          widget.inbox.isEmpty
             ? Center(
-                child: Text('No Messages'),
+                child: CircularProgressIndicator(),
+                // Text('No Messages'),
               )
-            : ListView.builder(
+            : 
+            ListView.builder(
                 padding: EdgeInsets.all(10),
                 itemCount: widget.inbox.length,
                 itemBuilder: (context, index) {
@@ -197,8 +241,7 @@ class _ChatListContainerState extends State<ChatListContainer> {
                     "first_name": widget.inbox[index]['first_name'],
                     "last_name": widget.inbox[index]['last_name'],
                     "number": widget.inbox[index]['number'],
-                    "message": widget.inbox[index]['message']['text']
-                  };
+                    "message": widget.inbox[index]['message'].text                  };
                   Contact contact = Contact.fromMap(contactInbox);
                   // Message = Message.fromMap(map)
                   return ContactView(contact);

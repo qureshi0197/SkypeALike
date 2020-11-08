@@ -32,12 +32,18 @@ class ContactView extends StatelessWidget {
   }
 }
 
-class ViewLayout extends StatelessWidget {
+class ViewLayout extends StatefulWidget {
   final Contact contact;
   // final ChatMethods _chatMethods = ChatMethods();
-  int count;
 
   ViewLayout({@required this.contact});
+
+  @override
+  _ViewLayoutState createState() => _ViewLayoutState();
+}
+
+class _ViewLayoutState extends State<ViewLayout> {
+  int count;
 
   @override
   Widget build(BuildContext context) {
@@ -50,27 +56,30 @@ class ViewLayout extends StatelessWidget {
         //   receiverId: contact.uid,
         // );
 
-        Navigator.push(
+        await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => ChatScreen(
-                      receiver: contact,
+                      receiver: widget.contact,
                     )));
+        setState(() {
+          
+        });
       },
       title: Text(
         // ?. if contact is not null return name else return null
         // ?? if contact.name is not null return contact.name else return ..
-        Utils.checkNames(contact),
+        Utils.checkNames(widget.contact),
 
         style:
             TextStyle(color: Colors.black, fontFamily: "Arial", fontSize: 19),
       ),
-      subtitle: Text(contact.message),
+      subtitle: Text(widget.contact.message),
       // LastMessageContainer(
       //   stream: _chatMethods.fetchLastMessageBetween(
       //       senderId: userProvider.getUser.uid, receiverId: contact.uid),
       // ),
-      leading: CircleAvatar(child: Text(contact.initials()))
+      leading: CircleAvatar(child: Text(widget.contact.initials()))
     );
   }
 }

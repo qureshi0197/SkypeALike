@@ -37,6 +37,16 @@ class SharedPreference {
     return sp.getString('contacts') ?? null;
   }
 
+  lastMesgFetchedTimeStamp(time) async {
+    sp = await SharedPreferences.getInstance();
+    await sp.setString('messages', time);
+  }
+
+  getLastMesgFetchedTimeStamp() async {
+    sp = await SharedPreferences.getInstance();
+    return sp.getString('messages') ?? null;
+  }
+
   session() async {
     sp = await SharedPreferences.getInstance();
     // try {

@@ -58,4 +58,11 @@ class Utils {
     return formatter;
   }
 
+  static DateTime convertStringToDateTime(String date){  
+    if(date == null){
+      return null;  
+    }
+    DateFormat formatter = DateFormat('yyyy-MM-dd hh:mm:ss');
+    return formatter.parse(date);
+  }
 }
