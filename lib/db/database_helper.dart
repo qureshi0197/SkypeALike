@@ -156,6 +156,40 @@ class DatabaseHelper{
     return message;
   }
 
+  Future<bool> searchMessages(Message message) async {
+    var dbClient = await db;
+    
+    List<Message> messages = [];
+
+    List<Map> recieverMapList =  await dbClient.query(message_table, 
+    where: '$sms_id = ?', 
+    whereArgs: [message.sms_id]);
+
+    if(recieverMapList.isEmpty){
+      return false;
+    }
+    
+    return true;
+ 
+    // for (Map item in recieverMapList) {
+    //   messages.add(Message.fromMap(item));
+    // }
+
+    // List<Map> senderMapList =  await dbClient.query(message_table, 
+    // where: '$sender = ?', 
+    // whereArgs: [contact.number]);
+    // for (Map item in senderMapList) {
+    //   messages.add(Message.fromMap(item));
+    // }
+
+    // return messages;/
+
+    // List<Message> receiver_messages = await dbClient.query(message_table, 
+    // where: '$receiver = ?', 
+    // whereArgs: [message.receiver]); 
+    // return 
+  }
+
   Future<List<Message>> getMessages() async {
     var dbClient = await db;
     List<Map> maps = await dbClient.query(message_table, 

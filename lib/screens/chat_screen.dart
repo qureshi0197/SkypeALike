@@ -141,6 +141,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget messageList() {
     message = httpService.getAllMessages(null);
+    // message = Stream.fromFuture(httpService.getAllMessages(null));
     // dbHelper.createMessage(message);
     return FutureBuilder(
       future: message,
@@ -172,12 +173,23 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Text("No Messages"),
           );
         }
-        var userChat = [];
+        List<Message> userChat = [];
         for (Message message in snapshot.data) {
           if (message.sender == receiver.number ||
               message.receiver == receiver.number) {
             userChat.add(message);
           }
+        }
+        for (var message in userChat) {
+          Future<bool> condition = dbHelper.searchMessages(message);
+          condition.then((bool onValue){
+            if(!onValue){
+              dbHelper.createMessage(message);
+            }
+          });
+          // if(!condition.){
+          //    dbHelper.createMessage(message);
+          // }
         }
         // snapshot.data['data'].forEach((key, val) {
         //   if (val['sender'] == receiver.number ||
@@ -276,7 +288,7 @@ class _ChatScreenState extends State<ChatScreen> {
           // no matter how long a message is it wont take more than 65% of the screen
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.65),
       decoration: BoxDecoration(
-        color: UniversalVariables.receiveMessageColor,
+        color: UniversalVariables.sendMessageColor,
         borderRadius: BorderRadius.only(
           bottomRight: messageRadius,
           topRight: messageRadius,
