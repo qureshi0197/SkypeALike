@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skypealike/screens/chat_screen.dart';
 import 'package:skypealike/models/contact.dart';
+import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/utils/utilities.dart';
 import 'package:skypealike/widgets/custom_tile.dart';
 
@@ -79,7 +80,14 @@ class _ViewLayoutState extends State<ViewLayout> {
       //   stream: _chatMethods.fetchLastMessageBetween(
       //       senderId: userProvider.getUser.uid, receiverId: contact.uid),
       // ),
-      leading: CircleAvatar(child: Text(widget.contact.initials()))
+      leading: CircleAvatar(child: Text(widget.contact.initials())),
+      trailing: IconButton(
+        
+        onPressed: () => Utils.call(widget.contact.number),
+        icon: Icon(Icons.call),
+        color: UniversalVariables.gradientColorEnd,
+      
+      ),
     );
   }
 }

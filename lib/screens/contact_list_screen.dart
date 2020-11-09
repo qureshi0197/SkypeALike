@@ -140,13 +140,33 @@ class _ContactListContainerState extends State<ContactListContainer> {
                     // print(contact.phones.elementAt(0));
                     // print(contact.email);
                     return ListTile(
-                      trailing: IconButton(
-                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>EditContact(contact))),
-                        icon: Icon(Icons.edit),
+                      trailing: Wrap(
+                        spacing: 6,
+                        children: <Widget>[
+                          IconButton(
+                            onPressed: () => Utils.call(contact.number),
+                            icon: Icon(Icons.call),
                         // Icons.edit,
                         // color: Colors.blue,
-                        ),
-                        onTap: null,
+                            ),
+
+                          IconButton(
+                            onPressed: () => null,
+                            icon: Icon(Icons.message),
+                        // Icons.edit,
+                        // color: Colors.blue,
+                            ),
+
+                        //   IconButton(
+                        //     onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>EditContact(contact))),
+                        //     icon: Icon(Icons.edit),
+                        // // Icons.edit,
+                        // // color: Colors.blue,
+                        //     ),
+                        ],
+
+                      ),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>EditContact(contact))),
                       title: Text(contact.first_name),
                       subtitle: Text(contact.number),
                       leading: (contact.avatar != null && contact.avatar.length > 0)

@@ -443,7 +443,15 @@ class _ChatScreenState extends State<ChatScreen> {
         style: TextStyle(color: UniversalVariables.blackColor),
       ),
       actions: <Widget>[
-        contactFound ? Container() : IconButton(
+        contactFound 
+        
+        ? IconButton(
+          onPressed: () => Utils.call(receiver.number),
+          icon: Icon(Icons.add_call),
+          color: UniversalVariables.gradientColorEnd,
+          )
+
+        : IconButton(
           icon: Icon(Icons.person_add, color: UniversalVariables.gradientColorEnd,),
           
           // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON 

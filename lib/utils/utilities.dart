@@ -1,6 +1,8 @@
 import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class Utils {
 
@@ -65,4 +67,6 @@ class Utils {
     DateFormat formatter = DateFormat('yyyy-MM-dd hh:mm:ss');
     return formatter.parse(date);
   }
+
+  static call(String number) => launch("tel:$number");
 }
