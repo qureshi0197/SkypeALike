@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/models/contact.dart';
+import 'package:skypealike/screens/chat_screen.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/custom_tile.dart';
 
@@ -139,13 +140,13 @@ class _SearchScreenState extends State<SearchScreen> {
         return CustomTile(
           mini: false,
           onTap: () {
-            // Navigator.push(context, 
-            //   MaterialPageRoute(
-            //     builder: (context) => ChatScreen(
-            //       receiver: searchedUser,
-            //     )
-            //   )
-            // );
+            Navigator.push(context, 
+              MaterialPageRoute(
+                builder: (context) => ChatScreen(
+                  receiver: contactUser,
+                )
+              )
+            );
           },
           leading: CircleAvatar(child: Text(contactUser.initials()),),
           // leading: CircleAvatar(

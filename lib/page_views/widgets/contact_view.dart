@@ -81,6 +81,7 @@ class _ViewLayoutState extends State<ViewLayout> {
       //       senderId: userProvider.getUser.uid, receiverId: contact.uid),
       // ),
       leading: CircleAvatar(child: Text(widget.contact.initials())),
+      
       trailing: IconButton(
         
         onPressed: () => Utils.call(widget.contact.number),

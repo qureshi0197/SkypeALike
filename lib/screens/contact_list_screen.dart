@@ -5,6 +5,7 @@ import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/main.dart';
 import 'package:skypealike/models/contact.dart';
+import 'package:skypealike/screens/chat_screen.dart';
 import 'package:skypealike/screens/edit_contact_screen.dart';
 import 'package:skypealike/page_views/widgets/add_contact_button.dart';
 // import 'package:skypealike/page_views/widgets/pop_up_menu.dart';
@@ -151,7 +152,12 @@ class _ContactListContainerState extends State<ContactListContainer> {
                             ),
 
                           IconButton(
-                            onPressed: () => null,
+                            onPressed: () => Navigator.push(
+                              context, MaterialPageRoute(builder: (context) => ChatScreen(
+                                  receiver: contact,
+                                  )
+                                )
+                              ),
                             icon: Icon(Icons.message),
                         // Icons.edit,
                         // color: Colors.blue,
