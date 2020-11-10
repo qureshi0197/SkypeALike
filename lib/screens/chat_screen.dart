@@ -451,18 +451,37 @@ class _ChatScreenState extends State<ChatScreen> {
           color: UniversalVariables.gradientColorEnd,
           )
 
-        : IconButton(
-          icon: Icon(Icons.person_add, color: UniversalVariables.gradientColorEnd,),
+        : Wrap(
+          spacing: 3,
+          children: <Widget>[
+            
+            IconButton(
+              onPressed: () => {
+                
+                Utils.call(receiver.number),
+                
+                setState(() {              
+                })
+
+              },
+              icon: Icon(Icons.add_call),
+              color: UniversalVariables.gradientColorEnd,
+            ),
+
+            IconButton(
+              icon: Icon(Icons.person_add, color: UniversalVariables.gradientColorEnd,),
           
-          // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON 
-          // ELSE SHOW
-          onPressed: () async {
-            await Navigator.push(context, MaterialPageRoute(builder: (context) => EditContact(receiver)));
-            // await _checkContact();
-            setState(() {
+              // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON 
+              // ELSE SHOW
+              onPressed: () async {
+                await Navigator.push(context, MaterialPageRoute(builder: (context) => EditContact(receiver)));
+                // await _checkContact();
+                setState(() {
               
-            });
+                });
             }
+          )
+          ],
           ),
 
         // IconButton(
