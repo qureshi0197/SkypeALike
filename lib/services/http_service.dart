@@ -87,7 +87,7 @@ class HttpService {
     if (time == null) {
       body = {};
     }
-    
+
     var header = {"Cookie": session};
     Response response;
     List<Message> messages = [];
@@ -111,12 +111,13 @@ class HttpService {
     Map responseBody = jsonDecode(response.body);
     // return responseBody;
 
-    if(responseBody.containsKey('data')){
-      Map responseData =  (responseBody['data']);
-      responseData.forEach((key, value){
+    if (responseBody.containsKey('data')) {
+      Map responseData = (responseBody['data']);
+      responseData.forEach((key, value) {
         messages.add(Message.fromMap(value));
       });
     }
+    print(messages);
     return messages;
   }
 
@@ -138,7 +139,8 @@ class HttpService {
       response = await post(GET_CONTACTS, headers: header);
     } else {
       header['Content-Type'] = "application/json";
-      response = await post(GET_CONTACTS, headers: header, body: jsonEncode(body));
+      response =
+          await post(GET_CONTACTS, headers: header, body: jsonEncode(body));
     }
     time = Utils.formatDateTime(DateTime.now().toUtc());
     // print(response.body);
@@ -235,9 +237,8 @@ class HttpService {
       return null;
     }
     Map responseBody = jsonDecode(response.body);
-    responseBody['timestamp']=responseBody['created_at'];
-    responseBody['text']=message['message_text'];
-
+    responseBody['timestamp'] = responseBody['created_at'];
+    responseBody['text'] = message['message_text'];
 
     Fluttertoast.showToast(msg: "Message Sent");
     Message dbMessage = Message.fromMap(responseBody);

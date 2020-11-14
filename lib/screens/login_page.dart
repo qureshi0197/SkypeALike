@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:skypealike/constants/styles.dart';
+import 'package:skypealike/main.dart';
 import 'package:skypealike/services/http_service.dart';
 
 class Login extends StatefulWidget {
@@ -128,11 +129,14 @@ class _LoginState extends State<Login> {
                   return;
                 }
 
+                await sharedPreference.clearAllStrings();
+
                 setState(() {
                   loading = true;
                 });
 
-                response = await httpService.login(username, password);  //? Will Uncomment Later
+                response = await httpService.login(
+                    username, password); //? Will Uncomment Later
                 // response = 0;  //! Will delete Later
 
                 if (response == 0) {

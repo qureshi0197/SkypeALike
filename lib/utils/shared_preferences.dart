@@ -68,6 +68,17 @@ class SharedPreference {
     }
   }
 
+  clearAllStrings() async {
+    sp = await SharedPreferences.getInstance();
+    sp.remove('username');
+    sp.remove('session');
+    sp.remove('login');
+    sp.remove('password');
+    sp.remove('number');
+    sp.remove('messages');
+    sp.remove('contacts');
+  }
+
   checklogin() async {
     sp = await SharedPreferences.getInstance();
     user.name = sp.getString('username') ?? '';

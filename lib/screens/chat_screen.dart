@@ -46,16 +46,26 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future message;
 
+  Stream getPeriodicStream() async* {
+    yield* Stream.periodic(Duration(seconds: 1), (_) async {
+      // print(await httpService.getAllMessages(null));
+      return await httpService.getAllMessages(null);
+    }).asyncMap(
+      (value) async => await value,
+    );
+  }
 
   @override
-  void initState(){
+  void initState() {
     // TODO: implement initState
     super.initState();
     receiver = widget.receiver;
-    
-    if(receiver.first_name.isNotEmpty || receiver.last_name.isNotEmpty){
+
+    if (receiver.first_name.isNotEmpty || receiver.last_name.isNotEmpty) {
       contactFound = true;
     }
+
+    // getPeriodicStream();
 
     // _checkContact();
   }
@@ -108,12 +118,12 @@ class _ChatScreenState extends State<ChatScreen> {
               child: messageList(),
             ),
             // _imageUploadProvider.getViewState == ViewState.LOADING
-                // ? Container(
-                //     alignment: Alignment.centerRight,
-                //     margin: EdgeInsets.only(right: 15),
-                //     child: CircularProgressIndicator(),
-                //   )
-                // : Container(),
+            // ? Container(
+            //     alignment: Alignment.centerRight,
+            //     margin: EdgeInsets.only(right: 15),
+            //     child: CircularProgressIndicator(),
+            //   )
+            // : Container(),
             chatControls(),
             showEmojiPicker ? Container(child: emojiContainer()) : Container(),
           ],
@@ -141,8 +151,43 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget messageList() {
     message = httpService.getAllMessages(null);
-    // message = Stream.fromFuture(httpService.getAllMessages(null));
+    var smessage = getPeriodicStream();
     // dbHelper.createMessage(message);
+    return StreamBuilder(
+      stream: getPeriodicStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState.index == 1)
+          return Center(child: CircularProgressIndicator());
+        List<Message> userChat = [];
+        if (snapshot.hasData) {
+          for (Message message in snapshot.data) {
+            if (message.sender == receiver.number ||
+                message.receiver == receiver.number) {
+              userChat.add(message);
+            }
+          }
+          for (var message in userChat) {
+            Future<bool> condition = dbHelper.searchMessages(message);
+            condition.then((bool onValue) {
+              if (!onValue) {
+                dbHelper.createMessage(message);
+              }
+            });
+          }
+        }
+
+        userChat = userChat.reversed.toList();
+
+        return ListView.builder(
+          padding: EdgeInsets.all(10),
+          itemCount: userChat.length,
+          reverse: true,
+          itemBuilder: (context, index) {
+            return chatMessageItem(userChat[index]);
+          },
+        );
+      },
+    );
     return FutureBuilder(
       future: message,
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
@@ -182,8 +227,8 @@ class _ChatScreenState extends State<ChatScreen> {
         }
         for (var message in userChat) {
           Future<bool> condition = dbHelper.searchMessages(message);
-          condition.then((bool onValue){
-            if(!onValue){
+          condition.then((bool onValue) {
+            if (!onValue) {
               dbHelper.createMessage(message);
             }
           });
@@ -308,6 +353,7 @@ class _ChatScreenState extends State<ChatScreen> {
         isWriting = val;
       });
     }
+
     return Container(
       padding: EdgeInsets.all(10),
       child: Row(children: <Widget>[
@@ -371,8 +417,6 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         )),
-
- 
         sendMessageLoading
             ? Center(
                 child: Padding(
@@ -412,7 +456,6 @@ class _ChatScreenState extends State<ChatScreen> {
     var response = await httpService.sendMessage(_message);
     // dbHelper.createMessage(_message);
 
-
     if (response == 401) {
       Navigator.pushNamedAndRemoveUntil(
           context, '/login_screen', (route) => false);
@@ -443,46 +486,39 @@ class _ChatScreenState extends State<ChatScreen> {
         style: TextStyle(color: UniversalVariables.blackColor),
       ),
       actions: <Widget>[
-        contactFound 
-        
-        ? IconButton(
-          onPressed: () => Utils.call(receiver.number),
-          icon: Icon(Icons.add_call),
-          color: UniversalVariables.gradientColorEnd,
-          )
+        contactFound
+            ? IconButton(
+                onPressed: () => Utils.call(receiver.number),
+                icon: Icon(Icons.add_call),
+                color: UniversalVariables.gradientColorEnd,
+              )
+            : Wrap(
+                spacing: 3,
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () =>
+                        {Utils.call(receiver.number), setState(() {})},
+                    icon: Icon(Icons.add_call),
+                    color: UniversalVariables.gradientColorEnd,
+                  ),
+                  IconButton(
+                      icon: Icon(
+                        Icons.person_add,
+                        color: UniversalVariables.gradientColorEnd,
+                      ),
 
-        : Wrap(
-          spacing: 3,
-          children: <Widget>[
-            
-            IconButton(
-              onPressed: () => {
-                
-                Utils.call(receiver.number),
-                
-                setState(() {              
-                })
-
-              },
-              icon: Icon(Icons.add_call),
-              color: UniversalVariables.gradientColorEnd,
-            ),
-
-            IconButton(
-              icon: Icon(Icons.person_add, color: UniversalVariables.gradientColorEnd,),
-          
-              // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON 
-              // ELSE SHOW
-              onPressed: () async {
-                await Navigator.push(context, MaterialPageRoute(builder: (context) => EditContact(receiver)));
-                // await _checkContact();
-                setState(() {
-              
-                });
-            }
-          )
-          ],
-          ),
+                      // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON
+                      // ELSE SHOW
+                      onPressed: () async {
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditContact(receiver)));
+                        // await _checkContact();
+                        setState(() {});
+                      })
+                ],
+              ),
 
         // IconButton(
         //   icon: Icon(Icons.phone, color: UniversalVariables.greyColor),
