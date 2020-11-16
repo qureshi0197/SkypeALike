@@ -181,6 +181,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             // usersInbox = _arrangeAllMessagesForInbox(snapshot.data);
 
             var data = snapshot.data;
+            Future databaseMessages;
 
             messageList = snapshot.data;
             if (snapshot.data != null && snapshot.data != 401)
@@ -188,10 +189,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 databaseHelper.createMessage(message);
               }
 
+            databaseMessages = databaseHelper.getMessages();
             // usersInbox = _arrangeAllMessagesForInbox(snapshot.data);
 
             return FutureBuilder(
-              future: databaseHelper.getMessages(),
+              future: databaseMessages,
               builder: (context, snapshot) {
                 if (snapshot.connectionState.index == 1) {
                   return Center(child: CircularProgressIndicator());

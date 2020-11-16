@@ -15,7 +15,7 @@ import '../main.dart';
 import '../models/user.dart';
 
 class HttpService {
-  final String postsUrl = "https://jsonplaceholder.typicode.com/posts";
+  // final String postsUrl = "https://jsonplaceholder.typicode.com/posts";
   static String SERVER = 'http://167.172.230.150:8080/';
   static String LOGIN = SERVER + 'customer/login';
   static String LOGOUT = SERVER + 'customer/logout';

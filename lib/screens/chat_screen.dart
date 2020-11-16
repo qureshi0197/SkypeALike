@@ -39,7 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
   FocusNode textFieldFocus = FocusNode();
   // ImageUploadProvider _imageUploadProvider;
   Contact receiver;
-  var userChat = [];
+  List<Message> userChat = [];
   bool sendMessageLoading = false;
 
   DatabaseHelper dbHelper = DatabaseHelper();
@@ -152,21 +152,22 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget messageList() {
     message = httpService.getAllMessages(null);
     var smessage = getPeriodicStream();
+
     // dbHelper.createMessage(message);
     return StreamBuilder(
       stream: getPeriodicStream(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState.index == 1)
-          return Center(child: CircularProgressIndicator());
-        List<Message> userChat = [];
+        // if (snapshot.connectionState.index == 1)
+        //   return Center(child: CircularProgressIndicator());
+        // List<Message> userChat = [];
         if (snapshot.hasData) {
-          for (Message message in snapshot.data) {
-            if (message.sender == receiver.number ||
-                message.receiver == receiver.number) {
-              userChat.add(message);
-            }
-          }
-          for (var message in userChat) {
+          // for (Message message in snapshot.data) {
+          //   if (message.sender == receiver.number ||
+          //       message.receiver == receiver.number) {
+          //     userChat.add(message);
+          //   }
+          // }
+          for (var message in snapshot.data) {
             Future<bool> condition = dbHelper.searchMessages(message);
             condition.then((bool onValue) {
               if (!onValue) {
@@ -176,88 +177,129 @@ class _ChatScreenState extends State<ChatScreen> {
           }
         }
 
-        userChat = userChat.reversed.toList();
+        // userChat = userChat.reversed.toList();
 
-        return ListView.builder(
-          padding: EdgeInsets.all(10),
-          itemCount: userChat.length,
-          reverse: true,
-          itemBuilder: (context, index) {
-            return chatMessageItem(userChat[index]);
-          },
-        );
-      },
-    );
-    return FutureBuilder(
-      future: message,
-      builder: (context, AsyncSnapshot<dynamic> snapshot) {
-        // if
-        if (loading) {
-          if (snapshot.connectionState.index == 1)
-            return Center(child: CircularProgressIndicator());
-          else {
-            loading = false;
-          }
-        }
-        // else{
-        //   setState(() {
-        //     loading=false;
-        //   });
-        // }
-        // if (snapshot.h == 1) {
-        //   return Center(child: CircularProgressIndicator());
-        // }
-        if (snapshot.data == 401) {
-          Fluttertoast.showToast(msg: "Session Expired");
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/login_screen', (Route route) => false);
-          sharedPreference.logout();
-        }
-        if (snapshot.data == null) {
-          return Center(
-            child: Text("No Messages"),
-          );
-        }
-        List<Message> userChat = [];
-        for (Message message in snapshot.data) {
-          if (message.sender == receiver.number ||
-              message.receiver == receiver.number) {
-            userChat.add(message);
-          }
-        }
-        for (var message in userChat) {
-          Future<bool> condition = dbHelper.searchMessages(message);
-          condition.then((bool onValue) {
-            if (!onValue) {
-              dbHelper.createMessage(message);
+        return FutureBuilder(
+          future: dbHelper.getMessages(),
+          builder: (context, snapshot) {
+            
+            if (snapshot.connectionState.index == 1 && userChat.isEmpty){
+              return Center(child: CircularProgressIndicator());
             }
-          });
-          // if(!condition.){
-          //    dbHelper.createMessage(message);
-          // }
-        }
-        // snapshot.data['data'].forEach((key, val) {
-        //   if (val['sender'] == receiver.number ||
-        //       val['receiver'] == receiver.number) {
-        //     userChat.add(val);
-        //   }
-        // });
-        userChat = userChat.reversed.toList();
-        // setState(() {
-        //   loading=false;
-        // });
+            userChat = [];
+            for (Message message in snapshot.data) {
+              if (message.sender == receiver.number ||
+                  message.receiver == receiver.number) {
+                userChat.add(message);
+              }
+            }
 
-        // return userChat;
-        return ListView.builder(
-          padding: EdgeInsets.all(10),
-          itemCount: userChat.length,
-          reverse: true,
-          itemBuilder: (context, index) {
-            return chatMessageItem(userChat[index]);
+            userChat = userChat.reversed.toList();
+
+            return ListView.builder(
+              padding: EdgeInsets.all(10),
+              itemCount: userChat.length,
+              reverse: true,
+              itemBuilder: (context, index) {
+                return chatMessageItem(userChat[index]);
+              },
+            );
+            // if (snapshot.connectionState.index == 1) {
+            //   return Center(child: CircularProgressIndicator());
+            // }
+            // if (snapshot.data != null) {
+            //   messageList = snapshot.data;
+            // } else {
+            //   messageList = [];
+            // }
+
+            // usersInbox = _arrangeAllMessagesForInbox(messageList);
+
+            // return ChatListContainer(usersInbox);
           },
         );
+        // return ListView.builder(
+        //   padding: EdgeInsets.all(10),
+        //   itemCount: userChat.length,
+        //   reverse: true,
+        //   itemBuilder: (context, index) {
+        //     return chatMessageItem(userChat[index]);
+        //   },
+        // );
       },
     );
+
+    // Dead Code Below
+    // return FutureBuilder(
+    //   future: message,
+    //   builder: (context, AsyncSnapshot<dynamic> snapshot) {
+    //     // if
+    //     if (loading) {
+    //       if (snapshot.connectionState.index == 1)
+    //         return Center(child: CircularProgressIndicator());
+    //       else {
+    //         loading = false;
+    //       }
+    //     }
+    //     // else{
+    //     //   setState(() {
+    //     //     loading=false;
+    //     //   });
+    //     // }
+    //     // if (snapshot.h == 1) {
+    //     //   return Center(child: CircularProgressIndicator());
+    //     // }
+    //     if (snapshot.data == 401) {
+    //       Fluttertoast.showToast(msg: "Session Expired");
+    //       Navigator.pushNamedAndRemoveUntil(
+    //           context, '/login_screen', (Route route) => false);
+    //       sharedPreference.logout();
+    //     }
+    //     if (snapshot.data == null) {
+    //       return Center(
+    //         child: Text("No Messages"),
+    //       );
+    //     }
+    //     List<Message> userChat = [];
+    //     for (Message message in snapshot.data) {
+    //       if (message.sender == receiver.number ||
+    //           message.receiver == receiver.number) {
+    //         userChat.add(message);
+    //       }
+    //     }
+    //     for (var message in userChat) {
+    //       Future<bool> condition = dbHelper.searchMessages(message);
+    //       condition.then((bool onValue) {
+    //         if (!onValue) {
+    //           dbHelper.createMessage(message);
+    //         }
+    //       });
+    //       // if(!condition.){
+    //       //    dbHelper.createMessage(message);
+    //       // }
+    //     }
+    //     // snapshot.data['data'].forEach((key, val) {
+    //     //   if (val['sender'] == receiver.number ||
+    //     //       val['receiver'] == receiver.number) {
+    //     //     userChat.add(val);
+    //     //   }
+    //     // });
+    //     userChat = userChat.reversed.toList();
+    //     // setState(() {
+    //     //   loading=false;
+    //     // });
+
+    //     // return userChat;
+    //     return ListView.builder(
+    //       padding: EdgeInsets.all(10),
+    //       itemCount: userChat.length,
+    //       reverse: true,
+    //       itemBuilder: (context, index) {
+    //         return chatMessageItem(userChat[index]);
+    //       },
+    //     );
+    //   },
+    // );
     // return ListView.builder(
     //       padding: EdgeInsets.all(10),
     //       itemCount: userChat.length,
