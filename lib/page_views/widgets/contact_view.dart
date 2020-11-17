@@ -49,8 +49,9 @@ class _ViewLayoutState extends State<ViewLayout> {
   @override
   Widget build(BuildContext context) {
     // final UserProvider userProvider = Provider.of<UserProvider>(context);
-    return CustomTile(
-      mini: false,
+    return ListTile(
+      // mini: false,
+      contentPadding: EdgeInsets.only(top: 8.0, bottom: 8.0),
       onTap: () async {
         // await _chatMethods.updateMessageSeenStatusInDb(
         //   senderId: userProvider.getUser.uid,
@@ -75,7 +76,8 @@ class _ViewLayoutState extends State<ViewLayout> {
         style:
             TextStyle(color: Colors.black, fontFamily: "Arial", fontSize: 19),
       ),
-      subtitle: Text(widget.contact.message),
+      subtitle: Text(widget.contact.message,maxLines: 1,
+        overflow: TextOverflow.ellipsis,),
       // LastMessageContainer(
       //   stream: _chatMethods.fetchLastMessageBetween(
       //       senderId: userProvider.getUser.uid, receiverId: contact.uid),
