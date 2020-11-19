@@ -159,7 +159,10 @@ class DatabaseHelper{
     whereArgs: [contact.number]);
   }
   
-
+  Future<int> deleteContact(Contact contact) async {
+    var dbClient = await db;
+    return await dbClient.delete(contact_table, where: '$number = ?', whereArgs: [contact.number]);
+  }
 
   Future<Message> createMessage(Message message) async {
     var dbClient = await db;
@@ -183,24 +186,16 @@ class DatabaseHelper{
     }
     
     return true;
- 
-    // for (Map item in recieverMapList) {
-    //   messages.add(Message.fromMap(item));
-    // }
+  }
 
-    // List<Map> senderMapList =  await dbClient.query(message_table, 
-    // where: '$sender = ?', 
-    // whereArgs: [contact.number]);
-    // for (Map item in senderMapList) {
-    //   messages.add(Message.fromMap(item));
-    // }
+  Future<int> deleteMessages(Message message) async {
+    var dbClient = await db;
+    return await dbClient.delete(message_table, where: '$sms_id = ?', whereArgs: [message.sms_id]);
+  }
 
-    // return messages;/
-
-    // List<Message> receiver_messages = await dbClient.query(message_table, 
-    // where: '$receiver = ?', 
-    // whereArgs: [message.receiver]); 
-    // return 
+  Future<int> deleteChat(Contact contact) async {
+    var dbClient = await db;
+    return await dbClient.delete(message_table, where: '$receiver = ?', whereArgs: [contact.number]);
   }
 
   Future<List<Message>> getMessages() async {

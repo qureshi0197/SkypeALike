@@ -8,6 +8,7 @@ import 'package:skypealike/models/message.dart';
 import 'package:skypealike/page_views/widgets/contact_view.dart';
 import 'package:skypealike/page_views/widgets/new_chat_button.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
+import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/utils/utilities.dart';
 import 'package:skypealike/widgets/appbar.dart';
 import 'package:intl/intl.dart';
@@ -21,7 +22,6 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
-  
   var loading = true;
 
   DatabaseHelper databaseHelper = DatabaseHelper();
@@ -132,39 +132,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
     // return [];
   }
 
-  CustomAppBar customAppBar(BuildContext context) {
-    return CustomAppBar(
-      leading: IconButton(
-        icon: Icon(
-          Icons.import_contacts,
-          color: Colors.blue,
-        ),
-        onPressed: () {
-          Navigator.pushNamed(context, "/check_services");
-        },
-      ),
-      title: UserCircle(false),
-      centerTitle: true,
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(
-            Icons.search,
-            color: Colors.grey,
-          ),
-          onPressed: () {
-            Navigator.pushNamed(context, "/search_screen");
-          },
-        ),
-        // PopUpMenu(),
-      ],
-    );
-  }
-
   _getLastfetchTime() async {
     date = await sharedPreference.getLastMesgFetchedTimeStamp();
     time = Utils.convertStringToDateTime(date);
-    setState(() {
-    });
+    setState(() {});
   }
 
   Stream getPeriodicStream() async* {
@@ -180,18 +151,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppBar(context),
-      floatingActionButton: NewChatButton(),
+      // appBar: customAppBar(context),
+      floatingActionButton: UniversalVariables.onLongPress ? null : NewChatButton(),
       body: StreamBuilder(
           stream: getPeriodicStream(),
           builder: (context, snapshot) {
-            
-            if(loading){
+            if (loading) {
               return Center(child: CircularProgressIndicator());
             }
-            
+
             // time = DateTime.now();
-            
+
             if (snapshot.data == 401) {
               Fluttertoast.showToast(msg: "Session Expired");
               Navigator.pushNamedAndRemoveUntil(
@@ -207,7 +177,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
             // usersInbox = _arrangeAllMessagesForInbox(snapshot.data);
 
-            var data = snapshot.data;
+            // var data = snapshot.data;
             Future databaseMessages;
 
             // messageList = snapshot.data;
@@ -284,7 +254,10 @@ class _ChatListContainerState extends State<ChatListContainer> {
                   };
                   Contact contact = Contact.fromMap(contactInbox);
                   // Message = Message.fromMap(map)
-                  return ContactView(contact);
+                  return ContactView(
+                    contact: contact, 
+                    index: index,
+                    );
                 },
               )
         //   }

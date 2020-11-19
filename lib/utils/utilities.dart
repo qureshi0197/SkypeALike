@@ -69,4 +69,8 @@ class Utils {
   }
 
   static call(String number) => launch("tel:$number");
+
+  static onLongPress(){
+    
+  }
 }
