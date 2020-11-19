@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final formatter = DateFormat(r'''EEE, dd MMM yyyy hh:mm:ss''');
     // print(DateTime.);
     var val = (formatter.parse(time, true));
-    print(val);
+    // print(val);
     val = (val.toLocal());
     return val.millisecondsSinceEpoch;
   }

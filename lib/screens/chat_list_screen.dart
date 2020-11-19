@@ -21,6 +21,7 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
+  
   var loading = true;
 
   DatabaseHelper databaseHelper = DatabaseHelper();
@@ -29,7 +30,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   List<Message> messageList = [];
 
-  List<Contact> contacts = [];
+  // List<Contact> contacts;
+
+  var contacts;
 
   String date;
 
@@ -39,12 +42,30 @@ class _ChatListScreenState extends State<ChatListScreen> {
   void initState() {
     // TODO: implement initState
     _getAllDbContacts();
-    _getLastfetchTime();
+    // _getLastfetchTime();
   }
 
   _getAllDbContacts() async {
     contacts = await databaseHelper.getContacts();
-    setState(() {});
+    if (contacts.isEmpty) {
+      contacts = await httpService.getAllContacts(null);
+    }
+
+    if (contacts != null && contacts != 401) {
+      for (Contact contact in contacts) {
+        Future<bool> condition = databaseHelper.contactExists(contact);
+        condition.then((bool onValue) {
+          if (!onValue) {
+            databaseHelper.createContact(contact);
+          }
+        });
+      }
+    } else {
+      contacts = [];
+    }
+    setState(() {
+      loading = false;
+    });
   }
 
   _convertTimeToTimeStamp(time) {
@@ -97,7 +118,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     });
 
     usersInbox.sort((a, b) {
-      print(a['message'].timestamp);
+      // print(a['message'].timestamp);
       var aTime = _convertTimeToTimeStamp(a['message'].timestamp);
       var bTime = _convertTimeToTimeStamp(b['message'].timestamp);
       return aTime.compareTo(bTime);
@@ -143,8 +164,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
     date = await sharedPreference.getLastMesgFetchedTimeStamp();
     time = Utils.convertStringToDateTime(date);
     setState(() {
-      loading = false;
     });
+  }
+
+  Stream getPeriodicStream() async* {
+    yield* Stream.periodic(Duration(seconds: 1), (_) async {
+      // print(await httpService.getAllMessages(null));
+      return await httpService.getAllMessages(null);
+    }).asyncMap(
+      (value) async => await value,
+    );
   }
 
   @override
@@ -153,18 +182,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
       backgroundColor: Colors.white,
       appBar: customAppBar(context),
       floatingActionButton: NewChatButton(),
-      body: FutureBuilder(
-          future: httpService.getAllMessages(Utils.formatDateTime(time)),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            // if (loading) {
-            time = DateTime.now();
-            // if (snapshot.connectionState.index == 1) {
-            //   // loading = false;
-            //   return Center(
-            //     child: CircularProgressIndicator(),
-            //   );
-            // }
-            // }
+      body: StreamBuilder(
+          stream: getPeriodicStream(),
+          builder: (context, snapshot) {
+            
+            if(loading){
+              return Center(child: CircularProgressIndicator());
+            }
+            
+            // time = DateTime.now();
+            
             if (snapshot.data == 401) {
               Fluttertoast.showToast(msg: "Session Expired");
               Navigator.pushNamedAndRemoveUntil(
@@ -183,10 +210,19 @@ class _ChatListScreenState extends State<ChatListScreen> {
             var data = snapshot.data;
             Future databaseMessages;
 
-            messageList = snapshot.data;
+            // messageList = snapshot.data;
             if (snapshot.data != null && snapshot.data != 401)
-              for (Message message in snapshot.data) {
-                databaseHelper.createMessage(message);
+              // for (Message message in snapshot.data) {
+              //   databaseHelper.createMessage(message);
+              // }
+
+              for (var message in snapshot.data) {
+                Future<bool> condition = databaseHelper.searchMessages(message);
+                condition.then((bool onValue) {
+                  if (!onValue) {
+                    databaseHelper.createMessage(message);
+                  }
+                });
               }
 
             databaseMessages = databaseHelper.getMessages();
@@ -195,7 +231,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
             return FutureBuilder(
               future: databaseMessages,
               builder: (context, snapshot) {
-                if (snapshot.connectionState.index == 1) {
+                if (snapshot.connectionState.index == 1 &&
+                    messageList.isEmpty) {
                   return Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.data != null) {

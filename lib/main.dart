@@ -27,7 +27,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
   bool login = null;
   checkLogin() async {
     login = await sharedPreference.checklogin();
-    print(login);
+    // print(login);
     setState(() {});
     return;
   }

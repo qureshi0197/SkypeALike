@@ -92,7 +92,7 @@ class DatabaseHelper{
     
     contact.id = await dbClient.insert(contact_table, contact.toMap(contact));
     
-    print(contact);
+    // print(contact);
     return contact;
 
     /* RAW QUERY 
@@ -138,6 +138,19 @@ class DatabaseHelper{
     whereArgs: [contact.number]);
   }
 
+  Future<bool> contactExists(Contact contact) async {
+    var dbClient = await db;
+    List<Map> recieverMapList =  await dbClient.query(contact_table, 
+    where: '$number = ?', 
+    whereArgs: [contact.number]);
+
+    if(recieverMapList.isEmpty){
+      return false;
+    }
+    
+    return true;
+  }
+
   Future<int> updateContact(Contact contact) async {
     var dbClient = await db;
     contact.number = '+'+contact.number;
@@ -152,7 +165,7 @@ class DatabaseHelper{
     var dbClient = await db;
     await dbClient.insert(message_table, message.toMap());
     
-    print(message);
+    // print(message);
     return message;
   }
 

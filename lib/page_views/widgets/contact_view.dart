@@ -82,7 +82,9 @@ class _ViewLayoutState extends State<ViewLayout> {
       //   stream: _chatMethods.fetchLastMessageBetween(
       //       senderId: userProvider.getUser.uid, receiverId: contact.uid),
       // ),
-      leading: CircleAvatar(child: Text(widget.contact.initials())),
+      leading: CircleAvatar(child: widget.contact.initials() == '' 
+      ? Icon(Icons.person, color: Colors.white,)
+      : Text(widget.contact.initials())),
       
       trailing: IconButton(
         
