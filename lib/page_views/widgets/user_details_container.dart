@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
+import 'package:skypealike/screens/edit_un_pw_screen.dart';
 import 'package:skypealike/screens/login_page.dart';
 import 'package:skypealike/services/http_service.dart';
 import 'package:skypealike/utils/universal_variables.dart';
@@ -69,13 +70,30 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
                       padding: const EdgeInsets.all(8.0),
                       child: Center(child: CircularProgressIndicator()),
                     )
-                  : FlatButton(
-                      onPressed: () => signOut(),
-                      child: Text(
-                        "Sign Out",
-                        style: TextStyle(
-                            color: UniversalVariables.blueColor, fontSize: 18),
-                      ),
+                  : Wrap(
+                      // spacing: 2.0,
+                      children: <Widget>[
+                        IconButton(
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditUsernamePassword())),
+                          icon: Icon(
+                            Icons.edit,
+                            color: UniversalVariables.gradientColorEnd,
+                          ),
+                        ),
+                        FlatButton(
+                          onPressed: () => signOut(),
+                          child: Text(
+                            "Sign Out",
+                            style: TextStyle(
+                                color: UniversalVariables.gradientColorEnd,
+                                fontSize: 18),
+                          ),
+                        ),
+                      ],
                     )
             ],
           ),
@@ -135,9 +153,7 @@ class UserDetailsBody extends StatelessWidget {
                   Text(
                     "${user.number}",
                     style: TextStyle(
-                        fontSize: 16, 
-                        color: UniversalVariables.greyColor
-                        ),
+                        fontSize: 16, color: UniversalVariables.greyColor),
                   ),
                   // IconButton(icon: Icon(Icons.edit), onPressed: null)
                 ],
@@ -154,9 +170,7 @@ class UserDetailsBody extends StatelessWidget {
               Text(
                 user.password,
                 style: TextStyle(
-                    fontSize: 16, 
-                    color: UniversalVariables.greyColor
-                    ),
+                    fontSize: 16, color: UniversalVariables.greyColor),
               ),
             ],
           ),
