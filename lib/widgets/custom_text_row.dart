@@ -12,14 +12,21 @@ Widget customTextRow({
   int maxLength,
   String hintText,
   bool enabled,
+  bool generalMessage,
+  int maxLines
 }) {
   // if(maxLength)
   if (enabled == null) {
     enabled = true;
   }
+  if (generalMessage == null){
+    generalMessage = false;
+    maxLines = 1;
+  }
   var text_field_icon_color = UniversalVariables.gradientColorEnd;
   var text_field_padding = const EdgeInsets.only(bottom: 15.0);
   var text_Field_height = 50.0;
+  var message_field_height = maxLines * 20.0;
   return Padding(
     padding: text_field_padding,
     child: Column(
@@ -38,8 +45,10 @@ Widget customTextRow({
         Container(
           alignment: Alignment.centerLeft,
           decoration: eBoxDecorationStyle,
-          height: text_Field_height,
+          height: generalMessage ? message_field_height : text_Field_height,
+          // height: text_Field_height,
           child: TextField(
+            maxLines: maxLines,
             enabled: enabled,
             inputFormatters: inputFormator,
             controller: controller,

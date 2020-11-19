@@ -7,6 +7,7 @@ class UniversalVariables {
 // GLOBAL COLORS
   static List<Contact> selectedContacts = [];
   static bool onLongPress = false;
+  static String generalMessage = '';
   static final Color sendMessageColor = Colors.blue[200];
   static final Color receiveMessageColor = Colors.blue[100];
 

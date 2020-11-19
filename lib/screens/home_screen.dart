@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
 import 'package:skypealike/screens/chat_list_screen.dart';
 import 'package:skypealike/provider/user_provider.dart';
+import 'package:skypealike/screens/settings_screen.dart';
 // import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:intl/intl.dart';
@@ -132,13 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: PageView(
         children: [
           ChatListScreen(),
-          // loading
-          // ?
-          // Center(
-          //     child: CircularProgressIndicator(),
-          //   )
-          // :
+          
           Container(child: ContactListScreen()),
+          
+          SettingsScreen(),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
@@ -175,6 +173,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               : UniversalVariables.greyColor),
                       title: Text(
                         "Contacts",
+                        style: TextStyle(
+                            fontSize: _labelFontSize,
+                            color: (_page == 1)
+                                ? UniversalVariables.lightBlueColor
+                                : Colors.grey),
+                      ),
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.settings,
+                          color: (_page == 2)
+                              ? UniversalVariables.lightBlueColor
+                              : UniversalVariables.greyColor),
+                      title: Text(
+                        "Settings",
                         style: TextStyle(
                             fontSize: _labelFontSize,
                             color: (_page == 2)
