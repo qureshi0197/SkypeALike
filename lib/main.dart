@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skypealike/provider/image_upload_provider.dart';
@@ -12,6 +11,7 @@ import 'package:splashscreen/splashscreen.dart';
 import 'models/user.dart';
 import 'utils/shared_preferences.dart';
 
+GlobalKey mainPageGlobalKey = GlobalKey();
 SharedPreference sharedPreference = SharedPreference();
 User user = User();
 void main() => runApp(SkypeAlike());
@@ -46,6 +46,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
     // Contact contact = Contact(first_name: 'Abdullah Qureshi');
     // SharedPreference sharedPreference = SharedPreference();
     return MultiProvider(
+      key: mainPageGlobalKey,
       providers: [
         ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
         // ChangeNotifierProvider(create: (_) => UserProvider()),
@@ -58,7 +59,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
           '/search_screen': (context) => SearchScreen(),
           '/login_screen': (context) => Login(),
           '/home_screen': (context) => HomeScreen(),
-          '/add_contact_screen':(context) => AddContect(),
+          '/add_contact_screen': (context) => AddContect(),
           // '/edit_contact_screen': (context) => EditContact(contact),
         },
         theme: ThemeData(primarySwatch: Colors.blue),

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:skypealike/models/contact.dart';
 
 class UniversalVariables {
-
-  
 // GLOBAL COLORS
   static List<Contact> selectedContacts = [];
+  static List<String> selectedContactsNumber = [];
   static bool onLongPress = false;
   static String generalMessage = '';
   static final Color sendMessageColor = Colors.blue[200];

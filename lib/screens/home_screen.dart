@@ -91,115 +91,91 @@ class _HomeScreenState extends State<HomeScreen> {
     double _labelFontSize = 10;
 
     return Scaffold(
-      appBar: UniversalVariables.onLongPress
-          ? AppBar(
-            backgroundColor: Colors.white,
-              title: null,
-              centerTitle: null,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: UniversalVariables.gradientColorEnd,
-                ),
-                onPressed: () {
-                  setState(() {
-                    UniversalVariables.onLongPress = false;
-                  });
-                },
-              ),
-              actions: <Widget>[
-                IconButton(icon: Icon(Icons.delete), onPressed: null)
-              ],
-            )
-          : AppBar(
-            backgroundColor: Colors.white,
-              leading: Container(),
-              title: UserCircle(false),
-              centerTitle: true,
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.search,
-                    color: UniversalVariables.gradientColorEnd,
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/search_screen");
-                  },
-                ),
-                // PopUpMenu(),
-              ],
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: Container(),
+        title: UserCircle(false),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: UniversalVariables.gradientColorEnd,
             ),
+            onPressed: () {
+              Navigator.pushNamed(context, "/search_screen");
+            },
+          ),
+          // PopUpMenu(),
+        ],
+      ),
       backgroundColor: Colors.white,
       body: PageView(
         children: [
           ChatListScreen(),
-          
           Container(child: ContactListScreen()),
-          
           SettingsScreen(),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
-        physics: UniversalVariables.onLongPress
-            ? NeverScrollableScrollPhysics()
-            : null,
+        // physics: UniversalVariables.onLongPress
+        //     ? NeverScrollableScrollPhysics()
+        //     : null,
       ),
-      bottomNavigationBar: UniversalVariables.onLongPress
-          ? Container()
-          : Container(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: CupertinoTabBar(
-                  backgroundColor: Colors.white,
-                  items: <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.chat,
-                          color: (_page == 0)
-                              ? UniversalVariables.lightBlueColor
-                              : UniversalVariables.greyColor),
-                      title: Text(
-                        "Chats",
-                        style: TextStyle(
-                            fontSize: _labelFontSize,
-                            color: (_page == 0)
-                                ? UniversalVariables.lightBlueColor
-                                : Colors.grey),
-                      ),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.contacts,
-                          color: (_page == 1)
-                              ? UniversalVariables.lightBlueColor
-                              : UniversalVariables.greyColor),
-                      title: Text(
-                        "Contacts",
-                        style: TextStyle(
-                            fontSize: _labelFontSize,
-                            color: (_page == 1)
-                                ? UniversalVariables.lightBlueColor
-                                : Colors.grey),
-                      ),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.settings,
-                          color: (_page == 2)
-                              ? UniversalVariables.lightBlueColor
-                              : UniversalVariables.greyColor),
-                      title: Text(
-                        "Settings",
-                        style: TextStyle(
-                            fontSize: _labelFontSize,
-                            color: (_page == 2)
-                                ? UniversalVariables.lightBlueColor
-                                : Colors.grey),
-                      ),
-                    ),
-                  ],
-                  onTap: navigationTapped,
-                  currentIndex: _page,
+      bottomNavigationBar: Container(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: CupertinoTabBar(
+            backgroundColor: Colors.white,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.chat,
+                    color: (_page == 0)
+                        ? UniversalVariables.lightBlueColor
+                        : UniversalVariables.greyColor),
+                title: Text(
+                  "Chats",
+                  style: TextStyle(
+                      fontSize: _labelFontSize,
+                      color: (_page == 0)
+                          ? UniversalVariables.lightBlueColor
+                          : Colors.grey),
                 ),
               ),
-            ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.contacts,
+                    color: (_page == 1)
+                        ? UniversalVariables.lightBlueColor
+                        : UniversalVariables.greyColor),
+                title: Text(
+                  "Contacts",
+                  style: TextStyle(
+                      fontSize: _labelFontSize,
+                      color: (_page == 1)
+                          ? UniversalVariables.lightBlueColor
+                          : Colors.grey),
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings,
+                    color: (_page == 2)
+                        ? UniversalVariables.lightBlueColor
+                        : UniversalVariables.greyColor),
+                title: Text(
+                  "Settings",
+                  style: TextStyle(
+                      fontSize: _labelFontSize,
+                      color: (_page == 2)
+                          ? UniversalVariables.lightBlueColor
+                          : Colors.grey),
+                ),
+              ),
+            ],
+            onTap: navigationTapped,
+            currentIndex: _page,
+          ),
+        ),
+      ),
     );
   }
 }

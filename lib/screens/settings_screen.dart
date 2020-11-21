@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: <Widget>[
                 _genericMessage(),
                 Container(
-                  alignment: Alignment.centerRight,
+                    alignment: Alignment.centerRight,
                     child: FlatButton(
                         onPressed: () => ChatScreen(),
                         color: UniversalVariables.gradientColorEnd,
@@ -56,17 +56,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _genericMessage() {
     return customTextRow(
-      // enabled: false,
-      icon: Icons.textsms,
-      maxLines: 5,
-      generalMessage: true,
-      title: "General Message",
-      onChnaged: (val) {
-        genericMessage.text = val;
-      },
-      controller: genericMessage,
-      hintText: "Enter a general message"
-      // inputFormator: [WhitelistingTextInputFormatter(RegExp(r"[0-9]"))]
-    );
+        // enabled: false,
+        icon: Icons.textsms,
+        maxLines: 5,
+        generalMessage: true,
+        title: "General Message",
+        onChnaged: (val) {
+          print(val);
+          // genericMessage.text = val;
+        },
+        controller: genericMessage,
+        hintText: "Enter a general message"
+        // inputFormator: [WhitelistingTextInputFormatter(RegExp(r"[0-9]"))]
+        );
   }
 }
