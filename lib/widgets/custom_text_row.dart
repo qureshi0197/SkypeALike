@@ -11,11 +11,16 @@ Widget customTextRow({
   List<TextInputFormatter> inputFormator,
   int maxLength,
   String hintText,
+  bool obscureText,
+  IconButton suffixIcon,
   bool enabled,
   bool generalMessage,
   int maxLines
 }) {
   // if(maxLength)
+  if(obscureText == null){
+    obscureText = false;
+  }
   if (enabled == null) {
     enabled = true;
   }
@@ -48,6 +53,7 @@ Widget customTextRow({
           height: generalMessage ? message_field_height : text_Field_height,
           // height: text_Field_height,
           child: TextField(
+            obscureText: obscureText,
             maxLines: maxLines,
             enabled: enabled,
             inputFormatters: inputFormator,
@@ -63,6 +69,11 @@ Widget customTextRow({
                 icon,
                 color: text_field_icon_color,
               ),
+              suffixIcon: suffixIcon,
+              // Icon(
+              //   suffixIcon,
+              //   color: text_field_icon_color,
+              //   ),
               hintText: hintText,
               hintStyle: eHintTextStyle,
             ),

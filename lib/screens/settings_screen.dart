@@ -62,7 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       generalMessage: true,
       title: "General Message",
       onChnaged: (val) {
-        genericMessage.text = val;
+        UniversalVariables.generalMessage = val;
       },
       controller: genericMessage,
       hintText: "Enter a general message"

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
-import 'package:skypealike/screens/edit_un_pw_screen.dart';
+import 'package:skypealike/screens/edit_password_screen.dart';
 import 'package:skypealike/screens/login_page.dart';
 import 'package:skypealike/services/http_service.dart';
 import 'package:skypealike/utils/universal_variables.dart';
@@ -70,21 +70,7 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
                       padding: const EdgeInsets.all(8.0),
                       child: Center(child: CircularProgressIndicator()),
                     )
-                  : Wrap(
-                      // spacing: 2.0,
-                      children: <Widget>[
-                        IconButton(
-                          onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      EditUsernamePassword())),
-                          icon: Icon(
-                            Icons.edit,
-                            color: UniversalVariables.gradientColorEnd,
-                          ),
-                        ),
-                        FlatButton(
+                  : FlatButton(
                           onPressed: () => signOut(),
                           child: Text(
                             "Sign Out",
@@ -93,8 +79,8 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
                                 fontSize: 18),
                           ),
                         ),
-                      ],
-                    )
+                    //   ],
+                    // )
             ],
           ),
           UserDetailsBody(),
@@ -159,19 +145,65 @@ class UserDetailsBody extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 10),
-              Text(
-                "Password",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: UniversalVariables.blackColor,
-                ),
+              // Text(
+              //   "Password",
+              //   style: TextStyle(
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 18,
+              //     color: UniversalVariables.blackColor,
+              //   ),
+              // ),
+              Row(
+                children: <Widget>[
+                  FlatButton(
+                    color: UniversalVariables.gradientColorEnd,
+                    onPressed: () => Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => 
+                        EditPassword())
+                      ), 
+                    
+                    child: Text("Edit Password", 
+                      style: TextStyle(
+                        color: Colors.white
+                        ),
+                    )
+                  )
+                ],
               ),
-              Text(
-                user.password,
-                style: TextStyle(
-                    fontSize: 16, color: UniversalVariables.greyColor),
-              ),
+              // Row(
+              //   children: <Widget>[
+              //     Column(
+              //         children: <Widget>[
+              //           Text(
+              //         user.password,
+                    
+              //         style: TextStyle(
+              //             fontSize: 16, color: UniversalVariables.greyColor),
+              //         ),
+              //       ],
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //     ),
+              //     // SizedBox(width: 240,),
+              //     Column(
+              //       crossAxisAlignment: CrossAxisAlignment.end,
+              //       children: <Widget>[
+              //           IconButton(
+              //             onPressed: () => Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                     builder: (context) =>
+              //                         EditPassword())),
+              //             icon: Icon(
+              //               Icons.edit,
+              //               color: UniversalVariables.gradientColorEnd,
+              //             ),
+              //           )
+              //       ]
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ],

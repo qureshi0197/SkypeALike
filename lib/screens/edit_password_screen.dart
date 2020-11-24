@@ -7,13 +7,13 @@ import 'package:skypealike/widgets/custom_text_row.dart';
 
 import '../main.dart';
 
-class EditUsernamePassword extends StatefulWidget {
+class EditPassword extends StatefulWidget {
   
   @override
-  _EditUsernamePasswordState createState() => _EditUsernamePasswordState();
+  _EditPasswordState createState() => _EditPasswordState();
 }
 
-class _EditUsernamePasswordState extends State<EditUsernamePassword> {
+class _EditPasswordState extends State<EditPassword> {
   Contact contact = Contact();
 
   var text_Field_height = 50.0;
@@ -22,17 +22,32 @@ class _EditUsernamePasswordState extends State<EditUsernamePassword> {
 
   var text_field_color = UniversalVariables.greyColor;
 
-  var username = TextEditingController.fromValue(TextEditingValue(text: ""));
+  var oldPassword = TextEditingController.fromValue(TextEditingValue(text: ""));
 
-  var password = TextEditingController.fromValue(TextEditingValue(text: ""));
+  var newPassword = TextEditingController.fromValue(TextEditingValue(text: ""));
 
   var confirmPassword =
       TextEditingController.fromValue(TextEditingValue(text: ""));
 
-  var number = TextEditingController.fromValue(TextEditingValue(text: ""));
+  // var number = TextEditingController.fromValue(TextEditingValue(text: ""));
 
   bool loading = false;
 
+  bool op_toggle = false;
+
+  bool np_toggle = false;
+
+  bool cp_toggle = false;
+
+  int onPressed = 0;
+  
+  String old_Password = '';
+
+  String new_Password = '';
+
+  String confirm_Password = '';
+
+  Color _color = UniversalVariables.greyColor;
   // Future<List<Contact>> contacts;
 
   // DatabaseHelper dbHelper = DatabaseHelper();
@@ -51,9 +66,9 @@ class _EditUsernamePasswordState extends State<EditUsernamePassword> {
     //   // contact.number = string[1];
     // }
 
-    username.text = user.name;
-    password.text = user.password;
-    number.text = user.number;
+    // username.text = user.name;
+    // password.text = user.password;
+    // number.text = user.number;
     // email.text = contact.email;
     // address.text = contact.address;
     // company.text = contact.company;
@@ -91,7 +106,7 @@ class _EditUsernamePasswordState extends State<EditUsernamePassword> {
                       loading = true;
                     });
 
-                    if (username != confirmPassword) {
+                    if (oldPassword.text != user.password) {
                       Fluttertoast.showToast(msg: "Passwords Do Not Match");
                     } else {
                       // var response = await httpService.updateContact(contact);
@@ -118,9 +133,8 @@ class _EditUsernamePasswordState extends State<EditUsernamePassword> {
           child: Container(
             child: Column(
               children: <Widget>[
-                _username(),
-                _number(),
-                _password(),
+                _oldPassword(),
+                _newPassword(),
                 _confirmPassword(),
               ],
             ),
@@ -130,50 +144,96 @@ class _EditUsernamePasswordState extends State<EditUsernamePassword> {
     );
   }
 
-  Widget _number() {
-    return customTextRow(
-      enabled: false,
-      icon: Icons.phone,
-      title: "Phone Number",
-      onChnaged: (val) {
-        // number.text = contact.number;
-      },
-      controller: number,
-      // inputFormator: [WhitelistingTextInputFormatter(RegExp(r"[0-9]"))]
+  Widget _iconButton(int textrow){
+    return IconButton(
+        icon: Icon(Icons.remove_red_eye),
+        // Fix icon color issue onPressed should be separate for all
+        color: _color, 
+        onPressed: () {
+          if(textrow == 1)
+          {
+            onPressed = 1;
+            if(op_toggle = true){
+              op_toggle = false;
+              _color = UniversalVariables.greyColor;
+            }
+            else{
+              op_toggle = true;
+              _color = UniversalVariables.gradientColorEnd;
+            }
+            print(textrow);
+          }
+          else if(textrow == 2)
+          {
+            onPressed = 2;
+            if(np_toggle = true){
+              np_toggle = false;
+              _color = UniversalVariables.greyColor;
+            }
+            else{
+              np_toggle = true;
+              _color = UniversalVariables.gradientColorEnd;
+            }
+            print(textrow);
+          }
+          else if(textrow == 3)
+          {
+            onPressed = 3;
+            if(cp_toggle = true){
+              cp_toggle = false;
+              _color = UniversalVariables.greyColor;
+            }
+            else{
+              cp_toggle = true;
+              _color = UniversalVariables.gradientColorEnd;
+            }
+            print(textrow);
+          }
+          setState(() {
+          });
+      }
     );
   }
 
-  Widget _username() {
+  Widget _oldPassword() {
     return customTextRow(
-        icon: Icons.person,
-        title: "User Name",
+        obscureText: op_toggle ? false : true,
+        suffixIcon: _iconButton(1),
+        icon: Icons.lock_outline,
+        title: "Old Password",
         onChnaged: (val) {
-          username = val;
+          old_Password = val;
         },
-        controller: username);
+        controller: oldPassword,
+        hintText: "Current password"
+        );
   }
 
-  Widget _password() {
+  Widget _newPassword() {
     return customTextRow(
+      obscureText: np_toggle ? false : true,
+      suffixIcon: _iconButton(2),
         icon: Icons.lock_outline,
-        title: "Password",
+        title: "New Password",
         onChnaged: (val) {
-          password = val;
+          new_Password = val;
         },
-        controller: password);
+        controller: newPassword,
+        hintText: "New Password"
+        );
   }
 
   Widget _confirmPassword() {
     return customTextRow(
-      // enabled: false,
+      obscureText: cp_toggle ? false : true,
+      suffixIcon: _iconButton(3),
       icon: Icons.lock_outline,
       title: "Confirm Password",
       onChnaged: (val) {
-        confirmPassword = val;
+        confirm_Password = val;
       },
       controller: confirmPassword,
       hintText: "Rewrite password"
-      // inputFormator: [WhitelistingTextInputFormatter(RegExp(r"[0-9]"))]
     );
   }
 }
