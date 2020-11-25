@@ -24,6 +24,10 @@ class HttpService {
   static String ADD_CONTACT = SERVER + "contact/register";
   static String UPDATE_CONTACT = SERVER + "contact/modify";
   static String SEND_MESSAGE = SERVER + "message/send";
+  static String DELETE_MESSAGE = SERVER + "message/delete";
+  static String DELETE_CONTACT = SERVER + "contact/delete";
+  static String CHANGE_PASSWORD = SERVER + "customer/password_change";
+  static String WELCOME_MESSAGE = SERVER + "customer/ welcome_message_change";
 
   // toLoginMap()
   Future<bool> signOut() async {

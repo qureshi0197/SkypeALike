@@ -153,7 +153,7 @@ class _EditPasswordState extends State<EditPassword> {
           if(textrow == 1)
           {
             onPressed = 1;
-            if(op_toggle = true){
+            if(op_toggle == true){
               op_toggle = false;
               _color = UniversalVariables.greyColor;
             }
@@ -166,7 +166,7 @@ class _EditPasswordState extends State<EditPassword> {
           else if(textrow == 2)
           {
             onPressed = 2;
-            if(np_toggle = true){
+            if(np_toggle == true){
               np_toggle = false;
               _color = UniversalVariables.greyColor;
             }
@@ -179,7 +179,7 @@ class _EditPasswordState extends State<EditPassword> {
           else if(textrow == 3)
           {
             onPressed = 3;
-            if(cp_toggle = true){
+            if(cp_toggle == true){
               cp_toggle = false;
               _color = UniversalVariables.greyColor;
             }
