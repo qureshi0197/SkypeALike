@@ -220,6 +220,50 @@ class HttpService {
     return 200;
   }
 
+  Future<dynamic> deleteContact(Contact contact) async {
+    SharedPreference sharedPreference = SharedPreference();
+    String session = await sharedPreference.session();
+    var body = jsonEncode(contact.toMap(contact));
+
+    var header = {"Cookie": session};
+    Response response;
+
+    header['Content-Type'] = "application/json";
+    response = await post(DELETE_CONTACT, headers: header, body: body);
+
+    // print(response.body);
+    if (response.statusCode == 401) {
+      return 401;
+    } else if (response.statusCode != 200) {
+      Fluttertoast.showToast(msg: "Error saving contact");
+      return null;
+    }
+
+    return 200;
+  }
+
+  Future<dynamic> deleteMessage(Message message) async {
+    SharedPreference sharedPreference = SharedPreference();
+    String session = await sharedPreference.session();
+    var body = jsonEncode(message.toMap());
+
+    var header = {"Cookie": session};
+    Response response;
+
+    header['Content-Type'] = "application/json";
+    response = await post(DELETE_MESSAGE, headers: header, body: body);
+
+    // print(response.body);
+    if (response.statusCode == 401) {
+      return 401;
+    } else if (response.statusCode != 200) {
+      Fluttertoast.showToast(msg: "Error saving contact");
+      return null;
+    }
+
+    return 200;
+  }
+
   Future<dynamic> sendMessage(Map message) async {
     DatabaseHelper databaseHelper = DatabaseHelper();
     SharedPreference sharedPreference = SharedPreference();
