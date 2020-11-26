@@ -27,7 +27,7 @@ class HttpService {
   static String DELETE_MESSAGE = SERVER + "message/delete";
   static String DELETE_CONTACT = SERVER + "contact/delete";
   static String CHANGE_PASSWORD = SERVER + "customer/password_change";
-  static String WELCOME_MESSAGE = SERVER + "customer/ welcome_message_change";
+  static String WELCOME_MESSAGE = SERVER + "customer/welcome_message_change";
 
   // toLoginMap()
   Future<bool> signOut() async {
@@ -176,6 +176,68 @@ class HttpService {
     // return responseBody;
   }
 
+  Future<dynamic> welcomeMessage(String textMessage) async {
+    SharedPreference sharedPreference = SharedPreference();
+    String session = await sharedPreference.session();
+
+    var body =
+        jsonEncode({'username': user.name, 'welcome_message': textMessage});
+
+    var header = {"Cookie": session};
+    Response response;
+
+    header['Content-Type'] = "application/json";
+    try {
+      response = await post(WELCOME_MESSAGE, headers: header, body: body);
+    } catch (ex) {
+      Fluttertoast.showToast(msg: 'Connection Problem. Please Try Again');
+      return;
+    }
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      if (responseBody["resultCode"] == 0) {
+        sharedPreference.saveWelcomeMessage(textMessage);
+        return true;
+      }
+    }
+    else{
+      Fluttertoast.showToast(msg: 'Problem while connecting to the server. Please Try Again Later.');
+      return false;
+    }
+  }
+
+  Future<dynamic> changePassword(String newPassword, String oldPassword) async {
+    SharedPreference sharedPreference = SharedPreference();
+    String session = await sharedPreference.session();
+
+    var body =
+    // jsonEncode({'username': 'customer2', 'old_password': 'customer2', 'new_password': 'customer2'});
+        jsonEncode({'username': user.name, 'old_password': oldPassword, 'new_password': newPassword});
+
+    var header = {"Cookie": session};
+    Response response;
+
+    header['Content-Type'] = "application/json";
+    try {
+      response = await post(CHANGE_PASSWORD, headers: header, body: body);
+    } catch (ex) {
+      Fluttertoast.showToast(msg: 'Connection Problem. Please Try Again');
+      return;
+    }
+
+    if (response.statusCode == 200) {      
+      var responseBody = jsonDecode(response.body);
+      if (responseBody["resultCode"] == 0) {
+        sharedPreference.changePassword(newPassword);
+        return 200;
+      } else {
+        // Fluttertoast.showToast(msg: "Incorrect Old Password");
+        return response.statusCode;
+      }
+    }
+  }
+
   Future<dynamic> createContact(Contact contact) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
@@ -223,7 +285,7 @@ class HttpService {
   Future<dynamic> deleteContact(Contact contact) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
-    var body = jsonEncode(contact.toMap(contact));
+    var body = jsonEncode({'number':contact.number});
 
     var header = {"Cookie": session};
     Response response;
@@ -233,19 +295,19 @@ class HttpService {
 
     // print(response.body);
     if (response.statusCode == 401) {
-      return 401;
+      return false;
     } else if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: "Error saving contact");
-      return null;
+      Fluttertoast.showToast(msg: "Error deleteing contact");
+      return false;
     }
 
-    return 200;
+    return true;
   }
 
   Future<dynamic> deleteMessage(Message message) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
-    var body = jsonEncode(message.toMap());
+    var body = jsonEncode({'sms_id': message.sms_id});
 
     var header = {"Cookie": session};
     Response response;
@@ -257,7 +319,7 @@ class HttpService {
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: "Error saving contact");
+      Fluttertoast.showToast(msg: "Error deleteing message");
       return null;
     }
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
@@ -90,7 +92,23 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
   }
 }
 
-class UserDetailsBody extends StatelessWidget {
+class UserDetailsBody extends StatefulWidget {
+  @override
+  _UserDetailsBodyState createState() => _UserDetailsBodyState();
+}
+
+class _UserDetailsBodyState extends State<UserDetailsBody> {
+  bool passwordConition = false;
+  // String starics = '';
+
+  String createString({String text,int length}){
+    var string='';
+    for (var i = 0; i < length; i++) {
+      string=string+text;
+    }
+    return string;
+  }
+
   @override
   Widget build(BuildContext context) {
     // final UserProvider userProvider = Provider.of<UserProvider>(context);
@@ -145,30 +163,55 @@ class UserDetailsBody extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 10),
-              // Text(
-              //   "Password",
-              //   style: TextStyle(
-              //     fontWeight: FontWeight.bold,
-              //     fontSize: 18,
-              //     color: UniversalVariables.blackColor,
-              //   ),
-              // ),
+              Text(
+                "Password",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: UniversalVariables.blackColor,
+                ),
+              ),
+              Text(
+                passwordConition ? user.password:createString(length: user.password.length,text:'*'),
+                style: TextStyle(
+                  fontSize: 16, color: UniversalVariables.greyColor
+                ),
+              ),
               Row(
                 children: <Widget>[
-                  FlatButton(
-                    color: UniversalVariables.gradientColorEnd,
-                    onPressed: () => Navigator.push(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => 
-                        EditPassword())
-                      ), 
-                    
-                    child: Text("Edit Password", 
-                      style: TextStyle(
-                        color: Colors.white
-                        ),
-                    )
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FlatButton(
+                      color: UniversalVariables.gradientColorEnd,
+                      onPressed: (){passwordConition=!passwordConition;
+                      setState(() {
+                        
+                      });},
+                      
+                      child: Text(passwordConition?'Hide Password':'Show Password', 
+                        style: TextStyle(
+                          color: Colors.white
+                          ),
+                      )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FlatButton(
+                      color: UniversalVariables.gradientColorEnd,
+                      onPressed: ()  => Navigator.push(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => 
+                          EditPassword())
+                        ),  
+                      
+                      child: Text("Edit Password", 
+                        style: TextStyle(
+                          color: Colors.white
+                          ),
+                      )
+                    ),
                   )
                 ],
               ),

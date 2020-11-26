@@ -7,11 +7,13 @@ import 'package:skypealike/models/message.dart';
 import 'package:sqflite/sqflite.dart';
 import 'model/employee.dart';
 
-class DatabaseHelper{
+enum Status { deleted }
+
+class DatabaseHelper {
   static Database _database;
   static const String db_name = 'customer.db';
   static const String table_name = 'employee';
-  
+
   static const String message_table = 'message';
   static const String contact_table = 'contact';
 
@@ -35,9 +37,8 @@ class DatabaseHelper{
   static const String text = 'text';
   static const String timestamp = 'timestamp';
 
-
   Future<Database> get db async {
-    if(_database != null) {
+    if (_database != null) {
       return _database;
     }
 
@@ -47,9 +48,9 @@ class DatabaseHelper{
 
   initDb() async {
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentDirectory.path , db_name);
+    String path = join(documentDirectory.path, db_name);
 
-    var db = await openDatabase(path, version:1, onCreate: _onCreate);
+    var db = await openDatabase(path, version: 1, onCreate: _onCreate);
 
     return db;
   }
@@ -68,7 +69,8 @@ class DatabaseHelper{
         $number TEXT, 
         $address TEXT, 
         $email TEXT, 
-        $company TEXT  
+        $company TEXT, 
+        $status TEXT
         ) 
     ''');
 
@@ -84,14 +86,13 @@ class DatabaseHelper{
         $timestamp TEXT
         ) 
     ''');
-
   }
 
   Future<Contact> createContact(Contact contact) async {
     var dbClient = await db;
-    
+
     contact.id = await dbClient.insert(contact_table, contact.toMap(contact));
-    
+
     // print(contact);
     return contact;
 
@@ -106,24 +107,28 @@ class DatabaseHelper{
   Future<List<Contact>> getContacts() async {
     var dbClient = await db;
     // await dbClient.delete(contact_table, where: '$id = ?', whereArgs: []);
-    List<Map> maps = await dbClient.query(contact_table, 
-      columns: [
-        id,
-        first_name,
-        last_name,
-        number,
-        address,
-        email,
-        company,
-        ]);
-    
+    List<Map> maps = await dbClient.query(contact_table, columns: [
+      id,
+      first_name,
+      last_name,
+      number,
+      address,
+      email,
+      company,
+      status
+    ]);
+
     // RAW QUERY
     // List<Map> maps = await dbClient.query("SELECT * FROM table_name");
 
-    // ADD DATA FETCHED IN MAPS TO CONTACT LIST THROUGH LOOP 
+    // ADD DATA FETCHED IN MAPS TO CONTACT LIST THROUGH LOOP
     List<Contact> contacts = [];
-    if(maps.length > 0) {
-      for(int i = 0 ; i < maps.length ; i++){
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        if(maps[i]['status'] == 'deleted')
+        {
+          continue;
+        }
         contacts.add(Contact.fromMap(maps[i]));
       }
     }
@@ -133,87 +138,119 @@ class DatabaseHelper{
 
   Future<List<Map>> searchContact(Contact contact) async {
     var dbClient = await db;
-    return await dbClient.query(contact_table, 
-    where: '$number = ?', 
-    whereArgs: [contact.number]);
+    List<Map> contacts = await dbClient.query(contact_table,
+        where: '$number = ?', whereArgs: [contact.number]);
+    print(contacts);
+    if(contacts.isEmpty){
+      return [];
+    }
+    if(contacts[0]['status'] == 'deleted'){
+      return [];
+    }
+    return contacts;
   }
 
   Future<bool> contactExists(Contact contact) async {
     var dbClient = await db;
-    List<Map> recieverMapList =  await dbClient.query(contact_table, 
-    where: '$number = ?', 
-    whereArgs: [contact.number]);
+    List<Map> recieverMapList = await dbClient.query(contact_table,
+        where: '$number = ?', whereArgs: [contact.number]);
 
-    if(recieverMapList.isEmpty){
+    if (recieverMapList.isEmpty || recieverMapList[0]['status'] == 'deleted') {
       return false;
     }
-    
+
     return true;
   }
 
   Future<int> updateContact(Contact contact) async {
     var dbClient = await db;
-    contact.number = '+'+contact.number;
-    return await dbClient.update(contact_table, contact.toMap(contact), 
-    where: '$number = ?', 
-    whereArgs: [contact.number]);
+    contact.number = '+' + contact.number;
+    return await dbClient.update(contact_table, contact.toMap(contact),
+        where: '$number = ?', whereArgs: [contact.number]);
   }
-  
+
   Future<int> deleteContact(Contact contact) async {
     var dbClient = await db;
-    return await dbClient.delete(contact_table, where: '$number = ?', whereArgs: [contact.number]);
+    // List<Map> tempContactMap = await searchContact(contact);
+    // Contact tempContact = Contact();
+    // if(tempContactMap.isNotEmpty){
+    //   var tContact = tempContactMap[0];
+    //   tempContact = Contact.fromMap(tContact);
+    // }
+
+    // // contact.status = 'deleted';
+    // tempContact.status = 'deleted';
+
+    return await dbClient.delete(contact_table,where: '$number = ?', whereArgs: [contact.number]);
+    // return await dbClient.update(contact_table,contact.toMap(contact),
+    //     where: '$number = ?', whereArgs: [contact.number]);
   }
 
   Future<Message> createMessage(Message message) async {
     var dbClient = await db;
     await dbClient.insert(message_table, message.toMap());
-    
+
     // print(message);
     return message;
   }
 
   Future<bool> searchMessages(Message message) async {
     var dbClient = await db;
-    
+
     List<Message> messages = [];
 
-    List<Map> recieverMapList =  await dbClient.query(message_table, 
-    where: '$sms_id = ?', 
-    whereArgs: [message.sms_id]);
+    List<Map> recieverMapList = await dbClient.query(message_table,
+        where: '$sms_id = ?', whereArgs: [message.sms_id]);
 
-    if(recieverMapList.isEmpty){
+    if (recieverMapList.isEmpty) {
       return false;
     }
-    
+
     return true;
   }
 
   Future<int> deleteMessages(Message message) async {
     var dbClient = await db;
-    return await dbClient.delete(message_table, where: '$sms_id = ?', whereArgs: [message.sms_id]);
+    message.status = 'deleted';
+    return await dbClient.update(message_table,message.toMap(),
+        where: '$sms_id = ?', whereArgs: [message.sms_id]);
   }
 
-  Future<int> deleteChat(Contact contact) async {
+  // ignore: missing_return
+  Future<int> deleteChat(String number) async {
     var dbClient = await db;
-    return await dbClient.delete(message_table, where: '$receiver = ?', whereArgs: [contact.number]);
+    Message tempMessage = Message(receiver: number,status: 'deleted');
+
+    // await dbClient.rawUpdate(
+    //   'UPDATE $message_table SET status = ? WHERE number = ?',
+    //   ['deleted',number]
+    // );
+
+    await dbClient.update(message_table, tempMessage.toMap(),
+        where: '$receiver = ?', whereArgs: [number]);
+    tempMessage = Message(sender: number,status: 'deleted');    
+    await dbClient.update(message_table, tempMessage.toMap(),
+        where: '$sender = ?', whereArgs: [number]);
   }
 
   Future<List<Message>> getMessages() async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query(message_table, 
-      columns: [
-        sms_id,
-        direction,
-        receiver,
-        sender,
-        status,
-        text,
-        timestamp
-        ]);
-    
+    List<Map> maps = await dbClient.query(message_table, columns: [
+      sms_id,
+      direction,
+      receiver,
+      sender,
+      status,
+      text,
+      timestamp
+    ]);
+
     List<Message> messages = [];
-    if(maps.length > 0) {
-      for(int i = 0 ; i < maps.length ; i++){
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        if(maps[i]['status'] == 'deleted'){
+          continue;
+        }
         messages.add(Message.fromMap(maps[i]));
       }
     }
@@ -221,26 +258,11 @@ class DatabaseHelper{
     return messages;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ADD AN EMPLOYEE IN DATABASE
   Future<Employee> save(Employee employee) async {
     var dbClient = await db;
     employee.id = await dbClient.insert(table_name, employee.toMap());
-    
+
     return employee;
 
     /* RAW QUERY 
@@ -251,19 +273,18 @@ class DatabaseHelper{
     */
   }
 
-
 // GET EMPLOYEES FROM DATABASE
   Future<List<Employee>> getEmployees() async {
     var dbClient = await db;
     List<Map> maps = await dbClient.query(table_name, columns: [id, name]);
-    
+
     // RAW QUERY
     // List<Map> maps = await dbClient.query("SELECT * FROM table_name");
 
-    // ADD DATA FETCHED IN MAPS TO EMPLOYEE LIST THROUGH LOOP 
+    // ADD DATA FETCHED IN MAPS TO EMPLOYEE LIST THROUGH LOOP
     List<Employee> employees = [];
-    if(maps.length > 0) {
-      for(int i = 0 ; i < maps.length ; i++){
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
         employees.add(Employee.fromMap(maps[i]));
       }
     }
@@ -273,7 +294,8 @@ class DatabaseHelper{
 
   Future<int> update(Employee employee) async {
     var dbClient = await db;
-    return await dbClient.update(table_name, employee.toMap(), where: '$id = ?', whereArgs: [employee.id]);
+    return await dbClient.update(table_name, employee.toMap(),
+        where: '$id = ?', whereArgs: [employee.id]);
   }
 
   // THERE IS SOME ISSUE WITH DELETE FUNCTION -> FIX IT (Note to Myself)

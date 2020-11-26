@@ -6,6 +6,7 @@ class Contact  {
   String number,first_name,last_name,address,company,email,message;
   var avatar;
   int id;
+  String status;
 
   Contact({
     this.id,
@@ -16,6 +17,7 @@ class Contact  {
     this.number,
     this.address,
     this.company,
+    this.status
     // this.uid,
     // this.addedOn,
     // this.suffix,
@@ -55,7 +57,7 @@ class Contact  {
     data['address'] = contact.address;
     data['company'] = contact.company;
     data['email'] = contact.email;
-    
+    data['status'] = contact.status;
     return data;
   }
 
@@ -72,6 +74,12 @@ class Contact  {
     this.address = mapData['address'];
     this.company = mapData['company'];
     this.email = mapData['email'];
+    if(mapData.containsKey('status')){
+      this.status = mapData['status'];
+    }
+    else{
+      this.status = 'active';
+    }
     this.avatar = null;
   }
 }

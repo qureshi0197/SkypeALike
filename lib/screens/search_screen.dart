@@ -21,16 +21,15 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController searchController = TextEditingController();
 
   var loading = true;
-  List<Contact> allContects;
-  getAllContacts()async{
+  List<Contact> allContects = [];
+  getAllContacts() async {
     var response = await httpService.getAllContacts(null);
-    if(response == null){
+    if (response == null) {
       Fluttertoast.showToast(msg: "No Contects Found");
-    }
-    else if(response == 401){
-      Navigator.pushNamedAndRemoveUntil(context, '/login_screen', (route)=> false);
-    }
-    else{
+    } else if (response == 401) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/login_screen', (route) => false);
+    } else {
       allContects = response;
     }
 
@@ -47,13 +46,14 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   searchAppBar(BuildContext context) {
-    return 
-    // loading ? Scaffold(body: Center(child:CircularProgressIndicator()))
-    // :
-    GradientAppBar(
-      gradient: LinearGradient(
-        colors: [UniversalVariables.gradientColorStart, UniversalVariables.gradientColorEnd]
-        ),
+    return
+        // loading ? Scaffold(body: Center(child:CircularProgressIndicator()))
+        // :
+        GradientAppBar(
+      gradient: LinearGradient(colors: [
+        UniversalVariables.gradientColorStart,
+        UniversalVariables.gradientColorEnd
+      ]),
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Navigator.pop(context),
@@ -83,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 onPressed: () {
                   WidgetsBinding.instance
                       .addPostFrameCallback((_) => searchController.clear());
-                      
+
                   setState(() {
                     query = '';
                   });
@@ -104,14 +104,14 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   buildSuggestions(String query) {
-    if(loading)
-    return Center(child:CircularProgressIndicator());
+    if (loading) return Center(child: CircularProgressIndicator());
 
     final List<Contact> suggestionList = query.isEmpty
         ? []
         : allContects.where((Contact contact) {
-
-            String _getUsername = contact.first_name.toLowerCase()+" "+contact.last_name.toLowerCase();
+            String _getUsername = contact.first_name.toLowerCase() +
+                " " +
+                contact.last_name.toLowerCase();
             String _query = query.toLowerCase();
             // String _getName = contact.last_name.toLowerCase();
             String _getNumber = contact.number.toLowerCase();
@@ -120,54 +120,52 @@ class _SearchScreenState extends State<SearchScreen> {
             bool matchesNumber = _getNumber.contains(_query);
 
             return (matchesUsername || matchesNumber);
-
           }).toList();
-    
-    if(suggestionList.isEmpty){
-      return Center(child: Text('No Contacts Found'),);
-    }
-    else
 
-    return ListView.builder(
-      itemCount: suggestionList.length,
-      itemBuilder: ((context, index) {
-        Contact contactUser = Contact(
-            // uid: suggestionList[index].uid,
-            first_name: suggestionList[index].first_name,
-            last_name: suggestionList[index].last_name,
-            number: suggestionList[index].number
-            );
-        return CustomTile(
-          mini: false,
-          onTap: () {
-            Navigator.push(context, 
-              MaterialPageRoute(
-                builder: (context) => ChatScreen(
-                  receiver: contactUser,
-                )
-              )
-            );
-          },
-          leading: CircleAvatar(child: Text(contactUser.initials()),),
-          // leading: CircleAvatar(
-          //   backgroundImage: NetworkImage(searchedUser.profilePhoto),
-          //   backgroundColor: Colors.grey,
-          // ),
-          title: Text(
-            contactUser.first_name+' '+contactUser.last_name,
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+    if (suggestionList.isEmpty) {
+      return Center(
+        child: Text('No Contacts Found'),
+      );
+    } else
+      return ListView.builder(
+        itemCount: suggestionList.length,
+        itemBuilder: ((context, index) {
+          Contact contactUser = Contact(
+              // uid: suggestionList[index].uid,
+              first_name: suggestionList[index].first_name,
+              last_name: suggestionList[index].last_name,
+              number: suggestionList[index].number);
+          return CustomTile(
+            mini: false,
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChatScreen(
+                            receiver: contactUser,
+                          )));
+            },
+            leading: CircleAvatar(
+              child: Text(contactUser.initials()),
             ),
-          ),
-          subtitle: Text(
-            contactUser.number,
-            style: TextStyle(color: UniversalVariables.greyColor),
-          ),
-
-        );
-      }),
-    );
+            // leading: CircleAvatar(
+            //   backgroundImage: NetworkImage(searchedUser.profilePhoto),
+            //   backgroundColor: Colors.grey,
+            // ),
+            title: Text(
+              contactUser.first_name + ' ' + contactUser.last_name,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              contactUser.number,
+              style: TextStyle(color: UniversalVariables.greyColor),
+            ),
+          );
+        }),
+      );
   }
 
   @override

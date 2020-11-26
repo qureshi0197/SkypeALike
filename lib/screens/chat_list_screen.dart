@@ -6,6 +6,7 @@ import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/message.dart';
 import 'package:skypealike/page_views/widgets/contact_view.dart';
+import 'package:skypealike/page_views/widgets/floating_action_button.dart';
 import 'package:skypealike/page_views/widgets/new_chat_button.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
 import 'package:skypealike/utils/universal_variables.dart';
@@ -14,6 +15,7 @@ import 'package:skypealike/widgets/appbar.dart';
 import 'package:intl/intl.dart';
 
 import '../main.dart';
+import 'chat_screen.dart';
 
 class ChatListScreen extends StatefulWidget {
   // var inbox;
@@ -23,6 +25,8 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen> {
   var loading = true;
+
+  UniversalVariables uVariables = UniversalVariables();
 
   DatabaseHelper databaseHelper = DatabaseHelper();
 
@@ -152,7 +156,54 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       // appBar: customAppBar(context),
-      floatingActionButton: UniversalVariables.onLongPress ? null : NewChatButton(),
+      floatingActionButton: uVariables.onLongPress
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                uVariables.onLongPress
+                    ? CustomFloatingActionButton(
+                        onPressed: () {
+                          if (Utils.selectAll(usersInbox,uVariables.selectedContactsNumber)) {
+                            uVariables.selectedContactsNumber = [];
+                            uVariables.onLongPress = false;
+                          } else {
+                            uVariables.onLongPress = true;
+                            for (var message in usersInbox) {
+                              if (!uVariables.selectedContactsNumber
+                                  .contains(message['number']))
+                                uVariables.selectedContactsNumber
+                                    .add(message['number']);
+                            }
+                          }
+                          setState(() {});
+                        },
+                        icon: Utils.selectAll(usersInbox,uVariables.selectedContactsNumber)
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
+                      )
+                    : SizedBox(),
+                SizedBox(
+                  height: 10,
+                ),
+                CustomFloatingActionButton(
+                  onPressed: ()async {
+                    for (String number in uVariables.selectedContactsNumber) {
+                      await databaseHelper.deleteChat(number);
+                      Fluttertoast.showToast(msg: 'Chat Deleted Successfully');
+                    }
+                    setState(() {
+                    });
+
+                    uVariables.selectedContactsNumber = [];
+                    uVariables.onLongPress = false;
+
+                    
+                  },
+                  icon: Icons.delete,
+                ),
+              ],
+            )
+          : NewChatButton(),
       body: StreamBuilder(
           stream: getPeriodicStream(),
           builder: (context, snapshot) {
@@ -168,24 +219,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   context, '/login_screen', (Route route) => false);
               sharedPreference.logout();
             }
-            // if (snapshot.data == null) {
-            //   return Center(
-            //     child: Text("No Messages"),
-            //   );
-            // }
-            // inbox = snapshot.data;
-
-            // usersInbox = _arrangeAllMessagesForInbox(snapshot.data);
-
-            // var data = snapshot.data;
+            
             Future databaseMessages;
 
-            // messageList = snapshot.data;
             if (snapshot.data != null && snapshot.data != 401)
-              // for (Message message in snapshot.data) {
-              //   databaseHelper.createMessage(message);
-              // }
-
+            
               for (var message in snapshot.data) {
                 Future<bool> condition = databaseHelper.searchMessages(message);
                 condition.then((bool onValue) {
@@ -213,30 +251,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
                 usersInbox = _arrangeAllMessagesForInbox(messageList);
 
-                return ChatListContainer(usersInbox);
+                return chatListContainer();
               },
             );
           }),
     );
   }
-}
 
-class ChatListContainer extends StatefulWidget {
-  List inbox = List();
-  ChatListContainer(this.inbox);
-
-  @override
-  _ChatListContainerState createState() => _ChatListContainerState();
-}
-
-class _ChatListContainerState extends State<ChatListContainer> {
-  Stream<QuerySnapshot> check;
-
-  @override
-  Widget build(BuildContext context) {
-    // final UserProvider userProvider = Provider.of<UserProvider>(context);
+  chatListContainer() {
     return Container(
-        child: widget.inbox.isEmpty
+        child: usersInbox.isEmpty
             ? Center(
                 child:
                     // CircularProgressIndicator(),
@@ -244,27 +268,136 @@ class _ChatListContainerState extends State<ChatListContainer> {
               )
             : ListView.builder(
                 padding: EdgeInsets.all(10),
-                itemCount: widget.inbox.length,
+                itemCount: usersInbox.length,
                 itemBuilder: (context, index) {
                   var contactInbox = {
-                    "first_name": widget.inbox[index]['first_name'],
-                    "last_name": widget.inbox[index]['last_name'],
-                    "number": widget.inbox[index]['number'],
-                    "message": widget.inbox[index]['message'].text
+                    "first_name": usersInbox[index]['first_name'],
+                    "last_name": usersInbox[index]['last_name'],
+                    "number": usersInbox[index]['number'],
+                    "message": usersInbox[index]['message'].text
                   };
                   Contact contact = Contact.fromMap(contactInbox);
                   // Message = Message.fromMap(map)
-                  return ContactView(
-                    contact: contact, 
+                  return contactView(
+                    contact: contact,
                     index: index,
-                    );
+                  );
                 },
               )
-        //   }
-        //   return Center(
-        //     child: CircularProgressIndicator(),
-        //   );
-        // }),
         );
   }
+
+  contactView({Contact contact, int index}) {
+    return ListTile(
+      // tileColor: UniversalVariables.onLongPress &&
+      //         uVariables.selectedContactsNumber.contains(contact.number)
+      //     ? Colors.grey
+      //     : Colors.white,
+      contentPadding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+      onTap: () async {
+        if (uVariables.onLongPress) {
+          if (!uVariables.selectedContactsNumber
+              .contains(contact.number)) {
+            uVariables.selectedContactsNumber.add(contact.number);
+          } else {
+            uVariables.selectedContactsNumber.remove(contact.number);
+          }
+          if (uVariables.selectedContactsNumber.isEmpty) {
+            uVariables.onLongPress = false;
+          }
+        } else {
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChatScreen(
+                        receiver: contact,
+                      )));
+        }
+        setState(() {});
+      },
+      title: Text(
+        Utils.checkNames(contact),
+        style:
+            TextStyle(color: Colors.black, fontFamily: "Arial", fontSize: 19),
+      ),
+      subtitle: Text(
+        contact.message,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      leading: CircleAvatar(
+          backgroundColor: Utils.isSelectedTile(contact,uVariables.onLongPress,uVariables.selectedContactsNumber) ? Colors.grey : null,
+          child: Utils.isSelectedTile(contact,uVariables.onLongPress,uVariables.selectedContactsNumber)
+              ? Icon(
+                  Icons.check,
+                  color: Colors.white,
+                )
+              : contact.initials() == ''
+                  ? Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    )
+                  : Text(contact.initials())),
+      trailing: Utils.isSelectedTile(contact,uVariables.onLongPress,uVariables.selectedContactsNumber)
+          ? Container()
+          : IconButton(
+              onPressed: () => Utils.call(contact.number),
+              icon: Icon(Icons.call),
+              color: UniversalVariables.gradientColorEnd,
+            ),
+      onLongPress: () => setState(() {
+        uVariables.selectedContactsNumber.add(contact.number);
+        uVariables.onLongPress = true;
+        // Utils.onLongPress();
+      }),
+    );
+  }
 }
+
+// class ChatListContainer extends StatefulWidget {
+//   List inbox = List();
+//   ChatListContainer(this.inbox);
+
+//   @override
+//   _ChatListContainerState createState() => _ChatListContainerState();
+// }
+
+// class _ChatListContainerState extends State<ChatListContainer> {
+//   Stream<QuerySnapshot> check;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // final UserProvider userProvider = Provider.of<UserProvider>(context);
+//     return Container(
+//         child: widget.inbox.isEmpty
+//             ? Center(
+//                 child:
+//                     // CircularProgressIndicator(),
+//                     Text('No Messages'),
+//               )
+//             : ListView.builder(
+//                 padding: EdgeInsets.all(10),
+//                 itemCount: widget.inbox.length,
+//                 itemBuilder: (context, index) {
+//                   var contactInbox = {
+//                     "first_name": widget.inbox[index]['first_name'],
+//                     "last_name": widget.inbox[index]['last_name'],
+//                     "number": widget.inbox[index]['number'],
+//                     "message": widget.inbox[index]['message'].text
+//                   };
+//                   Contact contact = Contact.fromMap(contactInbox);
+//                   // Message = Message.fromMap(map)
+//                   return ContactView(
+//                     contact: contact,
+//                     index: index,
+//                   );
+//                 },
+//               )
+//         //   }
+//         //   return Center(
+//         //     child: CircularProgressIndicator(),
+//         //   );
+//         // }),
+//         );
+//   }
+// }

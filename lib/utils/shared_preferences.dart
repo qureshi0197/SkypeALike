@@ -13,6 +13,22 @@ class SharedPreference {
   // SharedPreference() {
   //   _getInstance();
   // }
+  Future saveWelcomeMessage(String text)async{
+    sp = await SharedPreferences.getInstance();
+    sp.setString('welcomeMessage', text);
+  }
+
+  Future changePassword(String new_password) async {
+    sp = await SharedPreferences.getInstance();
+    user.password = new_password;
+    await sp.setString('password', user.password);
+  }
+
+  Future getWelcomeMessage()async{
+    sp = await SharedPreferences.getInstance();
+    return sp.getString('welcomeMessage') ?? '';
+  }
+
   Future login(session) async {
     sp = await SharedPreferences.getInstance();
     try {
