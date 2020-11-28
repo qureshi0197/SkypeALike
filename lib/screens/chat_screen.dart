@@ -183,8 +183,7 @@ class _ChatScreenState extends State<ChatScreen> {
         return FutureBuilder(
           future: dbHelper.getMessages(),
           builder: (context, snapshot) {
-            
-            if (snapshot.connectionState.index == 1 && userChat.isEmpty){
+            if (snapshot.connectionState.index == 1 && userChat.isEmpty) {
               return Center(child: CircularProgressIndicator());
             }
             userChat = [];
@@ -315,10 +314,9 @@ class _ChatScreenState extends State<ChatScreen> {
     // Message _message = Message.fromMap(snapshot);
 
     return GestureDetector(
-      onTap: (){
-        if(uVariable.onLongPress){
-          if (!uVariable.selectedMessagesIds
-              .contains(message.sms_id)) {
+      onTap: () {
+        if (uVariable.onLongPress) {
+          if (!uVariable.selectedMessagesIds.contains(message.sms_id)) {
             uVariable.selectedMessagesIds.add(message.sms_id);
           } else {
             uVariable.selectedMessagesIds.remove(message.sms_id);
@@ -329,18 +327,16 @@ class _ChatScreenState extends State<ChatScreen> {
         }
         setState(() {});
       },
-      onLongPress: (){
-        if(!uVariable.selectedMessagesIds.contains(message.sms_id))
-        uVariable.selectedMessagesIds.add(message.sms_id);
-        uVariable.onLongPress=true;
-        setState(() {
-          
-        });
+      onLongPress: () {
+        if (!uVariable.selectedMessagesIds.contains(message.sms_id))
+          uVariable.selectedMessagesIds.add(message.sms_id);
+        uVariable.onLongPress = true;
+        setState(() {});
       },
-          child: Container(
+      child: Container(
         margin: EdgeInsets.symmetric(vertical: 8),
         child: Container(
-          // color: Utils.isSelectedTile(Contact(number: message.sms_id), uVariable.onLongPress, uVariable.selectedMessagesIds)?Colors.grey:null,
+            // color: Utils.isSelectedTile(Contact(number: message.sms_id), uVariable.onLongPress, uVariable.selectedMessagesIds)?Colors.grey:null,
             alignment: message.direction == "outbound"
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
@@ -360,7 +356,10 @@ class _ChatScreenState extends State<ChatScreen> {
           // no matter how long a message is it wont take more than 65% of the screen
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.65),
       decoration: BoxDecoration(
-        color: Utils.isSelectedTile(Contact(number: message.sms_id), uVariable.onLongPress, uVariable.selectedMessagesIds) ? Colors.grey :UniversalVariables.blueColor,
+        color: Utils.isSelectedTile(Contact(number: message.sms_id),
+                uVariable.onLongPress, uVariable.selectedMessagesIds)
+            ? Colors.grey
+            : UniversalVariables.blueColor,
         borderRadius: BorderRadius.only(
           topLeft: messageRadius,
           topRight: messageRadius,
@@ -391,8 +390,10 @@ class _ChatScreenState extends State<ChatScreen> {
           // no matter how long a message is it wont take more than 65% of the screen
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.65),
       decoration: BoxDecoration(
-        color: Utils.isSelectedTile(Contact(number: message.sms_id), uVariable.onLongPress, uVariable.selectedMessagesIds)?Colors.grey:
-        UniversalVariables.sendMessageColor,
+        color: Utils.isSelectedTile(Contact(number: message.sms_id),
+                uVariable.onLongPress, uVariable.selectedMessagesIds)
+            ? Colors.grey
+            : UniversalVariables.sendMessageColor,
         borderRadius: BorderRadius.only(
           bottomRight: messageRadius,
           topRight: messageRadius,
@@ -529,97 +530,109 @@ class _ChatScreenState extends State<ChatScreen> {
 
   CustomAppBar customAppBar(context, {Widget leading}) {
     // var uVariable2 = uVariable;
-        return CustomAppBar(
-          leading: leading != null
-              ? leading
-              : IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-          centerTitle: false,
-          title: Text(
-            Utils.checkNames(receiver),
-            style: TextStyle(color: UniversalVariables.blackColor),
-          ),
-          actions: <Widget>[
-            uVariable.onLongPress ?
-            Container(
-              child: Wrap(
-                children: <Widget>[
-                  IconButton(
-                  icon: Icon(Icons.delete,color: UniversalVariables.gradientColorEnd,),
-                  onPressed: ()async{
-                    for (String messageId in uVariable.selectedMessagesIds) {
-                      Message tempMessage = Message(sms_id: messageId); 
-                      await dbHelper.deleteMessages(tempMessage);
-                    }
-                    setState(() {
-                    });
-                    uVariable.onLongPress=false;
-                    uVariable.selectedMessagesIds = [];
-                  }),
-                  IconButton(
-                    color: UniversalVariables.gradientColorEnd,
-                     onPressed: () {
-                          if (Utils.selectAll(userChat,uVariable.selectedMessagesIds)) {
-                            uVariable.selectedMessagesIds = [];
-                            uVariable.onLongPress = false;
-                          } else {
-                            uVariable.onLongPress = true;
-                            for (var message in userChat) {
-                              if (!uVariable.selectedMessagesIds
-                                  .contains(message.sms_id))
-                                uVariable.selectedMessagesIds
-                                    .add(message.sms_id);
-                            }
-                          }
-                          setState(() {});
-                        },
-                        icon: Utils.selectAll(userChat,uVariable.selectedMessagesIds)
-                            ? Icon(Icons.check_box)
-                            : Icon(Icons.check_box_outline_blank),
-                    )
-                ],
+    return CustomAppBar(
+      leading: leading != null
+          ? leading
+          : IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.black,
               ),
-            )
-            :
-        contactFound
-            ? IconButton(
-                onPressed: () => Utils.call(receiver.number),
-                icon: Icon(Icons.add_call),
-                color: UniversalVariables.gradientColorEnd,
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+      centerTitle: false,
+      title: Text(
+        Utils.checkNames(receiver),
+        style: TextStyle(color: UniversalVariables.blackColor),
+      ),
+      actions: <Widget>[
+        uVariable.onLongPress
+            ? Container(
+                child: Wrap(
+                  children: <Widget>[
+                    IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: UniversalVariables.gradientColorEnd,
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            loading = true;
+                          });
+                          for (String messageId
+                              in uVariable.selectedMessagesIds) {
+                            Message tempMessage = Message(sms_id: messageId);
+                            var response =
+                                await httpService.deleteMessage(tempMessage);
+                            // if (response == 200)
+                            await dbHelper.deleteMessages(tempMessage);
+                          }
+                          setState(() {
+                            loading = false;
+                          });
+                          uVariable.onLongPress = false;
+                          uVariable.selectedMessagesIds = [];
+                        }),
+                    IconButton(
+                      color: UniversalVariables.gradientColorEnd,
+                      onPressed: () {
+                        if (Utils.selectAll(
+                            userChat, uVariable.selectedMessagesIds)) {
+                          uVariable.selectedMessagesIds = [];
+                          uVariable.onLongPress = false;
+                        } else {
+                          uVariable.onLongPress = true;
+                          for (var message in userChat) {
+                            if (!uVariable.selectedMessagesIds
+                                .contains(message.sms_id))
+                              uVariable.selectedMessagesIds.add(message.sms_id);
+                          }
+                        }
+                        setState(() {});
+                      },
+                      icon: Utils.selectAll(
+                              userChat, uVariable.selectedMessagesIds)
+                          ? Icon(Icons.check_box)
+                          : Icon(Icons.check_box_outline_blank),
+                    )
+                  ],
+                ),
               )
-            : Wrap(
-                spacing: 3,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () =>
-                        {Utils.call(receiver.number), setState(() {})},
+            : contactFound
+                ? IconButton(
+                    onPressed: () => Utils.call(receiver.number),
                     icon: Icon(Icons.add_call),
                     color: UniversalVariables.gradientColorEnd,
-                  ),
-                  IconButton(
-                      icon: Icon(
-                        Icons.person_add,
+                  )
+                : Wrap(
+                    spacing: 3,
+                    children: <Widget>[
+                      IconButton(
+                        onPressed: () =>
+                            {Utils.call(receiver.number), setState(() {})},
+                        icon: Icon(Icons.add_call),
                         color: UniversalVariables.gradientColorEnd,
                       ),
+                      IconButton(
+                          icon: Icon(
+                            Icons.person_add,
+                            color: UniversalVariables.gradientColorEnd,
+                          ),
 
-                      // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON
-                      // ELSE SHOW
-                      onPressed: () async {
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditContact(receiver)));
-                        // await _checkContact();
-                        setState(() {});
-                      })
-                ],
-              ),
+                          // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON
+                          // ELSE SHOW
+                          onPressed: () async {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditContact(receiver, update: false)));
+                            // await _checkContact();
+                            setState(() {});
+                          })
+                    ],
+                  ),
 
         // IconButton(
         //   icon: Icon(Icons.phone, color: UniversalVariables.greyColor),

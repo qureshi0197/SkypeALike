@@ -170,14 +170,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           if (Utils.selectAll(
                               usersInbox, uVariables.selectedContactsNumber)) {
                             uVariables.selectedContactsNumber = [];
+                            uVariables.selectedUserInbox = [];
                             uVariables.onLongPress = false;
                           } else {
                             uVariables.onLongPress = true;
-                            for (var message in usersInbox) {
+                            for (var userinbox in usersInbox) {
                               if (!uVariables.selectedContactsNumber
-                                  .contains(message['number']))
+                                  .contains(userinbox['number']))
                                 uVariables.selectedContactsNumber
-                                    .add(message['number']);
+                                    .add(userinbox['number']);
+                              uVariables.selectedUserInbox
+                                  .add(userinbox['message']);
                             }
                           }
                           setState(() {});
@@ -193,15 +196,25 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ),
                 CustomFloatingActionButton(
                   onPressed: () async {
+                    setState(() {
+                      loading = true;
+                    });
                     for (String number in uVariables.selectedContactsNumber) {
-                      await databaseHelper.deleteChat(number).then((value) {
-                        setState(() {});
-                      });
+                      for (Message message in uVariables.selectedUserInbox) {
+                        await httpService.deleteMessage(message);
+                      }
+                      await databaseHelper.deleteChat(number);
+                      // .then((value) {
+                      // setState(() {});
+                      // });
                       Fluttertoast.showToast(msg: 'Chat Deleted Successfully');
                     }
-                    setState(() {});
+                    setState(() {
+                      loading = true;
+                    });
 
                     uVariables.selectedContactsNumber = [];
+                    uVariables.selectedUserInbox = [];
                     uVariables.onLongPress = false;
                   },
                   icon: Icons.delete,
@@ -301,8 +314,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
         if (uVariables.onLongPress) {
           if (!uVariables.selectedContactsNumber.contains(contact.number)) {
             uVariables.selectedContactsNumber.add(contact.number);
+            uVariables.selectedUserInbox.addAll(usersInbox[index]);
           } else {
             uVariables.selectedContactsNumber.remove(contact.number);
+            uVariables.selectedUserInbox.remove(usersInbox[index]);
           }
           if (uVariables.selectedContactsNumber.isEmpty) {
             uVariables.onLongPress = false;
@@ -354,6 +369,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             ),
       onLongPress: () => setState(() {
         uVariables.selectedContactsNumber.add(contact.number);
+        uVariables.selectedUserInbox.add(usersInbox[index]);
         uVariables.onLongPress = true;
         // Utils.onLongPress();
       }),

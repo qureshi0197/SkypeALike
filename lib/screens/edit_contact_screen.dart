@@ -13,14 +13,20 @@ import '../main.dart';
 
 class EditContact extends StatefulWidget {
   Contact contact;
-  EditContact(this.contact);
+  bool update;
+  EditContact(this.contact, {bool update}) {
+    if (update == null) {
+      update = true;
+    } else {
+      this.update = update;
+    }
+  }
 
   @override
   _EditContactState createState() => _EditContactState();
 }
 
 class _EditContactState extends State<EditContact> {
-
   Contact contact = Contact();
 
   var text_Field_height = 50.0;
@@ -46,16 +52,16 @@ class _EditContactState extends State<EditContact> {
   Future<List<Contact>> contacts;
 
   DatabaseHelper dbHelper = DatabaseHelper();
-    
+
   @override
   void initState() {
     // TODO: implement initState
-    
+
     // dbHelper = DatabaseHelper();
     // isUpdating = false;
-    
+
     contact = widget.contact;
-    
+
     if (contact.number[0] == '+') {
       contact.number = contact.number.substring(1);
       // contact.number = string[1];
@@ -67,7 +73,7 @@ class _EditContactState extends State<EditContact> {
     email.text = contact.email;
     address.text = contact.address;
     company.text = contact.company;
-  
+
     refreshList();
   }
 
@@ -102,9 +108,24 @@ class _EditContactState extends State<EditContact> {
                           loading = true;
                         });
 
-                        var response = await httpService.updateContact(contact);
-                        dbHelper.updateContact(contact);
-
+                        var response;
+                        if (widget.update) {
+                          response = await httpService.updateContact(contact);
+                          if (response == 200) {
+                            if (contact.number[0] != '+') {
+                              contact.number = '+' + contact.number;
+                            }
+                            dbHelper.updateContact(contact);
+                          }
+                        } else {
+                          response = await httpService.createContact(contact);
+                          // if (response == 200) {
+                          if (contact.number[0] != '+') {
+                            contact.number = '+' + contact.number;
+                          }
+                          dbHelper.createContact(contact);
+                          // }
+                        }
                         if (response == 401) {
                           Fluttertoast.showToast(msg: "Session Expired");
                           Navigator.pushNamedAndRemoveUntil(

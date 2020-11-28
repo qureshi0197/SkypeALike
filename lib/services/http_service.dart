@@ -200,9 +200,10 @@ class HttpService {
         sharedPreference.saveWelcomeMessage(textMessage);
         return true;
       }
-    }
-    else{
-      Fluttertoast.showToast(msg: 'Problem while connecting to the server. Please Try Again Later.');
+    } else {
+      Fluttertoast.showToast(
+          msg:
+              'Problem while connecting to the server. Please Try Again Later.');
       return false;
     }
   }
@@ -212,8 +213,12 @@ class HttpService {
     String session = await sharedPreference.session();
 
     var body =
-    // jsonEncode({'username': 'customer2', 'old_password': 'customer2', 'new_password': 'customer2'});
-        jsonEncode({'username': user.name, 'old_password': oldPassword, 'new_password': newPassword});
+        // jsonEncode({'username': 'customer2', 'old_password': 'customer2', 'new_password': 'customer2'});
+        jsonEncode({
+      'username': user.name,
+      'old_password': oldPassword,
+      'new_password': newPassword
+    });
 
     var header = {"Cookie": session};
     Response response;
@@ -226,7 +231,7 @@ class HttpService {
       return;
     }
 
-    if (response.statusCode == 200) {      
+    if (response.statusCode == 200) {
       var responseBody = jsonDecode(response.body);
       if (responseBody["resultCode"] == 0) {
         sharedPreference.changePassword(newPassword);
@@ -241,7 +246,28 @@ class HttpService {
   Future<dynamic> createContact(Contact contact) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
-    var body = jsonEncode(contact.toMap(contact));
+    if (contact.address == null) {
+      contact.address = '';
+    }
+    if (contact.company == null) {
+      contact.company = '';
+    }
+    if (contact.email == null) {
+      contact.email = '';
+    }
+    if (contact.first_name == null) {
+      contact.first_name = '';
+    }
+    if (contact.last_name == null) {
+      contact.last_name = '';
+    }
+    // if (contact. == null) {
+    //   contact. = '';
+    // }
+    Map contactMap = contact.toMap(contact);
+    contactMap.remove('status');
+    contactMap.remove('id');
+    var body = jsonEncode(contactMap);
 
     var header = {"Cookie": session};
     Response response;
@@ -285,7 +311,7 @@ class HttpService {
   Future<dynamic> deleteContact(Contact contact) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
-    var body = jsonEncode({'number':contact.number});
+    var body = jsonEncode({'contact_number': contact.number});
 
     var header = {"Cookie": session};
     Response response;

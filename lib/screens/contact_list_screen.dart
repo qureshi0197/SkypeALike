@@ -85,10 +85,11 @@ class _ContactListScreenState extends State<ContactListScreen> {
                     for (String number in uVariables.selectedContactsNumber) {
                       Contact tempContact = Contact(number: number);
                       var response =
+                          // true;
                           await httpService.deleteContact(tempContact);
-                      if (response) {
-                        await dbHelper.deleteContact(tempContact);
-                      }
+                      // if (response) {
+                      await dbHelper.deleteContact(tempContact);
+                      // }
                     }
 
                     setState(() {
@@ -133,7 +134,11 @@ class _ContactListScreenState extends State<ContactListScreen> {
                 contactList = snapshot.data;
                 if (snapshot.data != null && snapshot.data != 401)
                   for (Contact contact in snapshot.data) {
-                    dbHelper.createContact(contact);
+                    dbHelper.contactExists(contact).then((value) {
+                      if (!value) {
+                        dbHelper.createContact(contact);
+                      }
+                    });
                   }
 
                 // contactList = dbHelper.getContacts();
@@ -162,7 +167,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                     contact,
                                     uVariables.onLongPress,
                                     uVariables.selectedContactsNumber)
-                                ? Container()
+                                ? SizedBox()
                                 // Icon(
                                 //     Icons.delete,
                                 //     color: Colors.grey,

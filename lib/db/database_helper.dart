@@ -90,7 +90,7 @@ class DatabaseHelper {
 
   Future<Contact> createContact(Contact contact) async {
     var dbClient = await db;
-
+    contact.status = 'active';
     contact.id = await dbClient.insert(contact_table, contact.toMap(contact));
 
     // print(contact);

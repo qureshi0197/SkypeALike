@@ -6,6 +6,7 @@ class UniversalVariables {
 // GLOBAL COLORS
   List<Contact> selectedContacts = [];
   List<String> selectedContactsNumber = [];
+  List selectedUserInbox = [];
   bool onLongPress = false;
   List<String> selectedMessagesIds = [];
   // bool onLongPress_chat = false;
