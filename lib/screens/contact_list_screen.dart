@@ -53,7 +53,8 @@ class _ContactListScreenState extends State<ContactListScreen> {
                 uVariables.onLongPress
                     ? CustomFloatingActionButton(
                         onPressed: () {
-                          if (Utils.selectAll(contactList,uVariables.selectedContactsNumber)) {
+                          if (Utils.selectAll(
+                              contactList, uVariables.selectedContactsNumber)) {
                             uVariables.selectedContactsNumber = [];
                             uVariables.onLongPress = false;
                           } else {
@@ -67,7 +68,8 @@ class _ContactListScreenState extends State<ContactListScreen> {
                           }
                           setState(() {});
                         },
-                        icon: Utils.selectAll(contactList,uVariables.selectedContactsNumber)
+                        icon: Utils.selectAll(
+                                contactList, uVariables.selectedContactsNumber)
                             ? Icons.check_box
                             : Icons.check_box_outline_blank,
                       )
@@ -76,28 +78,26 @@ class _ContactListScreenState extends State<ContactListScreen> {
                   height: 10,
                 ),
                 CustomFloatingActionButton(
-                  onPressed: () async{
-
+                  onPressed: () async {
                     setState(() {
-                      loading=true;
+                      loading = true;
                     });
-                    for (String number in uVariables.selectedContactsNumber) {                
-                      Contact tempContact = Contact(number: number);                      
-                      var response = await httpService.deleteContact(tempContact);
-                      if(response){
-                      await dbHelper.deleteContact(tempContact);
-                       }
+                    for (String number in uVariables.selectedContactsNumber) {
+                      Contact tempContact = Contact(number: number);
+                      var response =
+                          await httpService.deleteContact(tempContact);
+                      if (response) {
+                        await dbHelper.deleteContact(tempContact);
+                      }
                     }
 
                     setState(() {
-                      loading=false;
+                      loading = false;
                     });
 
-                    
                     uVariables.selectedContactsNumber = [];
                     uVariables.onLongPress = false;
-                    setState(() {
-                    });
+                    setState(() {});
                   },
                   icon: Icons.delete,
                 ),
@@ -158,7 +158,10 @@ class _ContactListScreenState extends State<ContactListScreen> {
                           // print(contact.phones.elementAt(0));
                           // print(contact.email);
                           return ListTile(
-                            trailing: Utils.isSelectedTile(contact,uVariables.onLongPress,uVariables.selectedContactsNumber)
+                            trailing: Utils.isSelectedTile(
+                                    contact,
+                                    uVariables.onLongPress,
+                                    uVariables.selectedContactsNumber)
                                 ? Container()
                                 // Icon(
                                 //     Icons.delete,
@@ -206,10 +209,8 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                   uVariables.selectedContactsNumber
                                       .remove(contact.number);
                                 }
-                                if (uVariables
-                                    .selectedContactsNumber.isEmpty) {
-                                  uVariables.onLongPress =
-                                      false;
+                                if (uVariables.selectedContactsNumber.isEmpty) {
+                                  uVariables.onLongPress = false;
                                 }
                               } else {
                                 await Navigator.push(
@@ -224,10 +225,16 @@ class _ContactListScreenState extends State<ContactListScreen> {
                             title: Text(contact.first_name),
                             subtitle: Text(contact.number),
                             leading: CircleAvatar(
-                                backgroundColor: Utils.isSelectedTile(contact,uVariables.onLongPress,uVariables.selectedContactsNumber)
+                                backgroundColor: Utils.isSelectedTile(
+                                        contact,
+                                        uVariables.onLongPress,
+                                        uVariables.selectedContactsNumber)
                                     ? Colors.grey
                                     : null,
-                                child: Utils.isSelectedTile(contact,uVariables.onLongPress,uVariables.selectedContactsNumber)
+                                child: Utils.isSelectedTile(
+                                        contact,
+                                        uVariables.onLongPress,
+                                        uVariables.selectedContactsNumber)
                                     ? Icon(
                                         Icons.check,
                                         color: Colors.white,
@@ -240,7 +247,8 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                         : Text(contact.initials())),
                             onLongPress: () => setState(() {
                               uVariables.selectedContacts.add(contact);
-                              uVariables.selectedContactsNumber.add(contact.number);
+                              uVariables.selectedContactsNumber
+                                  .add(contact.number);
                               uVariables.onLongPress = true;
                               // Utils.onLongPress();
                             }),

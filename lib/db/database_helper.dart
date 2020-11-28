@@ -125,8 +125,7 @@ class DatabaseHelper {
     List<Contact> contacts = [];
     if (maps.length > 0) {
       for (int i = 0; i < maps.length; i++) {
-        if(maps[i]['status'] == 'deleted')
-        {
+        if (maps[i]['status'] == 'deleted') {
           continue;
         }
         contacts.add(Contact.fromMap(maps[i]));
@@ -141,10 +140,10 @@ class DatabaseHelper {
     List<Map> contacts = await dbClient.query(contact_table,
         where: '$number = ?', whereArgs: [contact.number]);
     print(contacts);
-    if(contacts.isEmpty){
+    if (contacts.isEmpty) {
       return [];
     }
-    if(contacts[0]['status'] == 'deleted'){
+    if (contacts[0]['status'] == 'deleted') {
       return [];
     }
     return contacts;
@@ -181,7 +180,8 @@ class DatabaseHelper {
     // // contact.status = 'deleted';
     // tempContact.status = 'deleted';
 
-    return await dbClient.delete(contact_table,where: '$number = ?', whereArgs: [contact.number]);
+    return await dbClient.delete(contact_table,
+        where: '$number = ?', whereArgs: [contact.number]);
     // return await dbClient.update(contact_table,contact.toMap(contact),
     //     where: '$number = ?', whereArgs: [contact.number]);
   }
@@ -212,30 +212,34 @@ class DatabaseHelper {
   Future<int> deleteMessages(Message message) async {
     var dbClient = await db;
     message.status = 'deleted';
-    return await dbClient.update(message_table,message.toMap(),
+    return await dbClient.update(message_table, message.toMap(),
         where: '$sms_id = ?', whereArgs: [message.sms_id]);
   }
 
   // ignore: missing_return
   Future<int> deleteChat(String number) async {
     var dbClient = await db;
-    Message tempMessage = Message(receiver: number,status: 'deleted');
+    Message tempMessage = Message(receiver: number, status: 'deleted');
 
     // await dbClient.rawUpdate(
     //   'UPDATE $message_table SET status = ? WHERE number = ?',
     //   ['deleted',number]
     // );
 
-    await dbClient.update(message_table, tempMessage.toMap(),
+    await dbClient.update(message_table, {'status': 'deleted'},
         where: '$receiver = ?', whereArgs: [number]);
-    tempMessage = Message(sender: number,status: 'deleted');    
-    await dbClient.update(message_table, tempMessage.toMap(),
+    print(await dbClient
+        .query(message_table, where: '$receiver = ?', whereArgs: [number]));
+    tempMessage = Message(sender: number, status: 'deleted');
+    await dbClient.update(message_table, {'status': 'deleted'},
         where: '$sender = ?', whereArgs: [number]);
+    print(await dbClient
+        .query(message_table, where: '$receiver = ?', whereArgs: [number]));
   }
 
   Future<List<Message>> getMessages() async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query(message_table, columns: [
+    List maps = await dbClient.query(message_table, columns: [
       sms_id,
       direction,
       receiver,
@@ -248,7 +252,7 @@ class DatabaseHelper {
     List<Message> messages = [];
     if (maps.length > 0) {
       for (int i = 0; i < maps.length; i++) {
-        if(maps[i]['status'] == 'deleted'){
+        if (maps[i]['status'] == 'deleted') {
           continue;
         }
         messages.add(Message.fromMap(maps[i]));

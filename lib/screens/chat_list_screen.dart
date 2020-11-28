@@ -91,6 +91,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
     // if (data.containsKey('data')) {
     //   Map val = data['data'];
     for (Message mesg in messagesList) {
+      // print(mesg.status);
+      if (mesg.status == 'deleted') {
+        continue;
+      }
       if (mesg.direction == "outbound") {
         if (!otherUserKeys.contains(mesg.receiver))
           otherUserKeys.add(mesg.receiver);
@@ -163,7 +167,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 uVariables.onLongPress
                     ? CustomFloatingActionButton(
                         onPressed: () {
-                          if (Utils.selectAll(usersInbox,uVariables.selectedContactsNumber)) {
+                          if (Utils.selectAll(
+                              usersInbox, uVariables.selectedContactsNumber)) {
                             uVariables.selectedContactsNumber = [];
                             uVariables.onLongPress = false;
                           } else {
@@ -177,7 +182,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           }
                           setState(() {});
                         },
-                        icon: Utils.selectAll(usersInbox,uVariables.selectedContactsNumber)
+                        icon: Utils.selectAll(
+                                usersInbox, uVariables.selectedContactsNumber)
                             ? Icons.check_box
                             : Icons.check_box_outline_blank,
                       )
@@ -186,18 +192,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   height: 10,
                 ),
                 CustomFloatingActionButton(
-                  onPressed: ()async {
+                  onPressed: () async {
                     for (String number in uVariables.selectedContactsNumber) {
-                      await databaseHelper.deleteChat(number);
+                      await databaseHelper.deleteChat(number).then((value) {
+                        setState(() {});
+                      });
                       Fluttertoast.showToast(msg: 'Chat Deleted Successfully');
                     }
-                    setState(() {
-                    });
+                    setState(() {});
 
                     uVariables.selectedContactsNumber = [];
                     uVariables.onLongPress = false;
-
-                    
                   },
                   icon: Icons.delete,
                 ),
@@ -219,11 +224,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   context, '/login_screen', (Route route) => false);
               sharedPreference.logout();
             }
-            
+
             Future databaseMessages;
 
             if (snapshot.data != null && snapshot.data != 401)
-            
               for (var message in snapshot.data) {
                 Future<bool> condition = databaseHelper.searchMessages(message);
                 condition.then((bool onValue) {
@@ -233,11 +237,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 });
               }
 
-            databaseMessages = databaseHelper.getMessages();
+            // databaseMessages = databaseHelper.getMessages();
             // usersInbox = _arrangeAllMessagesForInbox(snapshot.data);
 
             return FutureBuilder(
-              future: databaseMessages,
+              future: databaseHelper.getMessages(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState.index == 1 &&
                     messageList.isEmpty) {
@@ -283,8 +287,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     index: index,
                   );
                 },
-              )
-        );
+              ));
   }
 
   contactView({Contact contact, int index}) {
@@ -296,8 +299,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       contentPadding: EdgeInsets.only(top: 8.0, bottom: 8.0),
       onTap: () async {
         if (uVariables.onLongPress) {
-          if (!uVariables.selectedContactsNumber
-              .contains(contact.number)) {
+          if (!uVariables.selectedContactsNumber.contains(contact.number)) {
             uVariables.selectedContactsNumber.add(contact.number);
           } else {
             uVariables.selectedContactsNumber.remove(contact.number);
@@ -326,8 +328,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
         overflow: TextOverflow.ellipsis,
       ),
       leading: CircleAvatar(
-          backgroundColor: Utils.isSelectedTile(contact,uVariables.onLongPress,uVariables.selectedContactsNumber) ? Colors.grey : null,
-          child: Utils.isSelectedTile(contact,uVariables.onLongPress,uVariables.selectedContactsNumber)
+          backgroundColor: Utils.isSelectedTile(contact, uVariables.onLongPress,
+                  uVariables.selectedContactsNumber)
+              ? Colors.grey
+              : UniversalVariables.blueColor,
+          child: Utils.isSelectedTile(contact, uVariables.onLongPress,
+                  uVariables.selectedContactsNumber)
               ? Icon(
                   Icons.check,
                   color: Colors.white,
@@ -338,8 +344,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       color: Colors.white,
                     )
                   : Text(contact.initials())),
-      trailing: Utils.isSelectedTile(contact,uVariables.onLongPress,uVariables.selectedContactsNumber)
-          ? Container()
+      trailing: Utils.isSelectedTile(contact, uVariables.onLongPress,
+              uVariables.selectedContactsNumber)
+          ? SizedBox()
           : IconButton(
               onPressed: () => Utils.call(contact.number),
               icon: Icon(Icons.call),
