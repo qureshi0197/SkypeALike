@@ -2,12 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:skypealike/constants/strings.dart';
+import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/screens/chat_screen.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/widgets/custom_tile.dart';
 
 class SearchScreen extends StatefulWidget {
+  List chatList;
+  SearchScreen({List chatList}){
+    if(chatList == null)
+    {
+      this.chatList = [];
+      return;
+    }
+    this.chatList = chatList;
+  }
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -17,21 +27,29 @@ class _SearchScreenState extends State<SearchScreen> {
   // final AuthMethods _authMethods = AuthMethods();
 
   // List<User> userList;
+  DatabaseHelper databaseHelper = DatabaseHelper();
   String query = "";
   TextEditingController searchController = TextEditingController();
 
   var loading = true;
   List<Contact> allContects = [];
   getAllContacts() async {
-    var response = await httpService.getAllContacts(null);
-    if (response == null) {
-      Fluttertoast.showToast(msg: "No Contects Found");
-    } else if (response == 401) {
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/login_screen', (route) => false);
-    } else {
+    var response = await databaseHelper.getContacts();
+    // if (response == null) {
+    //   Fluttertoast.showToast(msg: "No Contects Found");
+    // } 
+    // else if (response == 401) {
+    //   Navigator.pushNamedAndRemoveUntil(
+    //       context, '/login_screen', (route) => false);
+    // } else {
       allContects = response;
-    }
+      if(widget.chatList.isNotEmpty){
+        for (var contact in widget.chatList) {
+        if(!allContects.contains(contact))
+        {allContects.add(contact);} 
+        }
+      }
+    // }
 
     setState(() {
       loading = false;
@@ -145,7 +163,12 @@ class _SearchScreenState extends State<SearchScreen> {
                             receiver: contactUser,
                           )));
             },
-            leading: CircleAvatar(
+            leading: 
+            contactUser.initials() == ''?
+            CircleAvatar(
+              child: Icon(Icons.person,color: Colors.white,))
+            :
+            CircleAvatar(
               child: Text(contactUser.initials()),
             ),
             // leading: CircleAvatar(

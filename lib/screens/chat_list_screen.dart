@@ -42,6 +42,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   DateTime time;
 
+  List<Contact> chatContactList = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -84,6 +86,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   }
 
   _arrangeAllMessagesForInbox(List<Message> messagesList) {
+    UniversalVariables.chatList = [];
     Map otherUserData = {};
     List otherUserKeys = [];
     // String name;
@@ -104,17 +107,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
         otherUserData[mesg.sender] = mesg;
       }
     }
-    // print(otherUserData);
 
     otherUserData.forEach((key, value) async {
       String name = '';
       String first_name = '', last_name = '';
+
 
       for (Contact item in contacts) {
         if (item.number == key) {
           first_name = item.first_name;
           last_name = item.last_name;
         }
+      }
+      if(first_name.isEmpty && last_name.isEmpty){
+        Contact tempContact = Contact(number: key,first_name: '',last_name: '');
+        UniversalVariables.chatList.add(tempContact);
       }
 
       usersInbox.add({
@@ -200,9 +207,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       loading = true;
                     });
                     for (String number in uVariables.selectedContactsNumber) {
-                      for (Message message in uVariables.selectedUserInbox) {
-                        await httpService.deleteMessage(message);
-                      }
+                      // for (Message message in uVariables.selectedUserInbox) {
+                      //   await httpService.deleteMessage(message);
+                      // }
                       await databaseHelper.deleteChat(number);
                       // .then((value) {
                       // setState(() {});
@@ -210,7 +217,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       Fluttertoast.showToast(msg: 'Chat Deleted Successfully');
                     }
                     setState(() {
-                      loading = true;
+                      loading = false;
                     });
 
                     uVariables.selectedContactsNumber = [];
@@ -346,7 +353,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
           backgroundColor: Utils.isSelectedTile(contact, uVariables.onLongPress,
                   uVariables.selectedContactsNumber)
               ? Colors.grey
-              : UniversalVariables.blueColor,
+              : UniversalVariables.gradientColorEnd,
           child: Utils.isSelectedTile(contact, uVariables.onLongPress,
                   uVariables.selectedContactsNumber)
               ? Icon(

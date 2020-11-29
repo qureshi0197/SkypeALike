@@ -5,13 +5,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/message.dart';
 import 'package:sqflite/sqflite.dart';
+import '../main.dart';
 import 'model/employee.dart';
 
 enum Status { deleted }
 
 class DatabaseHelper {
   static Database _database;
-  static const String db_name = 'customer.db';
+  static String db_name = '${user.name}.db';
   static const String table_name = 'employee';
 
   static const String message_table = 'message';

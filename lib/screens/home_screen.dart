@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: UniversalVariables.gradientColorEnd,
             ),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen(chatList: UniversalVariables.chatList,)));
               // Navigator.push(context, PageRouteBuilder(
               //   transitionDuration: Duration(seconds: 0),
               //   pageBuilder: (context,animation1,animation2)=>SearchScreen()));

@@ -33,16 +33,17 @@ class Contact  {
   });
 
   initials(){
-    if(this.first_name != null && this.last_name != null)
+    if(this.first_name.isNotEmpty || this.last_name.isNotEmpty)
       return ((this.first_name?.isNotEmpty == true ? this.first_name[0] : "") +
             (this.last_name?.isNotEmpty == true ? this.last_name[0] : ""))
         .toUpperCase();
-    else if(this.number.isNotEmpty){
-      return ((this.number?.isNotEmpty == true ? this.number[0]+this.number[1]+this.number[2] : ""));
-    }
-    else{
-      return "";
-    }
+    // else if(this.first_name.isEmpty && this.last_name.isEmpty){
+      return ''; 
+      // ((this.number?.isNotEmpty == true ? this.number[0]+this.number[1]+this.number[2] : ""));
+    // }
+    // else{
+    //   return "";
+    // }
   }
 
   Map toMap(Contact contact) {

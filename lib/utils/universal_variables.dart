@@ -12,6 +12,7 @@ class UniversalVariables {
   // bool onLongPress_chat = false;
   // bool onLongPress_contact = false;
   static String generalMessage = '';
+  static List<Contact> chatList = [];
   static final Color sendMessageColor = Colors.blue[200];
   static final Color receiveMessageColor = Colors.blue[100];
 

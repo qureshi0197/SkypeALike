@@ -29,6 +29,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
   @override
   void initState() {
     super.initState();
+    UniversalVariables.chatList = [];
 
     _getLastfetchTime();
   }
