@@ -28,6 +28,7 @@ class HttpService {
   static String DELETE_CONTACT = SERVER + "contact/delete";
   static String CHANGE_PASSWORD = SERVER + "customer/password_change";
   static String WELCOME_MESSAGE = SERVER + "customer/welcome_message_change";
+  static String DELETE_CHAT = SERVER + "message/chat/delete";
 
   // toLoginMap()
   Future<bool> signOut() async {
@@ -346,6 +347,27 @@ class HttpService {
       return 401;
     } else if (response.statusCode != 200) {
       Fluttertoast.showToast(msg: "Error deleteing message");
+      return null;
+    }
+
+    return 200;
+  }
+
+  Future<dynamic> deleteChat(String number) async {
+    SharedPreference sharedPreference = SharedPreference();
+    String session = await sharedPreference.session();
+    var body = jsonEncode({'receiver_number': number});
+
+    var header = {"Cookie": session};
+    Response response;
+
+    header['Content-Type'] = "application/json";
+    response = await post(DELETE_CHAT, headers: header, body: body);
+
+    if (response.statusCode == 401) {
+      return 401;
+    } else if (response.statusCode != 200) {
+      Fluttertoast.showToast(msg: "Error deleteing chat");
       return null;
     }
 

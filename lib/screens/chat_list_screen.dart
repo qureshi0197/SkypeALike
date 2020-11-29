@@ -207,13 +207,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       loading = true;
                     });
                     for (String number in uVariables.selectedContactsNumber) {
-                      // for (Message message in uVariables.selectedUserInbox) {
-                      //   await httpService.deleteMessage(message);
-                      // }
-                      await databaseHelper.deleteChat(number);
-                      // .then((value) {
-                      // setState(() {});
-                      // });
+                        await httpService.deleteChat(number.substring(1));
+                        await databaseHelper.deleteChat(number);
                       Fluttertoast.showToast(msg: 'Chat Deleted Successfully');
                     }
                     setState(() {
