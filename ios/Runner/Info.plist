@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>skypealike</string>
+	<string>Telnyx</string>
 	<key>NSContactsUsageDescription</key>  
 	<string>This app requires contacts access to function properly.</string>
 	<key>CFBundlePackageType</key>
