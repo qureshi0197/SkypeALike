@@ -6,6 +6,7 @@ import 'package:skypealike/screens/home_screen.dart';
 import 'package:skypealike/screens/login_page.dart';
 import 'package:skypealike/screens/search_screen.dart';
 import 'package:skypealike/utils/shared_preferences.dart';
+import 'package:skypealike/utils/universal_variables.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 import 'models/user.dart';
@@ -69,18 +70,23 @@ class _SkypeAlikeState extends State<SkypeAlike> {
                 backgroundColor: Colors.white,
               )
             : SplashScreen(
-                seconds: 2,
+                seconds: 4,
                 navigateAfterSeconds: login ? HomeScreen() : Login(),
-                title: new Text(
-                  'Welcome In SplashScreen',
-                  style: new TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20.0),
-                ),
-                image: new Image.network('https://i.imgur.com/TyCSG9A.png'),
+                // title: new Text(
+                //   'INTRELLIGENT',
+                //   style: new TextStyle(
+                //       fontWeight: FontWeight.bold, 
+                //       fontSize: 36.0, 
+                //       color: Colors.white
+                //       ),
+                // ),
+                image: new Image.asset('assets/images/SplashScreen.png'),
                 backgroundColor: Colors.white,
                 styleTextUnderTheLoader: new TextStyle(),
-                photoSize: 100.0,
-                loaderColor: Colors.red),
+                photoSize: 150.0,
+                gradientBackground: UniversalVariables.fabGradient,
+                loaderColor: Colors.white
+                ),
       ),
     );
   }

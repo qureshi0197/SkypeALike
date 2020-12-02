@@ -11,7 +11,7 @@
         <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Telnyx"
+        android:label="Intrelligent"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
