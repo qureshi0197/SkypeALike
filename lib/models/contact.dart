@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Contact  {
   String uid;
-  Timestamp addedOn;
+  // Timestamp addedOn;
   String number,first_name,last_name,address,company,email,message;
   var avatar;
   int id;

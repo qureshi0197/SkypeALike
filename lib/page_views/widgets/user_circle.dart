@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/page_views/widgets/user_details_container.dart';
 import 'package:skypealike/provider/user_provider.dart';

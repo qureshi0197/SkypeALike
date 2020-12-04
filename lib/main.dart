@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:skypealike/provider/image_upload_provider.dart';
+// import 'package:provider/provider.dart';
+// import 'package:skypealike/provider/image_upload_provider.dart';
 import 'package:skypealike/screens/add_contact_screen.dart';
 import 'package:skypealike/screens/home_screen.dart';
 import 'package:skypealike/screens/login_page.dart';
@@ -46,13 +46,15 @@ class _SkypeAlikeState extends State<SkypeAlike> {
   Widget build(BuildContext context) {
     // Contact contact = Contact(first_name: 'Abdullah Qureshi');
     // SharedPreference sharedPreference = SharedPreference();
-    return MultiProvider(
-      key: mainPageGlobalKey,
-      providers: [
-        ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
-        // ChangeNotifierProvider(create: (_) => UserProvider()),
-      ],
-      child: MaterialApp(
+    return 
+    // MultiProvider(
+    //   key: mainPageGlobalKey,
+    //   providers: [
+    //     ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
+    //     // ChangeNotifierProvider(create: (_) => UserProvider()),
+    //   ],
+      // child: 
+      MaterialApp(
         title: "SkypeAlike",
         debugShowCheckedModeBanner: false,
         initialRoute: "/",
@@ -87,7 +89,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
                 gradientBackground: UniversalVariables.fabGradient,
                 loaderColor: Colors.white
                 ),
-      ),
+      // ),
     );
   }
 }

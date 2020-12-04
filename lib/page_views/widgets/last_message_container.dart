@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:skypealike/models/message.dart';
 import 'package:skypealike/utils/universal_variables.dart';
@@ -16,7 +16,7 @@ class LastMessageContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: stream,
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+      builder: (context, AsyncSnapshot snapshot){
         if(snapshot.hasData){
           var docList = snapshot.data.documents;
 

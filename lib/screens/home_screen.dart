@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
 import 'package:skypealike/screens/chat_list_screen.dart';
 import 'package:skypealike/provider/user_provider.dart';
