@@ -60,6 +60,7 @@ class HttpService {
       var responseBody = jsonDecode(response.body);
       var loginBody = jsonDecode(body);
       loginBody['number'] = responseBody['number'];
+      loginBody['welcome_message'] = responseBody['welcome_message'];
       // If response will have the number
       user = User.fromMap(loginBody);
       await sharedPreference.login(response.headers['set-cookie']);
@@ -191,7 +192,7 @@ class HttpService {
     try {
       response = await post(WELCOME_MESSAGE, headers: header, body: body);
     } catch (ex) {
-      Fluttertoast.showToast(msg: 'Connection Problem. Please Try Again');
+      Fluttertoast.showToast(msg: 'Server Error');
       return;
     }
 
@@ -202,9 +203,7 @@ class HttpService {
         return true;
       }
     } else {
-      Fluttertoast.showToast(
-          msg:
-              'Problem while connecting to the server. Please Try Again Later.');
+      Fluttertoast.showToast(msg: 'Server Error');
       return false;
     }
   }
@@ -228,7 +227,7 @@ class HttpService {
     try {
       response = await post(CHANGE_PASSWORD, headers: header, body: body);
     } catch (ex) {
-      Fluttertoast.showToast(msg: 'Connection Problem. Please Try Again');
+      Fluttertoast.showToast(msg: 'Server Error');
       return;
     }
 

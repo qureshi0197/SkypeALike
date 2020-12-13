@@ -7,6 +7,8 @@ class User {
   String status = '';
   String password = '';
   String profilePhoto = '';
+  String welcome_message = '';
+
 
   User({
     this.uid,
@@ -18,6 +20,7 @@ class User {
     this.status,
     // this.state,
     this.profilePhoto,
+    this.welcome_message
   });
 
   Map toMap(User user) {
@@ -31,6 +34,7 @@ class User {
     data["status"] = user.status;
     // data["state"] = user.state;
     data["profile_photo"] = user.profilePhoto;
+    data['welcome_message'] = user.welcome_message;
     return data;
   }
 
@@ -40,6 +44,7 @@ class User {
     this.name = mapData['username'];
     this.password = mapData['password'];
     this.number = mapData['number'];
+    this.welcome_message = mapData['welcome_message'];
     // this.username = mapData['username'];
     // this.status = mapData['status'];
     // this.state = mapData['state'];

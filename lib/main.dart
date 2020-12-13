@@ -25,9 +25,11 @@ class SkypeAlike extends StatefulWidget {
 class _SkypeAlikeState extends State<SkypeAlike> {
   // FirebaseRepository _repository = FirebaseRepository();
   // AuthMethods _authMethods = AuthMethods();
-  bool login = null;
+  bool login = false;
   checkLogin() async {
     login = await sharedPreference.checklogin();
+
+    // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (Route<dynamic> route) => false);
     // print(login);
     setState(() {});
     return;
@@ -67,11 +69,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
         },
         theme: ThemeData(primarySwatch: Colors.blue),
         // home: EditContact(contact)));
-        home: login == null
-            ? Scaffold(
-                backgroundColor: Colors.white,
-              )
-            : SplashScreen(
+        home: SplashScreen(
                 seconds: 4,
                 navigateAfterSeconds: login ? HomeScreen() : Login(),
                 // title: new Text(
@@ -82,12 +80,12 @@ class _SkypeAlikeState extends State<SkypeAlike> {
                 //       color: Colors.white
                 //       ),
                 // ),
-                image: new Image.asset('assets/images/SplashScreen.png'),
+                image: new Image.asset('assets/images/SplashScreen-removebg-preview.png'),
                 backgroundColor: Colors.white,
                 styleTextUnderTheLoader: new TextStyle(),
                 photoSize: 150.0,
-                gradientBackground: UniversalVariables.fabGradient,
-                loaderColor: Colors.white
+                // gradientBackground: UniversalVariables.fabGradient,
+                loaderColor:UniversalVariables.gradientColorEnd
                 ),
       // ),
     );

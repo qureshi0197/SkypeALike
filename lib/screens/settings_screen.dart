@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
+import 'package:skypealike/main.dart';
 import 'package:skypealike/screens/chat_screen.dart';
 import 'package:skypealike/utils/shared_preferences.dart';
 import 'package:skypealike/utils/universal_variables.dart';
@@ -24,8 +25,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // TODO: implement initState
 
     genericMessage.text = UniversalVariables.generalMessage;
+    // if(genericMessage.text == ''){
+    //   genericMessage.text = user.welcome_message;
+    // }
     sharedPreference.getWelcomeMessage().then((onValue){
       welcomeMessage = onValue;
+      if(welcomeMessage == ''){
+        if(user.welcome_message.isNotEmpty || user.welcome_message != null){
+          welcomeMessage = user.welcome_message;
+          sharedPreference.saveWelcomeMessage(welcomeMessage);
+        }
+      }
       setState(() {
       });
     });
@@ -55,10 +65,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             loading = true;
                           });
 
+                          
                           bool response = await httpService.welcomeMessage(genericMessage.text);
-                          if(response){welcomeMessage = await sharedPreference.getWelcomeMessage();
-                          genericMessage.clear();
-                          Fluttertoast.showToast(msg: 'The Message has been saved successfuly');
+                          
+                          if(response)
+                          {
+                            welcomeMessage = await sharedPreference.getWelcomeMessage();
+                            genericMessage.clear();
+                            Fluttertoast.showToast(msg: 'Message Saved Successfuly');
                           }
 
                           setState(() {
