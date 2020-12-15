@@ -1,4 +1,4 @@
-package com.skypealike.skypealike
+package intrelligent.systems
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
