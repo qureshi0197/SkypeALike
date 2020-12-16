@@ -456,7 +456,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         const BorderRadius.all(const Radius.circular(50.0))),
 
                 contentPadding:
-                    EdgeInsets.fromLTRB(15, 5, 35, 10)
+                    EdgeInsets.fromLTRB(25, 10, 35, 10)
                     // EdgeInsets.symmetric(horizontal: 35, vertical: 5),
                 // filled: true,
                 // fillColor: UniversalVariables.separatorColor,
