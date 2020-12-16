@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skypealike/page_views/widgets/user_circle.dart';
+import 'package:skypealike/page_views/widgets/user_details_container.dart';
 import 'package:skypealike/screens/chat_list_screen.dart';
 import 'package:skypealike/provider/user_provider.dart';
 import 'package:skypealike/screens/search_screen.dart';
@@ -92,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: Container(),
-        title: UserCircle(false),
+        title: Text(user.name, style: TextStyle(color: UniversalVariables.gradientColorEnd),),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
@@ -102,6 +103,19 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen(chatList: UniversalVariables.chatList,)));
+              // Navigator.push(context, PageRouteBuilder(
+              //   transitionDuration: Duration(seconds: 0),
+              //   pageBuilder: (context,animation1,animation2)=>SearchScreen()));
+              // Navigator.pushNamed(context, "/search_screen");
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.person,
+              color: UniversalVariables.gradientColorEnd,
+            ),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>UserDetailsContainer(true)));
               // Navigator.push(context, PageRouteBuilder(
               //   transitionDuration: Duration(seconds: 0),
               //   pageBuilder: (context,animation1,animation2)=>SearchScreen()));

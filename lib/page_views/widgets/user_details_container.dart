@@ -52,19 +52,12 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
       });
     }
 
-    return Container(
-      margin: EdgeInsets.only(top: 25),
-      child: Column(
-        children: <Widget>[
-          CustomAppBar(
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: UniversalVariables.blackColor,
-              ),
-              onPressed: () => Navigator.maybePop(context),
-            ),
-            title: UserCircle(true),
+    return Scaffold(
+      body: UserDetailsBody(),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: UniversalVariables.gradientColorEnd),
+        backgroundColor: Colors.white,
+        title: Text("Profile", style: TextStyle(color: UniversalVariables.gradientColorEnd),),
             centerTitle: true,
             actions: <Widget>[
               loading
@@ -81,13 +74,40 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
                                 fontSize: 18),
                           ),
                         ),
-                    //   ],
-                    // )
-            ],
-          ),
-          UserDetailsBody(),
-        ],
-      ),
+                    ],
+                    
+      )
+      
+      // CustomAppBar(
+      //       leading: IconButton(
+      //         icon: Icon(
+      //           Icons.arrow_back,
+      //           color: UniversalVariables.blackColor,
+      //         ),
+      //         onPressed: () => Navigator.maybePop(context),
+      //       ),
+      //       title: Text("Profile", style: TextStyle(color: UniversalVariables.gradientColorEnd),),
+      //       centerTitle: true,
+      //       actions: <Widget>[
+      //         loading
+      //             ? Padding(
+      //                 padding: const EdgeInsets.all(8.0),
+      //                 child: Center(child: CircularProgressIndicator()),
+      //               )
+      //             : FlatButton(
+      //                     onPressed: () => signOut(),
+      //                     child: Text(
+      //                       "Sign Out",
+      //                       style: TextStyle(
+      //                           color: UniversalVariables.gradientColorEnd,
+      //                           fontSize: 18),
+      //                     ),
+      //                   ),
+      //               //   ],
+      //               // )
+      //       ],
+      //     ),
+          // body: UserDetailsBody(),
     );
   }
 }

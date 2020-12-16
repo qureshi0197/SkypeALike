@@ -423,6 +423,10 @@ class _ChatScreenState extends State<ChatScreen> {
           alignment: Alignment.centerRight,
           children: [
             TextField(
+              
+              minLines: 1,
+              maxLines: 10,
+              maxLengthEnforced: true,
               controller: textFieldController,
               focusNode: textFieldFocus,
               onTap: () => hideEmojiContainer(),
@@ -452,11 +456,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         const BorderRadius.all(const Radius.circular(50.0))),
 
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    EdgeInsets.fromLTRB(15, 5, 35, 10)
+                    // EdgeInsets.symmetric(horizontal: 35, vertical: 5),
                 // filled: true,
                 // fillColor: UniversalVariables.separatorColor,
               ),
             ),
+            SizedBox(width: 20,),
             IconButton(
               // splashColor: Colors.black,
               // highlightColor: Colors.black,
@@ -476,7 +482,8 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: Icon(Icons.tag_faces, color: UniversalVariables.blueColor),
             ),
           ],
-        )),
+        )
+        ),
         sendMessageLoading
             ? Center(
                 child: Padding(
@@ -499,7 +506,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         onPressed: () => sendMessage()),
                   )
                 : Container(),
-      ]),
+      ]
+      ),
     );
   }
 

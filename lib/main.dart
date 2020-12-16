@@ -23,14 +23,10 @@ class SkypeAlike extends StatefulWidget {
 }
 
 class _SkypeAlikeState extends State<SkypeAlike> {
-  // FirebaseRepository _repository = FirebaseRepository();
-  // AuthMethods _authMethods = AuthMethods();
   bool login = false;
   checkLogin() async {
     login = await sharedPreference.checklogin();
 
-    // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (Route<dynamic> route) => false);
-    // print(login);
     setState(() {});
     return;
   }
@@ -39,23 +35,12 @@ class _SkypeAlikeState extends State<SkypeAlike> {
   void initState() {
     // TODO: implement initState
     checkLogin();
-    // .then((a) {
-    //   print(login);
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Contact contact = Contact(first_name: 'Abdullah Qureshi');
-    // SharedPreference sharedPreference = SharedPreference();
     return 
-    // MultiProvider(
-    //   key: mainPageGlobalKey,
-    //   providers: [
-    //     ChangeNotifierProvider(create: (_) => ImageUploadProvider()),
-    //     // ChangeNotifierProvider(create: (_) => UserProvider()),
-    //   ],
-      // child: 
+     
       MaterialApp(
         title: "SkypeAlike",
         debugShowCheckedModeBanner: false,
@@ -65,34 +50,31 @@ class _SkypeAlikeState extends State<SkypeAlike> {
           '/login_screen': (context) => Login(),
           '/home_screen': (context) => HomeScreen(),
           '/add_contact_screen': (context) => AddContect(),
-          // '/edit_contact_screen': (context) => EditContact(contact),
         },
         theme: ThemeData(primarySwatch: Colors.blue),
         // home: EditContact(contact)));
-        home: SplashScreen(
-                seconds: 4,
-                navigateAfterSeconds: login ? HomeScreen() : Login(),
-                // title: new Text(
-                //   'INTRELLIGENT',
-                //   style: new TextStyle(
-                //       fontWeight: FontWeight.bold, 
-                //       fontSize: 36.0, 
-                //       color: Colors.white
-                //       ),
-                // ),
-                image: new Image.asset('assets/images/SplashScreen-removebg-preview.png'),
-                backgroundColor: Colors.white,
-                styleTextUnderTheLoader: new TextStyle(),
-                photoSize: 150.0,
-                // gradientBackground: UniversalVariables.fabGradient,
-                loaderColor:UniversalVariables.gradientColorEnd
-                ),
-      // ),
+        home: Center(
+          child: Container(
+            child: SplashScreen(
+                    seconds: 4,
+                    navigateAfterSeconds: login ? HomeScreen() : Login(),
+                    // title: new Text(
+                    //   'INTRELLIGENT',
+                    //   style: new TextStyle(
+                    //       fontWeight: FontWeight.bold, 
+                    //       fontSize: 36.0, 
+                    //       color: Colors.white
+                    //       ),
+                    // ),
+                    image: new Image.asset('assets/images/SplashScreen.png'),
+                    backgroundColor: Colors.white,
+                    styleTextUnderTheLoader: new TextStyle(),
+                    photoSize: 120.0,
+                    // loaderColor:UniversalVariables.gradientColorEnd,
+                    // imageBackground: ImageProvider(Image.asset(name)),
+                    ),
+          ),
+        ),
     );
   }
 }
-
-// class _CheckLogedin{
-//   SharedPreference sharedPreference = SharedPreference();
-//   if(sharedPreference)
-// }

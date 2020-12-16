@@ -32,34 +32,34 @@ class UserCircle extends StatelessWidget {
         }
       },
       child: Container(
-        height: 40,
-        width: 40,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          color: UniversalVariables.separatorColor,
-        ),
-        child: Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                // '',
-                Utils.getInitials(user.name),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: UniversalVariables.lightBlueColor,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-            // Align(
-            //   alignment: Alignment.bottomRight,
-            //   child: OnlineDotIndicator(
-            //     uid: contact.uid
-            //     )
-            // )
-          ],
-        ),
+        // height: 40,
+        // width: 40,
+        // decoration: BoxDecoration(
+        //   borderRadius: BorderRadius.circular(50),
+        //   color: UniversalVariables.separatorColor,
+        // ),
+        // child: Stack(
+        //   children: <Widget>[
+        //     Align(
+        //       alignment: Alignment.center,
+        //       child: Text(
+        //         // '',
+        //         Utils.getInitials(user.name),
+        //         style: TextStyle(
+        //           fontWeight: FontWeight.bold,
+        //           color: UniversalVariables.lightBlueColor,
+        //           fontSize: 13,
+        //         ),
+        //       ),
+        //     ),
+        //     // Align(
+        //     //   alignment: Alignment.bottomRight,
+        //     //   child: OnlineDotIndicator(
+        //     //     uid: contact.uid
+        //     //     )
+        //     // )
+        //   ],
+        // ),
       ),
     );
   }
