@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/main.dart';
 import 'package:skypealike/screens/chat_screen.dart';
@@ -14,21 +15,32 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   var text_Field_height = 50.0;
+  
+  FocusNode textFieldFocus = FocusNode();
+
   var welcomeMessage = '';
+  
   var genericMessage =
       TextEditingController.fromValue(TextEditingValue(text: ""));
+  
   bool loading = false;
+  
+
   SharedPreference sharedPreference = SharedPreference();
+  
+  
+  
   @override
   void initState() {
     loading = false;
     // TODO: implement initState
 
-    genericMessage.text = UniversalVariables.generalMessage;
+    // genericMessage.text = UniversalVariables.generalMessage;
     // if(genericMessage.text == ''){
     //   genericMessage.text = user.welcome_message;
     // }
     sharedPreference.getWelcomeMessage().then((onValue){
+      genericMessage.text = onValue;
       welcomeMessage = onValue;
       if(welcomeMessage == ''){
         if(user.welcome_message.isNotEmpty || user.welcome_message != null){
@@ -39,16 +51,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
       });
     });
-    _refreshSettings();
+    // _refreshSettings();
   }
 
-  _refreshSettings() {
-    setState(() {});
-  }
+  // _refreshSettings() {
+  //   setState(() {});
+  // }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => KeyboardDismisser (
+    child: Scaffold(
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(45, 15, 45, 15),
@@ -61,6 +73,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     alignment: Alignment.centerRight,
                     child: loading?CircularProgressIndicator(): FlatButton(
                         onPressed: ()async{
+
+                          FocusScope.of(context).unfocus();
+                          
+                          welcomeMessage = await sharedPreference.getWelcomeMessage();
+                          if(genericMessage.text == welcomeMessage){
+                            return Fluttertoast.showToast(msg: 'No changes to update');
+                          }
+
+                          if(genericMessage.text == ''){
+                            return Fluttertoast.showToast(msg: 'Nothing to update. Please Enter Some Message');
+                          }
+                          // focusNode.unfocus();
+                          // print('unfocused');
                           setState(() {
                             loading = true;
                           });
@@ -71,44 +96,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           if(response)
                           {
                             welcomeMessage = await sharedPreference.getWelcomeMessage();
-                            genericMessage.clear();
-                            Fluttertoast.showToast(msg: 'Message Saved Successfuly');
+                            // genericMessage.clear();
+                            Fluttertoast.showToast(msg: 'Message Updated Successfully');
                           }
 
                           setState(() {
+                            // DefaultFocusTraversal.of(context).previous()
+                            
                             loading = false;
                           });
                         },
                         color: UniversalVariables.gradientColorEnd,
                         child: Text(
-                          "Save",
+                          "UPDATE",
                           style: TextStyle(color: Colors.white),
                         ))),
-                        SizedBox(height: 30,),
-                         welcomeMessage.isEmpty?Container(): Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.black12,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                  children: <Widget>[
-                  Expanded(child: 
-                    Text(welcomeMessage))
-                    // Text('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'))
-                  ],
-                ),
-                          ),
-                        ),
+                //         SizedBox(height: 30,),
+                //          welcomeMessage.isEmpty?Container(): Container(
+                //           decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(20),
+                //             color: Colors.black12,
+                //           ),
+                //           child: Padding(
+                //             padding: const EdgeInsets.all(10.0),
+                //             child: Row(
+                //   children: <Widget>[
+                //   Expanded(child: 
+                //     Text(welcomeMessage))
+                //     // Text('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'))
+                //   ],
+                // ),
+                //           ),
+                //         ),
               ],
             ),
           ),
           
         ),
       ),
-    );
-  }
+    ),
+  );
 
   Widget _genericMessage() {
     return customTextRow(
@@ -116,12 +143,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       icon: Icons.textsms,
       maxLines: 5,
       generalMessage: true,
-      title: "General Message",
+      title: "Welcome Message",
       onChnaged: (val) {
         // UniversalVariables.generalMessage = val;
       },
       controller: genericMessage,
-      hintText: "Enter a general message"
+      hintText: 'Enter Welcome Message'
       // inputFormator: [WhitelistingTextInputFormatter(RegExp(r"[0-9]"))]
     );
   }
