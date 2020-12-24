@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,7 +18,6 @@ class AddContect extends StatefulWidget {
 }
 
 class _AddContectState extends State<AddContect> {
-
   bool loading = false;
 
   Contact contact = Contact();
@@ -55,11 +53,11 @@ class _AddContectState extends State<AddContect> {
   var firstNameHintText = "First Name";
 
   DatabaseHelper dbHelper = DatabaseHelper();
-  
+
   bool isUpdating;
-  
-  Future<List<Contact>> contacts;  
-  
+
+  Future<List<Contact>> contacts;
+
   // TextEditingController controller = TextEditingController();
 
   // @override
@@ -73,7 +71,7 @@ class _AddContectState extends State<AddContect> {
     // isUpdating = false;
     refreshList();
   }
- 
+
   refreshList() {
     setState(() {
       contacts = dbHelper.getContacts();
@@ -91,59 +89,76 @@ class _AddContectState extends State<AddContect> {
         ),
         backgroundColor: UniversalVariables.gradientColorEnd,
         actions: <Widget>[
-          number.text.length == 11 ? 
-          loading ? 
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(),
-          ) : 
-          IconButton(
-            // onPressed: ,
-            icon: Icon(Icons.check, color: Colors.white), 
-            onPressed:() async {
+          loading
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  ),
+                )
+              : IconButton(
+                  // onPressed: ,
+                  icon: Icon(Icons.check, color: Colors.white),
+                  onPressed: () async {
+                    if (contact.number == null) {
+                      return Fluttertoast.showToast(
+                          msg: "Number Field is Empty");
+                    }
 
-              Contact tempContect = Contact();
-              
-              setState(() {
-                loading = true;
-              });
-              tempContect = contact;
-              tempContect.number = '+'+contact.number;
+                    // if(contact.number[0] != '+' ){
+                    //   // print("Inside +");
+                    //   return Fluttertoast.showToast(msg: 'Add "+" at the start of number');
+                    // }
 
-              await dbHelper.createContact(tempContect);
+                    // if(contact.number[0] == '0' && contact.number[1] == '0'){
+                    //     return Fluttertoast.showToast(msg: 'Remove "00" & Add "+" at the start of number');
+                    //   }
 
-              // contact.number = contact.number.substring(1);
-              
-              
-              var response = await httpService.createContact(contact);
-              
-              if(response == 401){
-                
-                Fluttertoast.showToast(msg: "Session Expired");
-                Navigator.pushNamedAndRemoveUntil(context, '/login_screen', (route) => false);
-                await sharedPreference.logout();
+                    if (contact.number.length < 11) {
+                      return Fluttertoast.showToast(msg: "Invalid Number Format");
+                    }
 
-              } 
-              // else if(response == 200){
-                
-                Fluttertoast.showToast(msg: "Contact Saved");
-                Navigator.pop(context);
-              
-              // }
-              loading = false;
-              setState(() {
-              });
-              }
-            
-            )
-          :
-          IconButton(icon: Icon(Icons.check, color: Colors.grey,), onPressed: (){
-            Fluttertoast.showToast(msg: 'Invalid Phone Number');
-          })
+                    if (contact.first_name == null &&
+                        contact.last_name == null) {
+                      return Fluttertoast.showToast(msg: "Name Required");
+                    }
+
+                    Contact tempContect = Contact();
+
+                    setState(() {
+                      loading = true;
+                    });
+
+                    tempContect = contact;
+                    if (contact.number[0] != '+') {
+                      tempContect.number = '+' + contact.number;
+                    }
+
+                    await dbHelper.createContact(tempContect);
+
+                    // contact.number = contact.number.substring(1);
+
+                    var response = await httpService.createContact(contact);
+
+                    if (response == 401) {
+                      Fluttertoast.showToast(msg: "Session Expired");
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/login_screen', (route) => false);
+                      await sharedPreference.logout();
+                    }
+                    // else if(response == 200){
+
+                    Fluttertoast.showToast(msg: "Contact Saved");
+                    Navigator.pop(context);
+
+                    // }
+                    loading = false;
+                    setState(() {});
+                  })
         ],
       ),
       body: SingleChildScrollView(
-              child: Padding(
+        child: Padding(
           padding: const EdgeInsets.fromLTRB(45, 15, 45, 15),
           child: Container(
             child: Column(
@@ -163,41 +178,76 @@ class _AddContectState extends State<AddContect> {
   }
 
   Widget _firstName() {
-    return customTextRow(hintText: firstNameHintText, icon: Icons.person, title: "First Name", 
-    onChnaged: (val){contact.first_name = val;}, controller: firstName);
+    return customTextRow(
+        hintText: firstNameHintText,
+        icon: Icons.person,
+        title: "First Name",
+        onChnaged: (val) {
+          contact.first_name = val;
+        },
+        controller: firstName);
   }
 
   Widget _lastName() {
-    return customTextRow(hintText: lastNameHintText, icon: Icons.person, title: "Last Name", 
-    onChnaged: (val){contact.last_name = val;}, controller: lastName);
+    return customTextRow(
+        hintText: lastNameHintText,
+        icon: Icons.person,
+        title: "Last Name",
+        onChnaged: (val) {
+          contact.last_name = val;
+        },
+        controller: lastName);
   }
 
   Widget _number() {
-    return customTextRow(hintText: numberHintText, icon: Icons.phone, title: "Phone Number", 
-    onChnaged: (val){
-      contact.number = val;
-      setState(() {
-        
-      });
-      }, controller: number,inputFormator: [
-      WhitelistingTextInputFormatter(RegExp(r"[0-9]"))
-    ]);
+    return customTextRow(
+        prefixText: "+",
+        keyboardType: TextInputType.number,
+        hintText: numberHintText,
+        icon: Icons.phone,
+        title: "Phone Number",
+        onChnaged: (val) {
+          contact.number = val;
+          setState(() {});
+        },
+        controller: number,
+        inputFormator: [WhitelistingTextInputFormatter(RegExp(r"^\d{0,14}"))]);
   }
 
   Widget _email() {
-    return customTextRow(hintText: emailHintText, icon: Icons.email, title: "Email", 
-    onChnaged: (val){contact.email = val;}, controller: email,inputFormator: [
-      // WhitelistingTextInputFormatter(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))
-    ]);
+    return customTextRow(
+        keyboardType: TextInputType.emailAddress,
+        hintText: emailHintText,
+        icon: Icons.email,
+        title: "Email",
+        onChnaged: (val) {
+          contact.email = val;
+        },
+        controller: email,
+        inputFormator: [
+          // WhitelistingTextInputFormatter(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))
+        ]);
   }
 
   Widget _address() {
-    return customTextRow(hintText: addressHintText, icon: Icons.location_on, title: "Address", 
-    onChnaged: (val){contact.address = val;}, controller: address);
+    return customTextRow(
+        hintText: addressHintText,
+        icon: Icons.location_on,
+        title: "Address",
+        onChnaged: (val) {
+          contact.address = val;
+        },
+        controller: address);
   }
 
   Widget _company() {
-    return customTextRow(hintText: companyHintText, icon: Icons.business, title: "Company", 
-    onChnaged: (val){contact.company = val;}, controller: company);
+    return customTextRow(
+        hintText: companyHintText,
+        icon: Icons.business,
+        title: "Company",
+        onChnaged: (val) {
+          contact.company = val;
+        },
+        controller: company);
   }
 }

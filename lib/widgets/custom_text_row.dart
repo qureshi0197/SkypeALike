@@ -15,7 +15,9 @@ Widget customTextRow({
   IconButton suffixIcon,
   bool enabled,
   bool generalMessage,
-  int maxLines
+  int maxLines,
+  String prefixText,
+  TextInputType keyboardType
 }) {
   // if(maxLength)
   if(obscureText == null){
@@ -61,8 +63,9 @@ Widget customTextRow({
             onChanged: onChnaged,
             style: enabled ? eTextStyle : dTextStyle,
             maxLength: maxLength,
+            keyboardType: keyboardType,
             decoration: InputDecoration(
-              // errorText: response == 102 ? userNotFonund:null,
+              prefixText: prefixText,
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(

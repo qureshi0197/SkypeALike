@@ -24,40 +24,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
       TextEditingController.fromValue(TextEditingValue(text: ""));
   
   bool loading = false;
+
+  bool welcome = false;
   
 
   SharedPreference sharedPreference = SharedPreference();
   
   
+  getMessage() async {
+    genericMessage.text = await sharedPreference.getWelcomeMessage();
+    print(genericMessage.text);
+    // welcomeMessage = genericMessage.text;
+
+    setState(() {
+      welcome = false;
+    });
+  }
   
   @override
   void initState() {
     loading = false;
-    // TODO: implement initState
-
-    // genericMessage.text = UniversalVariables.generalMessage;
-    // if(genericMessage.text == ''){
-    //   genericMessage.text = user.welcome_message;
-    // }
-    sharedPreference.getWelcomeMessage().then((onValue){
-      genericMessage.text = onValue;
-      welcomeMessage = onValue;
+    welcome = true;
+    
+    // sharedPreference.getWelcomeMessage().then((onValue){
+    //   genericMessage.text = onValue;
+    //   welcomeMessage = onValue;
       if(welcomeMessage == ''){
         if(user.welcome_message.isNotEmpty || user.welcome_message != null){
           welcomeMessage = user.welcome_message;
           sharedPreference.saveWelcomeMessage(welcomeMessage);
         }
       }
-      setState(() {
-      });
-    });
-    // _refreshSettings();
+      getMessage();
+      // setState(() {
+      // });
+    // });
   }
-
-  // _refreshSettings() {
-  //   setState(() {});
-  // }
-
   @override
   Widget build(BuildContext context) => KeyboardDismisser (
     child: Scaffold(
@@ -70,8 +72,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _genericMessage(),
 
                 Container(
+                  // decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
                     alignment: Alignment.centerRight,
                     child: loading?CircularProgressIndicator(): FlatButton(
+                      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                         onPressed: ()async{
 
                           FocusScope.of(context).unfocus();
@@ -82,7 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           }
 
                           if(genericMessage.text == ''){
-                            return Fluttertoast.showToast(msg: 'Nothing to update. Please Enter Some Message');
+                            return Fluttertoast.showToast(msg: 'Empty Field. Please Enter Some Message');
                           }
                           // focusNode.unfocus();
                           // print('unfocused');
@@ -111,23 +115,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           "UPDATE",
                           style: TextStyle(color: Colors.white),
                         ))),
-                //         SizedBox(height: 30,),
-                //          welcomeMessage.isEmpty?Container(): Container(
-                //           decoration: BoxDecoration(
-                //             borderRadius: BorderRadius.circular(20),
-                //             color: Colors.black12,
-                //           ),
-                //           child: Padding(
-                //             padding: const EdgeInsets.all(10.0),
-                //             child: Row(
-                //   children: <Widget>[
-                //   Expanded(child: 
-                //     Text(welcomeMessage))
-                //     // Text('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'))
-                //   ],
-                // ),
-                //           ),
-                //         ),
               ],
             ),
           ),
@@ -148,7 +135,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         // UniversalVariables.generalMessage = val;
       },
       controller: genericMessage,
-      hintText: 'Enter Welcome Message'
+      // hintText: 'Enter Welcome Message'
       // inputFormator: [WhitelistingTextInputFormatter(RegExp(r"[0-9]"))]
     );
   }

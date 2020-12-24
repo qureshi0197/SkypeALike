@@ -93,7 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: Container(),
-        title: Text(user.name, style: TextStyle(color: UniversalVariables.gradientColorEnd),),
+        title: Image.asset('assets/images/icon.png', height: 50, width: 50,),
+        // Text(user.name, style: TextStyle(color: UniversalVariables.gradientColorEnd),),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
@@ -103,11 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen(chatList: UniversalVariables.chatList,)));
-              // Navigator.push(context, PageRouteBuilder(
-              //   transitionDuration: Duration(seconds: 0),
-              //   pageBuilder: (context,animation1,animation2)=>SearchScreen()));
-              // Navigator.pushNamed(context, "/search_screen");
-            },
+              },
           ),
           IconButton(
             icon: Icon(
@@ -173,12 +170,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.settings,
+                icon: Icon(Icons.spa,
                     color: (_page == 2)
                         ? UniversalVariables.lightBlueColor
                         : UniversalVariables.greyColor),
                 title: Text(
-                  "Settings",
+                  "Welcome Message",
                   style: TextStyle(
                       fontSize: _labelFontSize,
                       color: (_page == 2)

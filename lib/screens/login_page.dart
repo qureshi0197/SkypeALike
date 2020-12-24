@@ -35,6 +35,7 @@ class _LoginState extends State<Login> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            cursorColor: Colors.white,
             onChanged: (String val) {
               username = val;
             },
@@ -72,6 +73,7 @@ class _LoginState extends State<Login> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            cursorColor: Colors.white,
             onChanged: (String val) {
               password = val;
               // setState(() {

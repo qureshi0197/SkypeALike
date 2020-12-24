@@ -37,6 +37,7 @@ class SharedPreference {
       await sp.setString('username', user.name);
       await sp.setString('password', user.password);
       await sp.setString('number', user.number);
+      await sp.setString('welcome_message', user.welcome_message);
       return true;
     } catch (ex) {
       return false;
@@ -78,6 +79,7 @@ class SharedPreference {
       await sp.remove('username');
       await sp.remove('password');
       await sp.remove('number');
+      await sp.remove('welcome_message');
       return true;
     } catch (ex) {
       return false;
@@ -93,6 +95,7 @@ class SharedPreference {
     sp.remove('number');
     sp.remove('messages');
     sp.remove('contacts');
+    sp.remove('welcome_message');
   }
 
   checklogin() async {
@@ -100,6 +103,7 @@ class SharedPreference {
     user.name = sp.getString('username') ?? '';
     user.password = sp.getString('password') ?? '';
     user.number = sp.getString('number') ?? '';
+    user.welcome_message = sp.getString('welcome_message') ?? '';
     return (sp.getBool('login') ?? false);
   }
 }

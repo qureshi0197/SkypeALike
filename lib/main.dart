@@ -5,6 +5,7 @@ import 'package:skypealike/screens/add_contact_screen.dart';
 import 'package:skypealike/screens/home_screen.dart';
 import 'package:skypealike/screens/login_page.dart';
 import 'package:skypealike/screens/search_screen.dart';
+import 'package:skypealike/screens/splash_screen.dart';
 import 'package:skypealike/utils/shared_preferences.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:splashscreen/splashscreen.dart';
@@ -34,7 +35,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
   @override
   void initState() {
     // TODO: implement initState
-    checkLogin();
+    // checkLogin();
   }
 
   @override
@@ -54,26 +55,7 @@ class _SkypeAlikeState extends State<SkypeAlike> {
         theme: ThemeData(primarySwatch: Colors.blue),
         // home: EditContact(contact)));
         home: Center(
-          child: Container(
-            child: SplashScreen(
-                    seconds: 4,
-                    navigateAfterSeconds: login ? HomeScreen() : Login(),
-                    // title: new Text(
-                    //   'INTRELLIGENT',
-                    //   style: new TextStyle(
-                    //       fontWeight: FontWeight.bold, 
-                    //       fontSize: 36.0, 
-                    //       color: Colors.white
-                    //       ),
-                    // ),
-                    image: new Image.asset('assets/images/SplashScreen.png'),
-                    backgroundColor: Colors.white,
-                    styleTextUnderTheLoader: new TextStyle(),
-                    photoSize: 120.0,
-                    // loaderColor:UniversalVariables.gradientColorEnd,
-                    // imageBackground: ImageProvider(Image.asset(name)),
-                    ),
-          ),
+          child: CustomSplashScreen(),
         ),
     );
   }

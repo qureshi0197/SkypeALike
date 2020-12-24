@@ -301,7 +301,7 @@ class HttpService {
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: "Error saving contact");
+      Fluttertoast.showToast(msg: "Server Error");
       return null;
     }
 
@@ -323,7 +323,7 @@ class HttpService {
     if (response.statusCode == 401) {
       return false;
     } else if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: "Error deleteing contact");
+      Fluttertoast.showToast(msg: "Server Error");
       return false;
     }
 
@@ -345,7 +345,7 @@ class HttpService {
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: "Error deleteing message");
+      Fluttertoast.showToast(msg: "Server Error");
       return null;
     }
 
@@ -366,7 +366,7 @@ class HttpService {
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: "Error deleteing chat");
+      Fluttertoast.showToast(msg: "Server Error");
       return null;
     }
 
@@ -390,7 +390,7 @@ class HttpService {
       Fluttertoast.showToast(msg: 'Session Expired');
       return 401;
     } else if (response.statusCode != 200) {
-      Fluttertoast.showToast(msg: "Error sending message");
+      Fluttertoast.showToast(msg: "Server Error");
       return null;
     }
     Map responseBody = jsonDecode(response.body);

@@ -62,10 +62,10 @@ class _EditContactState extends State<EditContact> {
 
     contact = widget.contact;
 
-    if (contact.number[0] == '+') {
-      contact.number = contact.number.substring(1);
-      // contact.number = string[1];
-    }
+    // if (contact.number[0] == '+') {
+    //   contact.number = contact.number.substring(1);
+    //   // contact.number = string[1];
+    // }
 
     firstName.text = contact.first_name;
     lastName.text = contact.last_name;
@@ -94,8 +94,7 @@ class _EditContactState extends State<EditContact> {
         ),
         backgroundColor: UniversalVariables.gradientColorEnd,
         actions: <Widget>[
-          number.text.length == 11
-              ? loading
+          loading
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CircularProgressIndicator(),
@@ -108,6 +107,9 @@ class _EditContactState extends State<EditContact> {
                           loading = true;
                         });
 
+                        if(firstName.text == "" && lastName.text == ""){
+                          return Fluttertoast.showToast(msg: "Please Enter Name");
+                        }
                         var response;
                         if (widget.update) {
                           response = await httpService.updateContact(contact);
@@ -116,6 +118,8 @@ class _EditContactState extends State<EditContact> {
                               contact.number = '+' + contact.number;
                             }
                             dbHelper.updateContact(contact);
+                          } else{
+                            return Fluttertoast.showToast(msg: "Server Error");
                           }
                         } else {
                           response = await httpService.createContact(contact);
@@ -138,14 +142,14 @@ class _EditContactState extends State<EditContact> {
                         loading = false;
                         setState(() {});
                       })
-              : IconButton(
-                  icon: Icon(
-                    Icons.check,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {
-                    Fluttertoast.showToast(msg: 'Invalid Phone Number');
-                  })
+              // : IconButton(
+              //     icon: Icon(
+              //       Icons.check,
+              //       color: Colors.grey,
+              //     ),
+              //     onPressed: () {
+              //       Fluttertoast.showToast(msg: 'Invalid Phone Number');
+              //     })
         ],
       ),
       body: SingleChildScrollView(
@@ -202,6 +206,7 @@ class _EditContactState extends State<EditContact> {
 
   Widget _email() {
     return customTextRow(
+      keyboardType: TextInputType.emailAddress,
         icon: Icons.email,
         title: "Email",
         onChnaged: (val) {

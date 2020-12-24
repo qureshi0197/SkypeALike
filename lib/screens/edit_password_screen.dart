@@ -118,12 +118,20 @@ class _EditPasswordState extends State<EditPassword> {
                   // ignore: missing_return
                   onPressed: () async {
 
+                    if(oldPassword.text == '' && newPassword.text == '' && confirmPassword.text == ''){
+                      return Fluttertoast.showToast(msg: 'Fields are Empty');
+                    }
+                    
+                    if(newPassword.text.length < 6){
+                      return Fluttertoast.showToast(msg: 'Password Should be atleast 6 Characters Long');
+                    }
+
                     if(newPassword.text != confirmPassword.text){
                       return Fluttertoast.showToast(msg: 'Incorect Confirm Password');
                     }
 
                     if (oldPassword.text != user.password) {
-                      return Fluttertoast.showToast(msg: "Passwords Do Not Match");
+                      return Fluttertoast.showToast(msg: "Invalid Old Password");
                     }
                     
                     setState(() {
@@ -150,7 +158,7 @@ class _EditPasswordState extends State<EditPassword> {
                         return Fluttertoast.showToast(msg: 'Old Password Incorrect');
                       }
                       else{
-                        return Fluttertoast.showToast(msg: 'Connection Problem. Please Try Again');
+                        return Fluttertoast.showToast(msg: 'Server Error');
                       }
                     // }
                   })
