@@ -99,7 +99,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           
                           if(response)
                           {
-                            welcomeMessage = await sharedPreference.getWelcomeMessage();
+                            welcomeMessage = genericMessage.text;
+                            // await sharedPreference.saveWelcomeMessage(genericMessage.text);
                             // genericMessage.clear();
                             Fluttertoast.showToast(msg: 'Message Updated Successfully');
                           }

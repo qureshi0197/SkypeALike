@@ -199,8 +199,13 @@ class HttpService {
     if (response.statusCode == 200) {
       var responseBody = jsonDecode(response.body);
       if (responseBody["resultCode"] == 0) {
-        sharedPreference.saveWelcomeMessage(textMessage);
-        return true;
+        await sharedPreference.saveWelcomeMessage(textMessage);
+        try{
+          user.welcome_message = textMessage;
+          return true;
+        }catch(ex){
+          print(ex.message);
+        }
       }
     } else {
       Fluttertoast.showToast(msg: 'Server Error');

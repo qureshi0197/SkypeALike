@@ -15,7 +15,7 @@ class SharedPreference {
   // }
   Future saveWelcomeMessage(String text)async{
     sp = await SharedPreferences.getInstance();
-    sp.setString('welcomeMessage', text);
+    await sp.setString('welcome_message', text);
   }
 
   Future changePassword(String new_password) async {
@@ -26,7 +26,8 @@ class SharedPreference {
 
   Future getWelcomeMessage()async{
     sp = await SharedPreferences.getInstance();
-    return sp.getString('welcomeMessage') ?? '';
+    print(sp.getString('welcome_message'));
+    return sp.getString('welcome_message') ?? '';
   }
 
   Future login(session) async {
