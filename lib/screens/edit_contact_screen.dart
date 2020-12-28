@@ -103,14 +103,18 @@ class _EditContactState extends State<EditContact> {
                       // onPressed: ,
                       icon: Icon(Icons.check, color: Colors.white),
                       onPressed: () async {
-                        setState(() {
-                          loading = true;
-                        });
+                        
 
                         if(firstName.text == "" && lastName.text == ""){
                           return Fluttertoast.showToast(msg: "Please Enter Name");
                         }
+
+                        setState(() {
+                          loading = true;
+                        });
+
                         var response;
+                        
                         if (widget.update) {
                           response = await httpService.updateContact(contact);
                           if (response == 200) {
@@ -119,6 +123,9 @@ class _EditContactState extends State<EditContact> {
                             }
                             dbHelper.updateContact(contact);
                           } else{
+                            setState(() {
+                              loading = false;
+                            });
                             return Fluttertoast.showToast(msg: "Server Error");
                           }
                         } else {

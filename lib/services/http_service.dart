@@ -294,7 +294,11 @@ class HttpService {
   Future<dynamic> updateContact(Contact contact) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
-    var body = jsonEncode(contact.toMap(contact));
+    // var body = jsonEncode(contact.toMap(contact));
+
+    Map contactMap = contact.toMap(contact);
+    contactMap.remove('id');
+    var body = jsonEncode(contactMap);
 
     var header = {"Cookie": session};
     Response response;
@@ -316,7 +320,7 @@ class HttpService {
   Future<dynamic> deleteContact(Contact contact) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
-    var body = jsonEncode({'contact_number': contact.number});
+    var body = jsonEncode({'number': contact.number});
 
     var header = {"Cookie": session};
     Response response;
