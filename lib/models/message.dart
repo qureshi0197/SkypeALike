@@ -38,7 +38,14 @@ class Message {
   Message.fromMap(Map<String, dynamic> map) {
     this.direction = map['direction'];
     this.receiver = map['receiver'];
-    this.sender = map['sender'];
+    // TODO: Response has been changed in server for send message function only.
+    // Need to implement a condition for map['sender']['phone_number']
+    if(map['sender'] is String){
+      this.sender = map['sender'];
+    }
+    else{
+      this.sender = map['sender']['phone_number'];
+    }
     this.sms_id = map['sms_id'];
     this.status = map['status'];
     this.text = map['text'];

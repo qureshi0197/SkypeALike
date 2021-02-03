@@ -54,7 +54,8 @@ class HttpService {
     Response response = await post(LOGIN, body: body, headers: header);
     // print(response.headers['set-cookie']);
     if (response.statusCode != 200) {
-      return null;
+      var responseBody = jsonDecode(response.body);
+      return responseBody['resultCode'];
     }
     if (response.statusCode == 200) {
       var responseBody = jsonDecode(response.body);
@@ -72,6 +73,7 @@ class HttpService {
 
   Future<dynamic> logout() async {
     SharedPreference sharedPreference = SharedPreference();
+    DatabaseHelper databaseHelper = DatabaseHelper();
     String session = await sharedPreference.session();
     var header = {"Cookie": session};
     Response response = await get(LOGOUT, headers: header);
@@ -79,6 +81,7 @@ class HttpService {
       return false;
     }
     await sharedPreference.logout();
+    await databaseHelper.deleteDB();
     return true;
   }
 
@@ -192,8 +195,8 @@ class HttpService {
     try {
       response = await post(WELCOME_MESSAGE, headers: header, body: body);
     } catch (ex) {
-      Fluttertoast.showToast(msg: 'Server Error');
-      return;
+      Fluttertoast.showToast(msg: 'Internet Error');
+      return false;
     }
 
     if (response.statusCode == 200) {

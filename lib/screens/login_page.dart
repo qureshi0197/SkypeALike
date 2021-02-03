@@ -127,7 +127,7 @@ class _LoginState extends State<Login> {
                   return;
                 }
                 if (password.isEmpty) {
-                  Fluttertoast.showToast(msg: 'Pasword is Empty');
+                  Fluttertoast.showToast(msg: 'Password is Empty');
                   return;
                 }
 

@@ -38,6 +38,8 @@ class DatabaseHelper {
   static const String text = 'text';
   static const String timestamp = 'timestamp';
 
+  var DB;
+  
   Future<Database> get db async {
     if (_database != null) {
       return _database;
@@ -47,13 +49,28 @@ class DatabaseHelper {
     return _database;
   }
 
-  initDb() async {
+  Future deleteDB() async {
+    
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, db_name);
 
-    var db = await openDatabase(path, version: 1, onCreate: _onCreate);
+    try {
+      _database.close();
+      await deleteDatabase(path);
+      _database = null;
+    } catch (e) {
+      print(e.toString());
+    }
+    print('deleting db');
+  }
 
-    return db;
+  initDb() async {
+    io.Directory documentDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentDirectory.path, db_name);
+    
+    DB = await openDatabase(path, version: 1, onCreate: _onCreate);
+
+    return DB;
   }
 
 // On creation of database call onCreate which creates all the tables required in the database
