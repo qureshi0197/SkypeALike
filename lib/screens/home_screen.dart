@@ -1,19 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:skypealike/page_views/widgets/user_circle.dart';
 import 'package:skypealike/page_views/widgets/user_details_container.dart';
 import 'package:skypealike/screens/chat_list_screen.dart';
-import 'package:skypealike/provider/user_provider.dart';
 import 'package:skypealike/screens/search_screen.dart';
 import 'package:skypealike/screens/settings_screen.dart';
-// import 'package:skypealike/resources/auth_methods.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:intl/intl.dart';
 import 'package:skypealike/screens/contact_list_screen.dart';
-import '../main.dart';
 import '../services/http_service.dart';
-import '../services/http_service.dart';
-import '../utils/shared_preferences.dart';
 import '../utils/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,50 +19,20 @@ class _HomeScreenState extends State<HomeScreen> {
   int _page = 0;
   PageController pageController = PageController(initialPage: 0);
   SharedPreference sharedPreference = SharedPreference();
-  // final AuthMethods _authMethods = AuthMethods();
-  // UserProvider userProvider;
   var inbox;
   HttpService httpService = HttpService();
   var loading = true;
   var usersInbox = [];
 
   _convertTimeToTimeStamp(time) {
-    // int timestamp;
-    // time = "Thu, 24 Sep 2020 05:51:09 GMT";
     final formatter = DateFormat(r'''EEE, dd MMM yyyy hh:mm:ss''');
-    // print(DateTime.);
     var val = (formatter.parse(time, true));
-    // print(val);
     val = (val.toLocal());
     return val.millisecondsSinceEpoch;
   }
 
-  // getAllMessages() async {
-  //   inbox = await httpService.getAllMessages(null);
-  //   if (inbox == null) {
-  //     Fluttertoast.showToast(msg: 'Problem while fetching data from server');
-  //     return;
-  //   } else if (inbox == 401) {
-  //     Fluttertoast.showToast(msg: 'Session Expired. PLease Login again');
-  //     Navigator.pushNamedAndRemoveUntil(
-  //         context, '/login_screen', (route) => false);
-  //     await sharedPreference.logout();
-  //     return;
-  //   } else {
-  //     // _arrangeAllMessagesForInbox();
-  //   }
-
-  // }
-
   @override
-  void initState() {
-    // TODO: implement initState
-    // super.initState();
-    // if (loading) {
-    //   inbox = 'loading';
-    // }
-    // getAllMessages();
-  }
+  void initState() {}
 
   @override
   void dispose() {
@@ -93,8 +57,11 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: Container(),
-        title: Image.asset('assets/images/icon.png', height: 50, width: 50,),
-        // Text(user.name, style: TextStyle(color: UniversalVariables.gradientColorEnd),),
+        title: Image.asset(
+          'assets/images/icon.png',
+          height: 50,
+          width: 50,
+        ),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
@@ -103,8 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
               color: UniversalVariables.gradientColorEnd,
             ),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen(chatList: UniversalVariables.chatList,)));
-              },
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SearchScreen(
+                            chatList: UniversalVariables.chatList,
+                          )));
+            },
           ),
           IconButton(
             icon: Icon(
@@ -112,14 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
               color: UniversalVariables.gradientColorEnd,
             ),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>UserDetailsContainer(true)));
-              // Navigator.push(context, PageRouteBuilder(
-              //   transitionDuration: Duration(seconds: 0),
-              //   pageBuilder: (context,animation1,animation2)=>SearchScreen()));
-              // Navigator.pushNamed(context, "/search_screen");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UserDetailsContainer(true)));
             },
           ),
-          // PopUpMenu(),
         ],
       ),
       backgroundColor: Colors.white,
@@ -131,9 +101,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
-        // physics: UniversalVariables.onLongPress
-        //     ? NeverScrollableScrollPhysics()
-        //     : null,
       ),
       bottomNavigationBar: Container(
         child: Padding(

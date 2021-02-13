@@ -1,21 +1,16 @@
 import 'dart:convert';
-// import 'package:contacts_service/contacts_service.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/message.dart';
-import 'package:skypealike/models/post.dart';
 import 'package:skypealike/utils/shared_preferences.dart';
-import 'package:intl/intl.dart';
 import 'package:skypealike/utils/utilities.dart';
 
 import '../main.dart';
 import '../models/user.dart';
 
 class HttpService {
-  // final String postsUrl = "https://jsonplaceholder.typicode.com/posts";
   static String SERVER = 'http://167.172.230.150:4043/';
   static String LOGIN = SERVER + 'customer/login';
   static String LOGOUT = SERVER + 'customer/logout';
@@ -30,7 +25,6 @@ class HttpService {
   static String WELCOME_MESSAGE = SERVER + "customer/welcome_message_change";
   static String DELETE_CHAT = SERVER + "message/chat/delete";
 
-  // toLoginMap()
   Future<bool> signOut() async {
     var head = {
       "Content-Type": "application/json",
@@ -47,12 +41,9 @@ class HttpService {
     var body = jsonEncode({'username': username, 'password': password});
     var header = {
       "Content-Type": "application/json",
-      // "Cookie":"remember_token=5|90226507456dcc7bb26523997e7c07da9a930ccfebb4af3f3407cb85140a75b8a148ba5eaa3f1e7de5a6c2fee2f1d4171f28cb93802ebbf7e7294c47aeb66645; session=.eJwdj7uOwjAQRX8FuaaIndBE2gJkFFHMWFmNscYNEhAIDmnCok2C-HdG1Pfc10sdLkPzaFX5NzybpTrczqp8qcVRlQrMvsXAU7TbKZIfoaozoFo74gJD7NnAigNrtLvRERgmn3OPnaOr4bnLXcV5tMJXoGHetFhJnoFCfHNM_M-pHjFhF4MXfl1g-r2hhSkGztCeNNBd-n3mqBMdJrBe-HOSPRp6mIG8RqpzSNcf9Zbtz0czfA-s3h85YkWn.X3if_Q.mObhdmD8qeLkjHXsh3Vr1F4LXNI",
-      // "Connection":"keep-alive"
     };
 
     Response response = await post(LOGIN, body: body, headers: header);
-    // print(response.headers['set-cookie']);
     if (response.statusCode != 200) {
       var responseBody = jsonDecode(response.body);
       return responseBody['resultCode'];
@@ -62,10 +53,8 @@ class HttpService {
       var loginBody = jsonDecode(body);
       loginBody['number'] = responseBody['number'];
       loginBody['welcome_message'] = responseBody['welcome_message'];
-      // If response will have the number
       user = User.fromMap(loginBody);
       await sharedPreference.login(response.headers['set-cookie']);
-      // await sharedPreference.saveUserLogin()
     }
     var responseBody = jsonDecode(response.body);
     return responseBody['resultCode'];
@@ -88,7 +77,6 @@ class HttpService {
   Future<dynamic> getAllMessages(String time) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
-    // time = null;
     var body = {
       'timestamp': time // "2020-08-31 07:00:00"
     };
@@ -108,7 +96,6 @@ class HttpService {
       response = await post(MESSAGES, headers: header, body: jsonEncode(body));
     }
     time = Utils.formatDateTime(DateTime.now().toUtc());
-    // print(response.body);
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
@@ -118,7 +105,6 @@ class HttpService {
 
     await sharedPreference.lastMesgFetchedTimeStamp(time);
     Map responseBody = jsonDecode(response.body);
-    // return responseBody;
 
     if (responseBody.containsKey('data')) {
       Map responseData = (responseBody['data']);
@@ -126,7 +112,6 @@ class HttpService {
         messages.add(Message.fromMap(value));
       });
     }
-    // print(messages);
     return messages;
   }
 
@@ -134,14 +119,7 @@ class HttpService {
     SharedPreference sharedPreference = SharedPreference();
 
     String session = await sharedPreference.session();
-    var body = {
-      'timestamp': time
-      // "2020-11-07 06:14:00"
-      // time // "2020-08-31 07:00:00"
-    };
-    // if (time == null) {
-    //   body = {};
-    // }
+    var body = {'timestamp': time};
     var header = {"Cookie": session};
     Response response;
     if (time == null) {
@@ -152,7 +130,6 @@ class HttpService {
           await post(GET_CONTACTS, headers: header, body: jsonEncode(body));
     }
     time = Utils.formatDateTime(DateTime.now().toUtc());
-    // print(response.body);
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
@@ -164,21 +141,12 @@ class HttpService {
     await sharedPreference.lastContactFetchedTimeStamp(time);
     if (responseBody.containsKey('data')) {
       responseBody['data'].forEach((key, value) {
-        // Map contact = {
-        //   'displayName': value['first_name'],
-        //   'givenName': value['last_name'],
-        //   'phones': [value['number']],
-        //   'postalAddresses': [value['address']],
-        //   'company': value['company'],
-        //   'emails': [value['email']],
-        // };
         contacts.add(Contact.fromMap(value));
       });
       return contacts;
     } else {
       return null;
     }
-    // return responseBody;
   }
 
   Future<dynamic> welcomeMessage(String textMessage) async {
@@ -203,10 +171,10 @@ class HttpService {
       var responseBody = jsonDecode(response.body);
       if (responseBody["resultCode"] == 0) {
         await sharedPreference.saveWelcomeMessage(textMessage);
-        try{
+        try {
           user.welcome_message = textMessage;
           return true;
-        }catch(ex){
+        } catch (ex) {
           print(ex.message);
         }
       }
@@ -220,9 +188,7 @@ class HttpService {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
 
-    var body =
-        // jsonEncode({'username': 'customer2', 'old_password': 'customer2', 'new_password': 'customer2'});
-        jsonEncode({
+    var body = jsonEncode({
       'username': user.name,
       'old_password': oldPassword,
       'new_password': newPassword
@@ -245,7 +211,6 @@ class HttpService {
         sharedPreference.changePassword(newPassword);
         return 200;
       } else {
-        // Fluttertoast.showToast(msg: "Incorrect Old Password");
         return response.statusCode;
       }
     }
@@ -269,9 +234,6 @@ class HttpService {
     if (contact.last_name == null) {
       contact.last_name = '';
     }
-    // if (contact. == null) {
-    //   contact. = '';
-    // }
     Map contactMap = contact.toMap(contact);
     contactMap.remove('status');
     contactMap.remove('id');
@@ -283,11 +245,9 @@ class HttpService {
     header['Content-Type'] = "application/json";
     response = await post(ADD_CONTACT, headers: header, body: body);
 
-    // print(response.body);
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
-      // Fluttertoast.showToast(msg: "Error saving contact");
       return null;
     }
 
@@ -297,7 +257,6 @@ class HttpService {
   Future<dynamic> updateContact(Contact contact) async {
     SharedPreference sharedPreference = SharedPreference();
     String session = await sharedPreference.session();
-    // var body = jsonEncode(contact.toMap(contact));
 
     Map contactMap = contact.toMap(contact);
     contactMap.remove('id');
@@ -309,7 +268,6 @@ class HttpService {
     header['Content-Type'] = "application/json";
     response = await post(UPDATE_CONTACT, headers: header, body: body);
 
-    // print(response.body);
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
@@ -331,7 +289,6 @@ class HttpService {
     header['Content-Type'] = "application/json";
     response = await post(DELETE_CONTACT, headers: header, body: body);
 
-    // print(response.body);
     if (response.statusCode == 401) {
       return false;
     } else if (response.statusCode != 200) {
@@ -353,7 +310,6 @@ class HttpService {
     header['Content-Type'] = "application/json";
     response = await post(DELETE_MESSAGE, headers: header, body: body);
 
-    // print(response.body);
     if (response.statusCode == 401) {
       return 401;
     } else if (response.statusCode != 200) {
@@ -397,7 +353,6 @@ class HttpService {
     header['Content-Type'] = "application/json";
     response = await post(SEND_MESSAGE, headers: header, body: body);
 
-    // print(response.body);
     if (response.statusCode == 401) {
       Fluttertoast.showToast(msg: 'Session Expired');
       return 401;

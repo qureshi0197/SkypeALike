@@ -9,7 +9,6 @@ import 'package:skypealike/widgets/custom_text_row.dart';
 import '../main.dart';
 
 class EditPassword extends StatefulWidget {
-  
   @override
   _EditPasswordState createState() => _EditPasswordState();
 }
@@ -30,8 +29,6 @@ class _EditPasswordState extends State<EditPassword> {
   var confirmPassword =
       TextEditingController.fromValue(TextEditingValue(text: ""));
 
-  // var number = TextEditingController.fromValue(TextEditingValue(text: ""));
-
   bool loading = false;
 
   bool op_toggle = false;
@@ -41,7 +38,7 @@ class _EditPasswordState extends State<EditPassword> {
   bool cp_toggle = false;
 
   int onPressed = 0;
-  
+
   String old_Password = '';
 
   String new_Password = '';
@@ -57,38 +54,16 @@ class _EditPasswordState extends State<EditPassword> {
   Color np_color = UniversalVariables.greyColor;
 
   Color op_color = UniversalVariables.greyColor;
-  // Future<List<Contact>> contacts;
-
-  // DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   void initState() {
     // TODO: implement initState
 
-    // dbHelper = DatabaseHelper();
-    // isUpdating = false;
-
-    // contact = widget.contact;
-
-    // if (contact.number[0] == '+') {
-    //   contact.number = contact.number.substring(1);
-    //   // contact.number = string[1];
-    // }
-
-    // username.text = user.name;
-    // password.text = user.password;
-    // number.text = user.number;
-    // email.text = contact.email;
-    // address.text = contact.address;
-    // company.text = contact.company;
-
     refreshList();
   }
 
   refreshList() {
-    setState(() {
-      // contacts = dbHelper.getContacts();
-    });
+    setState(() {});
   }
 
   @override
@@ -108,59 +83,55 @@ class _EditPasswordState extends State<EditPassword> {
                   child: CircularProgressIndicator(),
                 )
               : IconButton(
-                  // onPressed: ,
-                  icon: Icon(
-                    Icons.check, 
-                    color: newPassword.text == confirmPassword.text 
-                    ? Colors.white : 
-                    UniversalVariables.greyColor
-                    ),
-                  // ignore: missing_return
+                  icon: Icon(Icons.check,
+                      color: newPassword.text == confirmPassword.text
+                          ? Colors.white
+                          : UniversalVariables.greyColor),
                   onPressed: () async {
-
-                    if(oldPassword.text == '' && newPassword.text == '' && confirmPassword.text == ''){
+                    if (oldPassword.text == '' &&
+                        newPassword.text == '' &&
+                        confirmPassword.text == '') {
                       return Fluttertoast.showToast(msg: 'Fields are Empty');
                     }
-                    
-                    if(newPassword.text.length < 6){
-                      return Fluttertoast.showToast(msg: 'Password Should be atleast 6 Characters Long');
+
+                    if (newPassword.text.length < 6) {
+                      return Fluttertoast.showToast(
+                          msg: 'Password Should be atleast 6 Characters Long');
                     }
 
-                    if(newPassword.text != confirmPassword.text){
-                      return Fluttertoast.showToast(msg: 'Incorect Confirm Password');
+                    if (newPassword.text != confirmPassword.text) {
+                      return Fluttertoast.showToast(
+                          msg: 'Incorect Confirm Password');
                     }
 
                     if (oldPassword.text != user.password) {
-                      return Fluttertoast.showToast(msg: "Invalid Old Password");
+                      return Fluttertoast.showToast(
+                          msg: "Invalid Old Password");
                     }
-                    
+
                     setState(() {
                       loading = true;
                     });
-                    var response = await httpService.changePassword(newPassword.text,oldPassword.text);
-                      // dbHelper.updateContact(contact);
+                    var response = await httpService.changePassword(
+                        newPassword.text, oldPassword.text);
                     loading = false;
                     setState(() {});
 
-                      if (response == 401) {
-                        Fluttertoast.showToast(msg: "Session Expired");
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/login_screen', (route) => false);
-                        await sharedPreference.logout();
-                      } else if (response == 200) {
-                        Fluttertoast.showToast(msg: "Password Changed Sucessfully");
-                        Navigator.pop(context);
-                      }
-                      //  else if (response == 500) {
-                      //   return Fluttertoast.showToast(msg: 'Connection Problem. Please Try Again');
-                      // } 
-                      else if (response == 400) {
-                        return Fluttertoast.showToast(msg: 'Old Password Incorrect');
-                      }
-                      else{
-                        return Fluttertoast.showToast(msg: 'Server Error');
-                      }
-                    // }
+                    if (response == 401) {
+                      Fluttertoast.showToast(msg: "Session Expired");
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/login_screen', (route) => false);
+                      await sharedPreference.logout();
+                    } else if (response == 200) {
+                      Fluttertoast.showToast(
+                          msg: "Password Changed Sucessfully");
+                      Navigator.pop(context);
+                    } else if (response == 400) {
+                      return Fluttertoast.showToast(
+                          msg: 'Old Password Incorrect');
+                    } else {
+                      return Fluttertoast.showToast(msg: 'Server Error');
+                    }
                   })
         ],
       ),
@@ -181,99 +152,82 @@ class _EditPasswordState extends State<EditPassword> {
     );
   }
 
-  Widget _iconButton(int textrow,Color color){
+  Widget _iconButton(int textrow, Color color) {
     return IconButton(
         icon: Icon(Icons.remove_red_eye),
-        // Fix icon color issue onPressed should be separate for all
-        color:color, 
+        color: color,
         onPressed: () {
-          if(textrow == 1)
-          {
+          if (textrow == 1) {
             onPressed = 1;
-            if(op_toggle == true){
+            if (op_toggle == true) {
               op_toggle = false;
               op_color = UniversalVariables.greyColor;
-            }
-            else{
+            } else {
               op_toggle = true;
               op_color = UniversalVariables.gradientColorEnd;
             }
             print(textrow);
-          }
-          else if(textrow == 2)
-          {
+          } else if (textrow == 2) {
             onPressed = 2;
-            if(np_toggle == true){
+            if (np_toggle == true) {
               np_toggle = false;
               np_color = UniversalVariables.greyColor;
-            }
-            else{
+            } else {
               np_toggle = true;
               np_color = UniversalVariables.gradientColorEnd;
             }
             print(textrow);
-          }
-          else if(textrow == 3)
-          {
+          } else if (textrow == 3) {
             onPressed = 3;
-            if(cp_toggle == true){
+            if (cp_toggle == true) {
               cp_toggle = false;
               cp_color = UniversalVariables.greyColor;
-            }
-            else{
+            } else {
               cp_toggle = true;
               cp_color = UniversalVariables.gradientColorEnd;
             }
             print(textrow);
           }
-          setState(() {
-          });
-      }
-    );
+          setState(() {});
+        });
   }
 
   Widget _oldPassword() {
     return customTextRow(
         obscureText: op_toggle ? false : true,
-        suffixIcon: _iconButton(1,op_color),
+        suffixIcon: _iconButton(1, op_color),
         icon: Icons.lock_outline,
         title: "Old Password",
         onChnaged: (val) {
-          // old_Password = val;
           setState(() {});
         },
         controller: oldPassword,
-        hintText: "Current password"
-        );
+        hintText: "Current password");
   }
 
   Widget _newPassword() {
     return customTextRow(
-      obscureText: np_toggle ? false : true,
-      suffixIcon: _iconButton(2,np_color),
+        obscureText: np_toggle ? false : true,
+        suffixIcon: _iconButton(2, np_color),
         icon: Icons.lock_outline,
         title: "New Password",
         onChnaged: (val) {
-          // new_Password = val;
           setState(() {});
         },
         controller: newPassword,
-        hintText: "New Password"
-        );
+        hintText: "New Password");
   }
 
   Widget _confirmPassword() {
     return customTextRow(
-      obscureText: cp_toggle ? false : true,
-      suffixIcon: _iconButton(3,cp_color),
-      icon: Icons.lock_outline,
-      title: "Confirm Password",
-      onChnaged: (val) {
-        // confirm_Password = val;
-        setState(() {});
-      },
-      controller: confirmPassword,
-      hintText: "Rewrite password"
-    );
+        obscureText: cp_toggle ? false : true,
+        suffixIcon: _iconButton(3, cp_color),
+        icon: Icons.lock_outline,
+        title: "Confirm Password",
+        onChnaged: (val) {
+          setState(() {});
+        },
+        controller: confirmPassword,
+        hintText: "Rewrite password");
   }
 }

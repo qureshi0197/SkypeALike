@@ -10,9 +10,6 @@ import 'package:skypealike/widgets/custom_text_row.dart';
 import '../main.dart';
 
 class AddContect extends StatefulWidget {
-  // Contact contact;
-  // AddContect(this.contact);
-
   @override
   _AddContectState createState() => _AddContectState();
 }
@@ -58,17 +55,9 @@ class _AddContectState extends State<AddContect> {
 
   Future<List<Contact>> contacts;
 
-  // TextEditingController controller = TextEditingController();
-
-  // @override
-  // void initState() {
-  // }
-
   @override
   void initState() {
     super.initState();
-    // dbHelper = DatabaseHelper();
-    // isUpdating = false;
     refreshList();
   }
 
@@ -97,7 +86,6 @@ class _AddContectState extends State<AddContect> {
                   ),
                 )
               : IconButton(
-                  // onPressed: ,
                   icon: Icon(Icons.check, color: Colors.white),
                   onPressed: () async {
                     if (contact.number == null) {
@@ -105,17 +93,9 @@ class _AddContectState extends State<AddContect> {
                           msg: "Number Field is Empty");
                     }
 
-                    // if(contact.number[0] != '+' ){
-                    //   // print("Inside +");
-                    //   return Fluttertoast.showToast(msg: 'Add "+" at the start of number');
-                    // }
-
-                    // if(contact.number[0] == '0' && contact.number[1] == '0'){
-                    //     return Fluttertoast.showToast(msg: 'Remove "00" & Add "+" at the start of number');
-                    //   }
-
                     if (contact.number.length < 11) {
-                      return Fluttertoast.showToast(msg: "Invalid Number Format");
+                      return Fluttertoast.showToast(
+                          msg: "Invalid Number Format");
                     }
 
                     if (contact.first_name == null &&
@@ -136,8 +116,6 @@ class _AddContectState extends State<AddContect> {
 
                     await dbHelper.createContact(tempContect);
 
-                    // contact.number = contact.number.substring(1);
-
                     var response = await httpService.createContact(contact);
 
                     if (response == 401) {
@@ -146,12 +124,10 @@ class _AddContectState extends State<AddContect> {
                           context, '/login_screen', (route) => false);
                       await sharedPreference.logout();
                     }
-                    // else if(response == 200){
 
                     Fluttertoast.showToast(msg: "Contact Saved");
                     Navigator.pop(context);
 
-                    // }
                     loading = false;
                     setState(() {});
                   })
@@ -224,9 +200,7 @@ class _AddContectState extends State<AddContect> {
           contact.email = val;
         },
         controller: email,
-        inputFormator: [
-          // WhitelistingTextInputFormatter(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))
-        ]);
+        inputFormator: []);
   }
 
   Widget _address() {

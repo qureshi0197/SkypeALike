@@ -6,7 +6,6 @@ import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/message.dart';
 import 'package:sqflite/sqflite.dart';
 import '../main.dart';
-import 'model/employee.dart';
 
 enum Status { deleted }
 
@@ -21,7 +20,6 @@ class DatabaseHelper {
   static const String id = 'id';
   static const String name = 'name';
 
-// CONTACT TABLE COLUMN NAMES
   static const String first_name = 'first_name';
   static const String last_name = 'last_name';
   static const String number = 'number';
@@ -29,7 +27,6 @@ class DatabaseHelper {
   static const String email = 'email';
   static const String company = 'company';
 
-// MESSAGE TABLE COLUMN NAMES
   static const String direction = 'direction';
   static const String receiver = 'receiver';
   static const String sender = 'sender';
@@ -39,7 +36,7 @@ class DatabaseHelper {
   static const String timestamp = 'timestamp';
 
   var DB;
-  
+
   Future<Database> get db async {
     if (_database != null) {
       return _database;
@@ -50,7 +47,6 @@ class DatabaseHelper {
   }
 
   Future deleteDB() async {
-    
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, db_name);
 
@@ -67,7 +63,7 @@ class DatabaseHelper {
   initDb() async {
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, db_name);
-    
+
     DB = await openDatabase(path, version: 1, onCreate: _onCreate);
 
     return DB;
@@ -111,20 +107,11 @@ class DatabaseHelper {
     contact.status = 'active';
     contact.id = await dbClient.insert(contact_table, contact.toMap(contact));
 
-    // print(contact);
     return contact;
-
-    /* RAW QUERY 
-    await dbClient.Transaction((txn) async {
-      var query = "INSERT INTO $table_name ($name) VALUES ('" + employee.name + "')";
-      return await txn.rawInsert(query);
-    });
-    */
   }
 
   Future<List<Contact>> getContacts() async {
     var dbClient = await db;
-    // await dbClient.delete(contact_table, where: '$id = ?', whereArgs: []);
     List<Map> maps = await dbClient.query(contact_table, columns: [
       id,
       first_name,
@@ -136,10 +123,6 @@ class DatabaseHelper {
       status
     ]);
 
-    // RAW QUERY
-    // List<Map> maps = await dbClient.query("SELECT * FROM table_name");
-
-    // ADD DATA FETCHED IN MAPS TO CONTACT LIST THROUGH LOOP
     List<Contact> contacts = [];
     if (maps.length > 0) {
       for (int i = 0; i < maps.length; i++) {
@@ -188,27 +171,14 @@ class DatabaseHelper {
 
   Future<int> deleteContact(Contact contact) async {
     var dbClient = await db;
-    // List<Map> tempContactMap = await searchContact(contact);
-    // Contact tempContact = Contact();
-    // if(tempContactMap.isNotEmpty){
-    //   var tContact = tempContactMap[0];
-    //   tempContact = Contact.fromMap(tContact);
-    // }
-
-    // // contact.status = 'deleted';
-    // tempContact.status = 'deleted';
-
     return await dbClient.delete(contact_table,
         where: '$number = ?', whereArgs: [contact.number]);
-    // return await dbClient.update(contact_table,contact.toMap(contact),
-    //     where: '$number = ?', whereArgs: [contact.number]);
   }
 
   Future<Message> createMessage(Message message) async {
     var dbClient = await db;
     await dbClient.insert(message_table, message.toMap());
 
-    // print(message);
     return message;
   }
 
@@ -238,11 +208,6 @@ class DatabaseHelper {
   Future<int> deleteChat(String number) async {
     var dbClient = await db;
     Message tempMessage = Message(receiver: number, status: 'deleted');
-
-    // await dbClient.rawUpdate(
-    //   'UPDATE $message_table SET status = ? WHERE number = ?',
-    //   ['deleted',number]
-    // );
 
     await dbClient.update(message_table, {'status': 'deleted'},
         where: '$receiver = ?', whereArgs: [number]);
@@ -278,57 +243,5 @@ class DatabaseHelper {
     }
 
     return messages;
-  }
-
-// ADD AN EMPLOYEE IN DATABASE
-  Future<Employee> save(Employee employee) async {
-    var dbClient = await db;
-    employee.id = await dbClient.insert(table_name, employee.toMap());
-
-    return employee;
-
-    /* RAW QUERY 
-    await dbClient.Transaction((txn) async {
-      var query = "INSERT INTO $table_name ($name) VALUES ('" + employee.name + "')";
-      return await txn.rawInsert(query);
-    });
-    */
-  }
-
-// GET EMPLOYEES FROM DATABASE
-  Future<List<Employee>> getEmployees() async {
-    var dbClient = await db;
-    List<Map> maps = await dbClient.query(table_name, columns: [id, name]);
-
-    // RAW QUERY
-    // List<Map> maps = await dbClient.query("SELECT * FROM table_name");
-
-    // ADD DATA FETCHED IN MAPS TO EMPLOYEE LIST THROUGH LOOP
-    List<Employee> employees = [];
-    if (maps.length > 0) {
-      for (int i = 0; i < maps.length; i++) {
-        employees.add(Employee.fromMap(maps[i]));
-      }
-    }
-
-    return employees;
-  }
-
-  Future<int> update(Employee employee) async {
-    var dbClient = await db;
-    return await dbClient.update(table_name, employee.toMap(),
-        where: '$id = ?', whereArgs: [employee.id]);
-  }
-
-  // THERE IS SOME ISSUE WITH DELETE FUNCTION -> FIX IT (Note to Myself)
-  // Deletes all entries
-  Future<int> delete(int id) async {
-    var dbClient = await db;
-    return await dbClient.delete(table_name, where: '$id = ?', whereArgs: [id]);
-  }
-
-  Future close() async {
-    var dbClient = await db;
-    dbClient.close();
   }
 }

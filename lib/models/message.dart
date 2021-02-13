@@ -1,4 +1,3 @@
-
 class Message {
   String direction;
   String receiver;
@@ -9,17 +8,15 @@ class Message {
   String timestamp;
   int id;
 
-// When we handle simple text
   Message({
-    this.sender, 
-    this.receiver, 
+    this.sender,
+    this.receiver,
     this.direction,
-    this.sms_id, 
+    this.sms_id,
     this.timestamp,
     this.status,
     this.text,
-    // this.id
-    });
+  });
 
   Map toMap() {
     var map = {
@@ -30,7 +27,6 @@ class Message {
       'status': status,
       'text': text,
       'timestamp': timestamp,
-      // 'id': id,
     };
     return map;
   }
@@ -38,18 +34,14 @@ class Message {
   Message.fromMap(Map<String, dynamic> map) {
     this.direction = map['direction'];
     this.receiver = map['receiver'];
-    // TODO: Response has been changed in server for send message function only.
-    // Need to implement a condition for map['sender']['phone_number']
-    if(map['sender'] is String){
+    if (map['sender'] is String) {
       this.sender = map['sender'];
-    }
-    else{
+    } else {
       this.sender = map['sender']['phone_number'];
     }
     this.sms_id = map['sms_id'];
     this.status = map['status'];
     this.text = map['text'];
     this.timestamp = map['timestamp'];
-    // this.id = map['id'];
   }
 }

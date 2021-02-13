@@ -1,13 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:skypealike/page_views/widgets/user_circle.dart';
 import 'package:skypealike/screens/edit_password_screen.dart';
 import 'package:skypealike/screens/login_page.dart';
 import 'package:skypealike/services/http_service.dart';
 import 'package:skypealike/utils/universal_variables.dart';
-import 'package:skypealike/widgets/appbar.dart';
 
 import '../../main.dart';
 
@@ -21,14 +17,10 @@ class UserDetailsContainer extends StatefulWidget {
 }
 
 class _UserDetailsContainerState extends State<UserDetailsContainer> {
-  // final AuthMethods authMethods = AuthMethods();
-
   HttpService httpService = HttpService();
   var loading = false;
   @override
   Widget build(BuildContext context) {
-    // final UserProvider userProvider = Provider.of<UserProvider>(context);
-
     signOut() async {
       setState(() {
         loading = true;
@@ -53,62 +45,32 @@ class _UserDetailsContainerState extends State<UserDetailsContainer> {
     }
 
     return Scaffold(
-      body: UserDetailsBody(),
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: UniversalVariables.gradientColorEnd),
-        backgroundColor: Colors.white,
-        title: Text("Profile", style: TextStyle(color: UniversalVariables.gradientColorEnd),),
-            centerTitle: true,
-            actions: <Widget>[
-              loading
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  : FlatButton(
-                          onPressed: () => signOut(),
-                          child: Text(
-                            "Sign Out",
-                            style: TextStyle(
-                                color: UniversalVariables.gradientColorEnd,
-                                fontSize: 18),
-                          ),
-                        ),
-                    ],
-                    
-      )
-      
-      // CustomAppBar(
-      //       leading: IconButton(
-      //         icon: Icon(
-      //           Icons.arrow_back,
-      //           color: UniversalVariables.blackColor,
-      //         ),
-      //         onPressed: () => Navigator.maybePop(context),
-      //       ),
-      //       title: Text("Profile", style: TextStyle(color: UniversalVariables.gradientColorEnd),),
-      //       centerTitle: true,
-      //       actions: <Widget>[
-      //         loading
-      //             ? Padding(
-      //                 padding: const EdgeInsets.all(8.0),
-      //                 child: Center(child: CircularProgressIndicator()),
-      //               )
-      //             : FlatButton(
-      //                     onPressed: () => signOut(),
-      //                     child: Text(
-      //                       "Sign Out",
-      //                       style: TextStyle(
-      //                           color: UniversalVariables.gradientColorEnd,
-      //                           fontSize: 18),
-      //                     ),
-      //                   ),
-      //               //   ],
-      //               // )
-      //       ],
-      //     ),
-          // body: UserDetailsBody(),
-    );
+        body: UserDetailsBody(),
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: UniversalVariables.gradientColorEnd),
+          backgroundColor: Colors.white,
+          title: Text(
+            "Profile",
+            style: TextStyle(color: UniversalVariables.gradientColorEnd),
+          ),
+          centerTitle: true,
+          actions: <Widget>[
+            loading
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : FlatButton(
+                    onPressed: () => signOut(),
+                    child: Text(
+                      "Sign Out",
+                      style: TextStyle(
+                          color: UniversalVariables.gradientColorEnd,
+                          fontSize: 18),
+                    ),
+                  ),
+          ],
+        ));
   }
 }
 
@@ -119,31 +81,21 @@ class UserDetailsBody extends StatefulWidget {
 
 class _UserDetailsBodyState extends State<UserDetailsBody> {
   bool passwordConition = false;
-  // String starics = '';
 
-  String createString({String text,int length}){
-    var string='';
+  String createString({String text, int length}) {
+    var string = '';
     for (var i = 0; i < length; i++) {
-      string=string+text;
+      string = string + text;
     }
     return string;
   }
 
   @override
   Widget build(BuildContext context) {
-    // final UserProvider userProvider = Provider.of<UserProvider>(context);
-    // final User user = userProvider.getUser;
-
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Row(
         children: [
-          // CachedImage(
-          //   user.profilePhoto,
-          //   isRound: true,
-          //   radius: 50,
-          // ),
-          // SizedBox(width: 15),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -158,7 +110,6 @@ class _UserDetailsBodyState extends State<UserDetailsBody> {
               Text(
                 user.name,
                 style: TextStyle(
-                  // fontWeight: FontWeight.bold,
                   fontSize: 16,
                   color: UniversalVariables.greyColor,
                 ),
@@ -179,7 +130,6 @@ class _UserDetailsBodyState extends State<UserDetailsBody> {
                     style: TextStyle(
                         fontSize: 16, color: UniversalVariables.greyColor),
                   ),
-                  // IconButton(icon: Icon(Icons.edit), onPressed: null)
                 ],
               ),
               SizedBox(height: 10),
@@ -192,81 +142,42 @@ class _UserDetailsBodyState extends State<UserDetailsBody> {
                 ),
               ),
               Text(
-                passwordConition ? user.password:createString(length: user.password.length,text:'*'),
+                passwordConition
+                    ? user.password
+                    : createString(length: user.password.length, text: '*'),
                 style: TextStyle(
-                  fontSize: 16, color: UniversalVariables.greyColor
-                ),
+                    fontSize: 16, color: UniversalVariables.greyColor),
               ),
               Row(
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: FlatButton(
-                      color: UniversalVariables.gradientColorEnd,
-                      onPressed: (){passwordConition=!passwordConition;
-                      setState(() {
-                        
-                      });},
-                      
-                      child: Text(passwordConition?'Hide Password':'Show Password', 
-                        style: TextStyle(
-                          color: Colors.white
-                          ),
-                      )
-                    ),
+                        color: UniversalVariables.gradientColorEnd,
+                        onPressed: () {
+                          passwordConition = !passwordConition;
+                          setState(() {});
+                        },
+                        child: Text(
+                          passwordConition ? 'Hide Password' : 'Show Password',
+                          style: TextStyle(color: Colors.white),
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: FlatButton(
-                      color: UniversalVariables.gradientColorEnd,
-                      onPressed: ()  => Navigator.push(
-                        context, 
-                        MaterialPageRoute(
-                          builder: (context) => 
-                          EditPassword())
-                        ),  
-                      
-                      child: Text("Edit Password", 
-                        style: TextStyle(
-                          color: Colors.white
-                          ),
-                      )
-                    ),
+                        color: UniversalVariables.gradientColorEnd,
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditPassword())),
+                        child: Text(
+                          "Edit Password",
+                          style: TextStyle(color: Colors.white),
+                        )),
                   )
                 ],
               ),
-              // Row(
-              //   children: <Widget>[
-              //     Column(
-              //         children: <Widget>[
-              //           Text(
-              //         user.password,
-                    
-              //         style: TextStyle(
-              //             fontSize: 16, color: UniversalVariables.greyColor),
-              //         ),
-              //       ],
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //     ),
-              //     // SizedBox(width: 240,),
-              //     Column(
-              //       crossAxisAlignment: CrossAxisAlignment.end,
-              //       children: <Widget>[
-              //           IconButton(
-              //             onPressed: () => Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                     builder: (context) =>
-              //                         EditPassword())),
-              //             icon: Icon(
-              //               Icons.edit,
-              //               color: UniversalVariables.gradientColorEnd,
-              //             ),
-              //           )
-              //       ]
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         ],

@@ -49,11 +49,4 @@ final eLabelStyle = TextStyle(
 final eBoxDecorationStyle = BoxDecoration(
   color: UniversalVariables.lightGreyColor,
   borderRadius: BorderRadius.circular(10.0),
-  // boxShadow: [
-  //   BoxShadow(
-  //     color: Colors.black12,
-  //     blurRadius: 6.0,
-  //     offset: Offset(0, 2),
-  //   ),
-  // ],
 );

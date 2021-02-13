@@ -41,7 +41,6 @@ class _LoginState extends State<Login> {
             },
             style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              // errorText: response == 102 ? userNotFonund:null,
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
@@ -76,8 +75,6 @@ class _LoginState extends State<Login> {
             cursorColor: Colors.white,
             onChanged: (String val) {
               password = val;
-              // setState(() {
-              // });
             },
             obscureText: true,
             style: TextStyle(
@@ -85,7 +82,6 @@ class _LoginState extends State<Login> {
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
-              // errorText: response == 109 ? passwordIncorrect:null,
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
@@ -137,10 +133,7 @@ class _LoginState extends State<Login> {
                   loading = true;
                 });
 
-                response = await httpService.login(
-                    username, password); //? Will Uncomment Later
-                // response = 0;  //! Will delete Later
-
+                response = await httpService.login(username, password);
                 if (response == 0) {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/home_screen', (route) => false);

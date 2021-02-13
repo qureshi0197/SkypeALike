@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:skypealike/utils/universal_variables.dart';
 
 class CustomTile extends StatelessWidget {
   final Widget leading;
@@ -41,11 +40,8 @@ class CustomTile extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: mini ? 3 : 20),
                 decoration: BoxDecoration(
                     border: Border(
-                        bottom: BorderSide(
-                            width: 1,
-                            color: Colors.grey.shade300)
-                            )
-                            ),
+                        bottom:
+                            BorderSide(width: 1, color: Colors.grey.shade300))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -73,4 +69,3 @@ class CustomTile extends StatelessWidget {
     );
   }
 }
-

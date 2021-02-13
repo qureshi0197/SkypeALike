@@ -3,14 +3,11 @@ import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/message.dart';
 
 class UniversalVariables {
-// GLOBAL COLORS
   List<Contact> selectedContacts = [];
   List<String> selectedContactsNumber = [];
   List selectedUserInbox = [];
   bool onLongPress = false;
   List<String> selectedMessagesIds = [];
-  // bool onLongPress_chat = false;
-  // bool onLongPress_contact = false;
   static String generalMessage = '';
   static List<Contact> chatList = [];
   static final Color sendMessageColor = Colors.blue[200];

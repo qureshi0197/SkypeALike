@@ -22,14 +22,10 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     Timer(
         Duration(seconds: 3),
         login
-
-        ? () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen()))
-
-        : () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => Login()))
-
-      );
+            ? () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (BuildContext context) => HomeScreen()))
+            : () => Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (BuildContext context) => Login())));
 
     setState(() {});
     return;
@@ -54,7 +50,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 height: 120,
               ),
               new Expanded(
-                // flex: 2,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 70),
                   child: new Container(
@@ -71,7 +66,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                       new Padding(
                         padding: const EdgeInsets.only(top: 10.0),
                       ),
-                      // widget.title
                     ],
                   )),
                 ),
@@ -80,7 +74,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                 height: 30,
               ),
               new Container(
-                  // alignment: Alignment.bottomCenter,
                   child: new Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -92,13 +85,8 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                     ),
                     radius: 70,
                   ),
-                  // new Padding(
-                  //   padding: const EdgeInsets.only(top: 10.0),
-                  // ),
-                  // widget.title
                 ],
               )),
-              // SizedBox(height: 10,)
             ],
           ),
         ]),

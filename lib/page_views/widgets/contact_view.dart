@@ -18,28 +18,18 @@ class ContactView extends StatefulWidget {
 }
 
 class _ContactViewState extends State<ContactView> {
-
   UniversalVariables uVariables = UniversalVariables();
   @override
   Widget build(BuildContext context) {
-    // if (UniversalVariables.selectedContactsNumber.isEmpty) {
-    //   UniversalVariables.onLongPress = false;
-    // }
-    // print(UniversalVariables.selectedContacts.contains(widget.contact));
-    // print(UniversalVariables.selectedContacts.first.number);
-    // print(object)
-    // final UserProvider userProvider = Provider.of<UserProvider>(context);
     return ListTile(
       contentPadding: EdgeInsets.only(top: 8.0, bottom: 8.0),
       onTap: () async {
         if (uVariables.onLongPress) {
           if (!uVariables.selectedContactsNumber
               .contains(widget.contact.number)) {
-            uVariables.selectedContactsNumber
-                .add(widget.contact.number);
+            uVariables.selectedContactsNumber.add(widget.contact.number);
           } else {
-            uVariables.selectedContactsNumber
-                .remove(widget.contact.number);
+            uVariables.selectedContactsNumber.remove(widget.contact.number);
           }
           if (uVariables.selectedContactsNumber.isEmpty) {
             uVariables.onLongPress = false;
@@ -72,8 +62,7 @@ class _ContactViewState extends State<ContactView> {
                 )
               : Text(widget.contact.initials())),
       trailing: uVariables.onLongPress &&
-              uVariables.selectedContactsNumber
-                  .contains(widget.contact.number)
+              uVariables.selectedContactsNumber.contains(widget.contact.number)
           ? IconButton(
               onPressed: () {},
               icon: Icon(Icons.delete, color: Colors.red),
@@ -88,7 +77,6 @@ class _ContactViewState extends State<ContactView> {
         uVariables.selectedContactsNumber.add(widget.contact.number);
         uVariables.onLongPress = true;
         Utils.onLongPress();
-        // selected: true;
       }),
     );
   }

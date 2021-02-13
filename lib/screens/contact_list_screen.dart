@@ -1,4 +1,3 @@
-// import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
@@ -10,7 +9,6 @@ import 'package:skypealike/screens/chat_screen.dart';
 import 'package:skypealike/screens/edit_contact_screen.dart';
 import 'package:skypealike/page_views/widgets/add_contact_button.dart';
 import 'package:skypealike/utils/universal_variables.dart';
-// import 'package:skypealike/page_views/widgets/pop_up_menu.dart';
 import 'package:skypealike/utils/utilities.dart';
 
 class ContactListScreen extends StatefulWidget {
@@ -46,7 +44,6 @@ class _ContactListScreenState extends State<ContactListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: customAppBar(context),
       floatingActionButton: uVariables.onLongPress
           ? Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -86,11 +83,8 @@ class _ContactListScreenState extends State<ContactListScreen> {
                     for (String number in uVariables.selectedContactsNumber) {
                       Contact tempContact = Contact(number: number);
                       var response =
-                          // true;
                           await httpService.deleteContact(tempContact);
-                      // if (response) {
                       await dbHelper.deleteContact(tempContact);
-                      // }
                     }
 
                     setState(() {
@@ -114,24 +108,15 @@ class _ContactListScreenState extends State<ContactListScreen> {
     return loading
         ? Center(child: CircularProgressIndicator())
         : FutureBuilder(
-            // stream: null,
             future: httpService.getAllContacts(Utils.formatDateTime(time)),
             builder: (context, snapshot) {
               time = DateTime.now();
-              // if(snapshot.connectionState.index == 1){
-              //   return Center(child: CircularProgressIndicator(),);
-              // }
-              // if (snapshot.data == null) {
-              //   return Center(child: Text('No Contacts'));
-              // }
               if (snapshot.data == 401) {
                 Fluttertoast.showToast(msg: "Session Expired");
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/login_screen', (route) => false);
                 sharedPreference.logout();
               } else {
-                // var data = snapshot.data;
-
                 contactList = snapshot.data;
                 if (snapshot.data != null && snapshot.data != 401)
                   for (Contact contact in snapshot.data) {
@@ -142,14 +127,9 @@ class _ContactListScreenState extends State<ContactListScreen> {
                     });
                   }
 
-                // contactList = dbHelper.getContacts();
-
                 return FutureBuilder(
                     future: dbHelper.getContacts(),
                     builder: (context, snapshot) {
-                      // if(snapshot.data == null){
-                      //   return Center(child: Text("No Contacts"),);
-                      // }
                       if (snapshot.data != null)
                         contactList = snapshot.data;
                       else
@@ -159,23 +139,15 @@ class _ContactListScreenState extends State<ContactListScreen> {
                         itemCount: contactList.length,
                         itemBuilder: (context, index) {
                           Contact contact = contactList[index];
-                          if(contact.first_name == null){
+                          if (contact.first_name == null) {
                             contact.first_name = ' ';
                           }
-                          // var val = contact.phones.elementAt(0);
-                          // val.
-                          // print(contact.phones.elementAt(0));
-                          // print(contact.email);
                           return ListTile(
                             trailing: Utils.isSelectedTile(
                                     contact,
                                     uVariables.onLongPress,
                                     uVariables.selectedContactsNumber)
                                 ? SizedBox()
-                                // Icon(
-                                //     Icons.delete,
-                                //     color: Colors.grey,
-                                //   )
                                 : Wrap(
                                     spacing: 6,
                                     children: <Widget>[
@@ -183,10 +155,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                         onPressed: () =>
                                             Utils.call(contact.number),
                                         icon: Icon(Icons.call),
-                                        // Icons.edit,
-                                        // color: Colors.blue,
                                       ),
-
                                       IconButton(
                                         onPressed: () => Navigator.push(
                                             context,
@@ -196,16 +165,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                       receiver: contact,
                                                     ))),
                                         icon: Icon(Icons.message),
-                                        // Icons.edit,
-                                        // color: Colors.blue,
                                       ),
-
-                                      //   IconButton(
-                                      //     onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>EditContact(contact))),
-                                      //     icon: Icon(Icons.edit),
-                                      // // Icons.edit,
-                                      // // color: Colors.blue,
-                                      //     ),
                                     ],
                                   ),
                             onTap: () async {
@@ -226,12 +186,15 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => EditContact(
-                                              contact,update: true,
+                                              contact,
+                                              update: true,
                                             )));
                               }
                               setState(() {});
                             },
-                            title: contact.first_name == null ? Text('') : Text(contact.first_name),
+                            title: contact.first_name == null
+                                ? Text('')
+                                : Text(contact.first_name),
                             subtitle: Text(contact.number),
                             leading: CircleAvatar(
                                 backgroundColor: Utils.isSelectedTile(

@@ -1,13 +1,9 @@
 import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:intl/intl.dart';
-import 'package:skypealike/utils/universal_variables.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
-  // Contact receiver;
-  // UniversalVariables uVariables = UniversalVariables();
-
   static String getUsername(String email) {
     return "live:${email.split('@')[0]}";
   }
@@ -68,15 +64,15 @@ class Utils {
 
   static onLongPress() {}
 
-  static isSelectedTile(Contact contact, bool onLongPress,List<String> selectedNumber) {
-    if (onLongPress &&
-        selectedNumber.contains(contact.number)) {
+  static isSelectedTile(
+      Contact contact, bool onLongPress, List<String> selectedNumber) {
+    if (onLongPress && selectedNumber.contains(contact.number)) {
       return true;
     }
     return false;
   }
 
-  static selectAll(List chatList,List<String> selectedNumber) {
+  static selectAll(List chatList, List<String> selectedNumber) {
     if (selectedNumber.length == chatList.length) {
       return true;
     }

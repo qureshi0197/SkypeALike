@@ -31,7 +31,6 @@ class PersonDatabaseProvider {
     });
   }
 
-// Add data to table
   addPersonToDatabase(Person person) async {
     final db = await database;
     var raw = await db.insert(
@@ -42,19 +41,16 @@ class PersonDatabaseProvider {
     return raw;
   }
 
-// Specific id 
   Future<Person> getPersonWithId(int id) async {
     final db = await database;
     var response = await db.query("Person", where: "id = ?", whereArgs: [id]);
     return response.isNotEmpty ? Person.fromMap(response.first) : null;
   }
 
-// Complete table
   Future<List<Person>> getAllPersons() async {
     final db = await database;
     var response = await db.query("Person");
     List<Person> list = response.map((c) => Person.fromMap(c)).toList();
     return list;
   }
-
 }

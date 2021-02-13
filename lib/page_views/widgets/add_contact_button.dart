@@ -6,10 +6,8 @@ class AddContactButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomFloatingActionButton(
         onPressed: () {
-          // Navi
           Navigator.pushNamed(context, '/add_contact_screen');
         },
-        icon: Icons.person_add
-        );
+        icon: Icons.person_add);
   }
 }

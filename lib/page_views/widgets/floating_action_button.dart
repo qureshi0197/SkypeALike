@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:skypealike/utils/local_notification.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 
 Widget CustomFloatingActionButton(
@@ -15,6 +14,5 @@ Widget CustomFloatingActionButton(
           icon,
           color: Colors.white,
         )),
-    // backgroundColor: Colors.blue,
   );
 }

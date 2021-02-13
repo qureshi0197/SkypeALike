@@ -10,9 +10,8 @@ import 'package:skypealike/widgets/custom_tile.dart';
 
 class SearchScreen extends StatefulWidget {
   List chatList;
-  SearchScreen({List chatList}){
-    if(chatList == null)
-    {
+  SearchScreen({List chatList}) {
+    if (chatList == null) {
       this.chatList = [];
       return;
     }
@@ -23,10 +22,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  // FirebaseRepository _repository = FirebaseRepository();
-  // final AuthMethods _authMethods = AuthMethods();
-
-  // List<User> userList;
   DatabaseHelper databaseHelper = DatabaseHelper();
   String query = "";
   TextEditingController searchController = TextEditingController();
@@ -35,21 +30,14 @@ class _SearchScreenState extends State<SearchScreen> {
   List<Contact> allContects = [];
   getAllContacts() async {
     var response = await databaseHelper.getContacts();
-    // if (response == null) {
-    //   Fluttertoast.showToast(msg: "No Contects Found");
-    // } 
-    // else if (response == 401) {
-    //   Navigator.pushNamedAndRemoveUntil(
-    //       context, '/login_screen', (route) => false);
-    // } else {
-      allContects = response;
-      if(widget.chatList.isNotEmpty){
-        for (var contact in widget.chatList) {
-        if(!allContects.contains(contact))
-        {allContects.add(contact);} 
+    allContects = response;
+    if (widget.chatList.isNotEmpty) {
+      for (var contact in widget.chatList) {
+        if (!allContects.contains(contact)) {
+          allContects.add(contact);
         }
       }
-    // }
+    }
 
     setState(() {
       loading = false;
@@ -64,10 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   searchAppBar(BuildContext context) {
-    return
-        // loading ? Scaffold(body: Center(child:CircularProgressIndicator()))
-        // :
-        GradientAppBar(
+    return GradientAppBar(
       gradient: LinearGradient(colors: [
         UniversalVariables.gradientColorStart,
         UniversalVariables.gradientColorEnd
@@ -131,10 +116,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 " " +
                 contact.last_name.toLowerCase();
             String _query = query.toLowerCase();
-            // String _getName = contact.last_name.toLowerCase();
             String _getNumber = contact.number.toLowerCase();
             bool matchesUsername = _getUsername.contains(_query);
-            // bool matchesName = _getName.contains(_query);
             bool matchesNumber = _getNumber.contains(_query);
 
             return (matchesUsername || matchesNumber);
@@ -149,7 +132,6 @@ class _SearchScreenState extends State<SearchScreen> {
         itemCount: suggestionList.length,
         itemBuilder: ((context, index) {
           Contact contactUser = Contact(
-              // uid: suggestionList[index].uid,
               first_name: suggestionList[index].first_name,
               last_name: suggestionList[index].last_name,
               number: suggestionList[index].number);
@@ -163,18 +145,15 @@ class _SearchScreenState extends State<SearchScreen> {
                             receiver: contactUser,
                           )));
             },
-            leading: 
-            contactUser.initials() == ''?
-            CircleAvatar(
-              child: Icon(Icons.person,color: Colors.white,))
-            :
-            CircleAvatar(
-              child: Text(contactUser.initials()),
-            ),
-            // leading: CircleAvatar(
-            //   backgroundImage: NetworkImage(searchedUser.profilePhoto),
-            //   backgroundColor: Colors.grey,
-            // ),
+            leading: contactUser.initials() == ''
+                ? CircleAvatar(
+                    child: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ))
+                : CircleAvatar(
+                    child: Text(contactUser.initials()),
+                  ),
             title: Text(
               contactUser.first_name + ' ' + contactUser.last_name,
               style: TextStyle(

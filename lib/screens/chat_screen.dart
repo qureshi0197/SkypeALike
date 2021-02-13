@@ -26,10 +26,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   UniversalVariables uVariable = UniversalVariables();
   TextEditingController textFieldController = TextEditingController();
-  // FirebaseRepository _repository = FirebaseRepository();
-  // AuthMethods _authMethods = AuthMethods();
-  // StorageMethods _storageMethods = StorageMethods();
-  // ChatMethods _chatMethods = ChatMethods();
   ScrollController _listScrollController = ScrollController();
   bool loading = true;
   bool contactFound = false;
@@ -38,7 +34,6 @@ class _ChatScreenState extends State<ChatScreen> {
   User sender;
   String _currentUserId;
   FocusNode textFieldFocus = FocusNode();
-  // ImageUploadProvider _imageUploadProvider;
   Contact receiver;
   List<Message> userChat = [];
   bool sendMessageLoading = false;
@@ -49,7 +44,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Stream getPeriodicStream() async* {
     yield* Stream.periodic(Duration(seconds: 1), (_) async {
-      // print(await httpService.getAllMessages(null));
       return await httpService.getAllMessages(null);
     }).asyncMap(
       (value) async => await value,
@@ -58,17 +52,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     receiver = widget.receiver;
 
     if (receiver.first_name.isNotEmpty || receiver.last_name.isNotEmpty) {
       contactFound = true;
     }
-
-    // getPeriodicStream();
-
-    // _checkContact();
   }
 
   showKeyboard() => textFieldFocus.requestFocus();
@@ -89,12 +78,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // _imageUploadProvider = Provider.of<ImageUploadProvider>(context);
-
     return WillPopScope(
       onWillPop: () {
-        // Navigator.pop(context, userChat.last);
-
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -118,13 +103,6 @@ class _ChatScreenState extends State<ChatScreen> {
             Flexible(
               child: messageList(),
             ),
-            // _imageUploadProvider.getViewState == ViewState.LOADING
-            // ? Container(
-            //     alignment: Alignment.centerRight,
-            //     margin: EdgeInsets.only(right: 15),
-            //     child: CircularProgressIndicator(),
-            //   )
-            // : Container(),
             chatControls(),
             showEmojiPicker ? Container(child: emojiContainer()) : Container(),
           ],
@@ -144,7 +122,6 @@ class _ChatScreenState extends State<ChatScreen> {
           isWriting = true;
         });
 
-        // Append Emoji with text message
         textFieldController.text = textFieldController.text + emoji.emoji;
       },
     );
@@ -154,20 +131,10 @@ class _ChatScreenState extends State<ChatScreen> {
     message = httpService.getAllMessages(null);
     var smessage = getPeriodicStream();
 
-    // dbHelper.createMessage(message);
     return StreamBuilder(
       stream: getPeriodicStream(),
       builder: (context, snapshot) {
-        // if (snapshot.connectionState.index == 1)
-        //   return Center(child: CircularProgressIndicator());
-        // List<Message> userChat = [];
         if (snapshot.hasData) {
-          // for (Message message in snapshot.data) {
-          //   if (message.sender == receiver.number ||
-          //       message.receiver == receiver.number) {
-          //     userChat.add(message);
-          //   }
-          // }
           for (var message in snapshot.data) {
             Future<bool> condition = dbHelper.searchMessages(message);
             condition.then((bool onValue) {
@@ -177,8 +144,6 @@ class _ChatScreenState extends State<ChatScreen> {
             });
           }
         }
-
-        // userChat = userChat.reversed.toList();
 
         return FutureBuilder(
           future: dbHelper.getMessages(),
@@ -204,115 +169,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 return chatMessageItem(userChat[index]);
               },
             );
-            // if (snapshot.connectionState.index == 1) {
-            //   return Center(child: CircularProgressIndicator());
-            // }
-            // if (snapshot.data != null) {
-            //   messageList = snapshot.data;
-            // } else {
-            //   messageList = [];
-            // }
-
-            // usersInbox = _arrangeAllMessagesForInbox(messageList);
-
-            // return ChatListContainer(usersInbox);
           },
         );
-        // return ListView.builder(
-        //   padding: EdgeInsets.all(10),
-        //   itemCount: userChat.length,
-        //   reverse: true,
-        //   itemBuilder: (context, index) {
-        //     return chatMessageItem(userChat[index]);
-        //   },
-        // );
       },
     );
-
-    // Dead Code Below
-    // return FutureBuilder(
-    //   future: message,
-    //   builder: (context, AsyncSnapshot<dynamic> snapshot) {
-    //     // if
-    //     if (loading) {
-    //       if (snapshot.connectionState.index == 1)
-    //         return Center(child: CircularProgressIndicator());
-    //       else {
-    //         loading = false;
-    //       }
-    //     }
-    //     // else{
-    //     //   setState(() {
-    //     //     loading=false;
-    //     //   });
-    //     // }
-    //     // if (snapshot.h == 1) {
-    //     //   return Center(child: CircularProgressIndicator());
-    //     // }
-    //     if (snapshot.data == 401) {
-    //       Fluttertoast.showToast(msg: "Session Expired");
-    //       Navigator.pushNamedAndRemoveUntil(
-    //           context, '/login_screen', (Route route) => false);
-    //       sharedPreference.logout();
-    //     }
-    //     if (snapshot.data == null) {
-    //       return Center(
-    //         child: Text("No Messages"),
-    //       );
-    //     }
-    //     List<Message> userChat = [];
-    //     for (Message message in snapshot.data) {
-    //       if (message.sender == receiver.number ||
-    //           message.receiver == receiver.number) {
-    //         userChat.add(message);
-    //       }
-    //     }
-    //     for (var message in userChat) {
-    //       Future<bool> condition = dbHelper.searchMessages(message);
-    //       condition.then((bool onValue) {
-    //         if (!onValue) {
-    //           dbHelper.createMessage(message);
-    //         }
-    //       });
-    //       // if(!condition.){
-    //       //    dbHelper.createMessage(message);
-    //       // }
-    //     }
-    //     // snapshot.data['data'].forEach((key, val) {
-    //     //   if (val['sender'] == receiver.number ||
-    //     //       val['receiver'] == receiver.number) {
-    //     //     userChat.add(val);
-    //     //   }
-    //     // });
-    //     userChat = userChat.reversed.toList();
-    //     // setState(() {
-    //     //   loading=false;
-    //     // });
-
-    //     // return userChat;
-    //     return ListView.builder(
-    //       padding: EdgeInsets.all(10),
-    //       itemCount: userChat.length,
-    //       reverse: true,
-    //       itemBuilder: (context, index) {
-    //         return chatMessageItem(userChat[index]);
-    //       },
-    //     );
-    //   },
-    // );
-    // return ListView.builder(
-    //       padding: EdgeInsets.all(10),
-    //       itemCount: userChat.length,
-    //       reverse: true,
-    //       itemBuilder: (context, index) {
-    //         return chatMessageItem(userChat[index]);
-    //       },
-    //     );
   }
 
   Widget chatMessageItem(Message message) {
-    // Message _message = Message.fromMap(snapshot);
-
     return GestureDetector(
       onTap: () {
         if (uVariable.onLongPress) {
@@ -336,7 +199,6 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8),
         child: Container(
-            // color: Utils.isSelectedTile(Contact(number: message.sms_id), uVariable.onLongPress, uVariable.selectedMessagesIds)?Colors.grey:null,
             alignment: message.direction == "outbound"
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
@@ -351,9 +213,7 @@ class _ChatScreenState extends State<ChatScreen> {
     Radius messageRadius = Radius.circular(10);
 
     return Container(
-      // margin: EdgeInsets.only(top: 0),
       constraints:
-          // no matter how long a message is it wont take more than 65% of the screen
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.65),
       decoration: BoxDecoration(
         color: Utils.isSelectedTile(Contact(number: message.sms_id),
@@ -387,7 +247,6 @@ class _ChatScreenState extends State<ChatScreen> {
     return Container(
       margin: EdgeInsets.only(top: 12),
       constraints:
-          // no matter how long a message is it wont take more than 65% of the screen
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.65),
       decoration: BoxDecoration(
         color: Utils.isSelectedTile(Contact(number: message.sms_id),
@@ -423,7 +282,6 @@ class _ChatScreenState extends State<ChatScreen> {
           alignment: Alignment.centerRight,
           children: [
             TextField(
-              
               minLines: 1,
               maxLines: 10,
               maxLengthEnforced: true,
@@ -432,49 +290,38 @@ class _ChatScreenState extends State<ChatScreen> {
               onTap: () => hideEmojiContainer(),
               style: TextStyle(color: UniversalVariables.blackColor),
               onChanged: (val) {
-                // check if userr has not typed anything and is not sending a blank message
                 (val.length > 0 && (val.trim() != ""))
                     ? setWritingTo(true)
                     : setWritingTo(false);
               },
               decoration: InputDecoration(
-                hintText: "Type a message",
-                hintStyle: TextStyle(
-                  color: UniversalVariables.greyColor,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: UniversalVariables.blueColor),
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(50.0),
+                  hintText: "Type a message",
+                  hintStyle: TextStyle(
+                    color: UniversalVariables.greyColor,
                   ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: UniversalVariables.blueColor,
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: UniversalVariables.blueColor),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(50.0),
                     ),
-                    borderRadius:
-                        const BorderRadius.all(const Radius.circular(50.0))),
-
-                contentPadding:
-                    EdgeInsets.fromLTRB(25, 10, 35, 10)
-                    // EdgeInsets.symmetric(horizontal: 35, vertical: 5),
-                // filled: true,
-                // fillColor: UniversalVariables.separatorColor,
-              ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: UniversalVariables.blueColor,
+                      ),
+                      borderRadius:
+                          const BorderRadius.all(const Radius.circular(50.0))),
+                  contentPadding: EdgeInsets.fromLTRB(25, 10, 35, 10)),
             ),
-            SizedBox(width: 20,),
+            SizedBox(
+              width: 20,
+            ),
             IconButton(
-              // splashColor: Colors.black,
-              // highlightColor: Colors.black,
               onPressed: () {
-                // hideKeyboard();
-                // showEmojiContainer();
                 if (!showEmojiPicker) {
-                  // Emoji Panel is shown
                   hideKeyboard();
                   showEmojiContainer();
                 } else {
-                  // Emoji Panel is hidden
                   showKeyboard();
                   hideEmojiContainer();
                 }
@@ -482,8 +329,7 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: Icon(Icons.tag_faces, color: UniversalVariables.blueColor),
             ),
           ],
-        )
-        ),
+        )),
         sendMessageLoading
             ? Center(
                 child: Padding(
@@ -506,8 +352,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         onPressed: () => sendMessage()),
                   )
                 : Container(),
-      ]
-      ),
+      ]),
     );
   }
 
@@ -522,7 +367,6 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     var response = await httpService.sendMessage(_message);
-    // dbHelper.createMessage(_message);
 
     if (response == 401) {
       Navigator.pushNamedAndRemoveUntil(
@@ -537,7 +381,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   CustomAppBar customAppBar(context, {Widget leading}) {
-    // var uVariable2 = uVariable;
     return CustomAppBar(
       leading: leading != null
           ? leading
@@ -573,7 +416,6 @@ class _ChatScreenState extends State<ChatScreen> {
                             Message tempMessage = Message(sms_id: messageId);
                             var response =
                                 await httpService.deleteMessage(tempMessage);
-                            // if (response == 200)
                             await dbHelper.deleteMessages(tempMessage);
                           }
                           setState(() {
@@ -627,25 +469,16 @@ class _ChatScreenState extends State<ChatScreen> {
                             Icons.person_add,
                             color: UniversalVariables.gradientColorEnd,
                           ),
-
-                          // IF CONTACT NAME IS NOT EMPTY THEN DONT SHOW ADD CPNTACT BUTTON
-                          // ELSE SHOW
                           onPressed: () async {
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         EditContact(receiver, update: false)));
-                            // await _checkContact();
                             setState(() {});
                           })
                     ],
                   ),
-
-        // IconButton(
-        //   icon: Icon(Icons.phone, color: UniversalVariables.greyColor),
-        //   onPressed: () {},
-        //   ),
       ],
     );
   }

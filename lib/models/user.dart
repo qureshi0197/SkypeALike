@@ -9,19 +9,16 @@ class User {
   String profilePhoto = '';
   String welcome_message = '';
 
-
-  User({
-    this.uid,
-    this.name,
-    this.number,
-    this.email,
-    this.username,
-    this.password,
-    this.status,
-    // this.state,
-    this.profilePhoto,
-    this.welcome_message
-  });
+  User(
+      {this.uid,
+      this.name,
+      this.number,
+      this.email,
+      this.username,
+      this.password,
+      this.status,
+      this.profilePhoto,
+      this.welcome_message});
 
   Map toMap(User user) {
     var data = Map<String, dynamic>();
@@ -32,22 +29,15 @@ class User {
     data['username'] = user.username;
     data['password'] = user.password;
     data["status"] = user.status;
-    // data["state"] = user.state;
     data["profile_photo"] = user.profilePhoto;
     data['welcome_message'] = user.welcome_message;
     return data;
   }
 
   User.fromMap(Map<String, dynamic> mapData) {
-    // this
-    // this.uid = mapData['uid'];
     this.name = mapData['username'];
     this.password = mapData['password'];
     this.number = mapData['number'];
     this.welcome_message = mapData['welcome_message'];
-    // this.username = mapData['username'];
-    // this.status = mapData['status'];
-    // this.state = mapData['state'];
-    // this.profilePhoto = mapData['profile_photo'];
   }
 }

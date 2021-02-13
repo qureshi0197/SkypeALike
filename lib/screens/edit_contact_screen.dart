@@ -1,9 +1,7 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
-import 'package:skypealike/constants/styles.dart';
 import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/utils/universal_variables.dart';
@@ -57,15 +55,7 @@ class _EditContactState extends State<EditContact> {
   void initState() {
     // TODO: implement initState
 
-    // dbHelper = DatabaseHelper();
-    // isUpdating = false;
-
     contact = widget.contact;
-
-    // if (contact.number[0] == '+') {
-    //   contact.number = contact.number.substring(1);
-    //   // contact.number = string[1];
-    // }
 
     firstName.text = contact.first_name;
     lastName.text = contact.last_name;
@@ -95,68 +85,55 @@ class _EditContactState extends State<EditContact> {
         backgroundColor: UniversalVariables.gradientColorEnd,
         actions: <Widget>[
           loading
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(),
-                    )
-                  : IconButton(
-                      // onPressed: ,
-                      icon: Icon(Icons.check, color: Colors.white),
-                      onPressed: () async {
-                        
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(),
+                )
+              : IconButton(
+                  icon: Icon(Icons.check, color: Colors.white),
+                  onPressed: () async {
+                    if (firstName.text == "" && lastName.text == "") {
+                      return Fluttertoast.showToast(msg: "Please Enter Name");
+                    }
 
-                        if(firstName.text == "" && lastName.text == ""){
-                          return Fluttertoast.showToast(msg: "Please Enter Name");
+                    setState(() {
+                      loading = true;
+                    });
+
+                    var response;
+
+                    if (widget.update) {
+                      response = await httpService.updateContact(contact);
+                      if (response == 200) {
+                        if (contact.number[0] != '+') {
+                          contact.number = '+' + contact.number;
                         }
-
+                        dbHelper.updateContact(contact);
+                      } else {
                         setState(() {
-                          loading = true;
+                          loading = false;
                         });
-
-                        var response;
-                        
-                        if (widget.update) {
-                          response = await httpService.updateContact(contact);
-                          if (response == 200) {
-                            if (contact.number[0] != '+') {
-                              contact.number = '+' + contact.number;
-                            }
-                            dbHelper.updateContact(contact);
-                          } else{
-                            setState(() {
-                              loading = false;
-                            });
-                            return Fluttertoast.showToast(msg: "Server Error");
-                          }
-                        } else {
-                          response = await httpService.createContact(contact);
-                          // if (response == 200) {
-                          if (contact.number[0] != '+') {
-                            contact.number = '+' + contact.number;
-                          }
-                          dbHelper.createContact(contact);
-                          // }
-                        }
-                        if (response == 401) {
-                          Fluttertoast.showToast(msg: "Session Expired");
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, '/login_screen', (route) => false);
-                          await sharedPreference.logout();
-                        } else if (response == 200) {
-                          Fluttertoast.showToast(msg: "Contact Saved");
-                          Navigator.pop(context);
-                        }
-                        loading = false;
-                        setState(() {});
-                      })
-              // : IconButton(
-              //     icon: Icon(
-              //       Icons.check,
-              //       color: Colors.grey,
-              //     ),
-              //     onPressed: () {
-              //       Fluttertoast.showToast(msg: 'Invalid Phone Number');
-              //     })
+                        return Fluttertoast.showToast(msg: "Server Error");
+                      }
+                    } else {
+                      response = await httpService.createContact(contact);
+                      if (contact.number[0] != '+') {
+                        contact.number = '+' + contact.number;
+                      }
+                      dbHelper.createContact(contact);
+                    }
+                    if (response == 401) {
+                      Fluttertoast.showToast(msg: "Session Expired");
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/login_screen', (route) => false);
+                      await sharedPreference.logout();
+                    } else if (response == 200) {
+                      Fluttertoast.showToast(msg: "Contact Saved");
+                      Navigator.pop(context);
+                    }
+                    loading = false;
+                    setState(() {});
+                  })
         ],
       ),
       body: SingleChildScrollView(
@@ -213,16 +190,14 @@ class _EditContactState extends State<EditContact> {
 
   Widget _email() {
     return customTextRow(
-      keyboardType: TextInputType.emailAddress,
+        keyboardType: TextInputType.emailAddress,
         icon: Icons.email,
         title: "Email",
         onChnaged: (val) {
           contact.email = val;
         },
         controller: email,
-        inputFormator: [
-          // WhitelistingTextInputFormatter(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))
-        ]);
+        inputFormator: []);
   }
 
   Widget _address() {

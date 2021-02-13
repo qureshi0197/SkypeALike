@@ -6,14 +6,7 @@ import '../main.dart';
 
 class SharedPreference {
   SharedPreferences sp;
-  // _getInstance() async {
-  //   sp = await SharedPreferences.getInstance();
-  // }
-
-  // SharedPreference() {
-  //   _getInstance();
-  // }
-  Future saveWelcomeMessage(String text)async{
+  Future saveWelcomeMessage(String text) async {
     sp = await SharedPreferences.getInstance();
     await sp.setString('welcome_message', text);
   }
@@ -24,7 +17,7 @@ class SharedPreference {
     await sp.setString('password', user.password);
   }
 
-  Future getWelcomeMessage()async{
+  Future getWelcomeMessage() async {
     sp = await SharedPreferences.getInstance();
     print(sp.getString('welcome_message'));
     return sp.getString('welcome_message') ?? '';
