@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:skypealike/db/database_helper.dart';
@@ -42,7 +43,9 @@ class HttpService {
     var header = {
       "Content-Type": "application/json",
     };
-
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    var firebaseToken = await firebaseMessaging.getToken();
+    print(firebaseToken);
     Response response = await post(LOGIN, body: body, headers: header);
     if (response.statusCode != 200) {
       var responseBody = jsonDecode(response.body);
