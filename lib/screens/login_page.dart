@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:skypealike/constants/styles.dart';
 import 'package:skypealike/main.dart';
 import 'package:skypealike/services/http_service.dart';
+import 'package:skypealike/utils/initialization_notification.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -114,6 +115,9 @@ class _LoginState extends State<Login> {
             child: RaisedButton(
               elevation: 5.0,
               onPressed: () async {
+                // LocalNotifications localNotifications = LocalNotifications();
+
+                // localNotifications.showNotification();
                 if ((username.isEmpty) && password.isEmpty) {
                   Fluttertoast.showToast(msg: 'Fields are Empty');
                   return;
