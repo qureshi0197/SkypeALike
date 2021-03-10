@@ -39,13 +39,19 @@ class HttpService {
 
   Future<dynamic> login(username, password) async {
     SharedPreference sharedPreference = SharedPreference();
-    var body = jsonEncode({'username': username, 'password': password});
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    String firebaseToken = await firebaseMessaging.getToken();
+    print("FCM Token:" + " " + firebaseToken);
+
+    var body = jsonEncode({
+      'username': username,
+      'password': password,
+      'registration_id': firebaseToken
+    });
     var header = {
       "Content-Type": "application/json",
     };
-    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
-    var firebaseToken = await firebaseMessaging.getToken();
-    print(firebaseToken);
+
     Response response = await post(LOGIN, body: body, headers: header);
     if (response.statusCode != 200) {
       var responseBody = jsonDecode(response.body);

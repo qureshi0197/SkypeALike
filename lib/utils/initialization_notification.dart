@@ -8,15 +8,31 @@ class LocalNotifications {
 
   FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 
-  void firebaseMessageConfigration() {
+  void firebaseMessageConfiguration() {
+    firebaseMessaging
+        .requestNotificationPermissions(const IosNotificationSettings(
+      sound: true,
+      badge: true,
+      alert: true,
+    ));
+    firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         const AndroidNotificationDetails androidPlatformChannelSpecifics =
-            AndroidNotificationDetails('your channel id', 'your channel name',
-                'your channel description',
-                importance: Importance.max,
-                priority: Priority.high,
-                showWhen: false);
+            AndroidNotificationDetails(
+          'your channel id',
+          'your channel name',
+          'your channel description',
+          importance: Importance.max,
+          priority: Priority.high,
+          showWhen: false,
+          enableVibration: true,
+          playSound: true,
+        );
         var iOSPlatformChannelSpecifics = IOSNotificationDetails();
         NotificationDetails platformChannelSpecifics = NotificationDetails(
           android: androidPlatformChannelSpecifics,
@@ -58,7 +74,7 @@ class LocalNotifications {
         iOS: iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
         0, 'New Message', 'There are new messages', platformChannelSpecifics,
-        payload: 'item x');
+        payload: 'New Messages');
   }
   // initializeLocalNotification() async {
   //   // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project

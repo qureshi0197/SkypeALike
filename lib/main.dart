@@ -32,15 +32,15 @@ class _SkypeAlikeState extends State<SkypeAlike> {
   @override
   void initState() {
     LocalNotifications localNotifications = LocalNotifications();
-    localNotifications.firebaseMessageConfigration();
+    localNotifications.firebaseMessageConfiguration();
     localNotifications.initNotification();
-    localNotifications.showNotification();
+    // localNotifications.showNotification();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "SkypeAlike",
+      title: "Intrelligent",
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
       routes: {
