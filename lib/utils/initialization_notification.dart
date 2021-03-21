@@ -24,6 +24,7 @@ class LocalNotifications {
 
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
+        print("onMessage invoked");
         const AndroidNotificationDetails androidPlatformChannelSpecifics =
             AndroidNotificationDetails(
           'your channel id',
