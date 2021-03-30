@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
-import 'package:skypealike/constants/strings.dart';
+import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:skypealike/db/database_helper.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/screens/chat_screen.dart';
@@ -52,7 +50,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   searchAppBar(BuildContext context) {
-    return GradientAppBar(
+    return NewGradientAppBar(
       gradient: LinearGradient(colors: [
         UniversalVariables.gradientColorStart,
         UniversalVariables.gradientColorEnd
