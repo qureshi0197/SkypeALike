@@ -80,7 +80,7 @@ class UserDetailsBody extends StatefulWidget {
 }
 
 class _UserDetailsBodyState extends State<UserDetailsBody> {
-  bool passwordConition = false;
+  bool passwordCondition = false;
 
   String createString({String text, int length}) {
     var string = '';
@@ -126,7 +126,7 @@ class _UserDetailsBodyState extends State<UserDetailsBody> {
               Row(
                 children: <Widget>[
                   Text(
-                    "${user.number}",
+                    user.number == null ? "No Phone Number" : "${user.number}",
                     style: TextStyle(
                         fontSize: 16, color: UniversalVariables.greyColor),
                   ),
@@ -142,7 +142,7 @@ class _UserDetailsBodyState extends State<UserDetailsBody> {
                 ),
               ),
               Text(
-                passwordConition
+                passwordCondition
                     ? user.password
                     : createString(length: user.password.length, text: '*'),
                 style: TextStyle(
@@ -155,11 +155,11 @@ class _UserDetailsBodyState extends State<UserDetailsBody> {
                     child: FlatButton(
                         color: UniversalVariables.gradientColorEnd,
                         onPressed: () {
-                          passwordConition = !passwordConition;
+                          passwordCondition = !passwordCondition;
                           setState(() {});
                         },
                         child: Text(
-                          passwordConition ? 'Hide Password' : 'Show Password',
+                          passwordCondition ? 'Hide Password' : 'Show Password',
                           style: TextStyle(color: Colors.white),
                         )),
                   ),
