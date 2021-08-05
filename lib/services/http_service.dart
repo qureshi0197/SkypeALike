@@ -12,7 +12,7 @@ import '../main.dart';
 import '../models/user.dart';
 
 class HttpService {
-  static String SERVER = 'http://167.172.230.150:4043/';
+  static String SERVER = 'https://smsapp.intrelligent.com:4043/';
   static String LOGIN = SERVER + 'customer/login';
   static String LOGOUT = SERVER + 'customer/logout';
   static String MESSAGES = SERVER + 'message/all';
