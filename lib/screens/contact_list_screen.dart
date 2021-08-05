@@ -116,6 +116,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/login_screen', (route) => false);
                 sharedPreference.logout();
+                return null;
               } else {
                 contactList = snapshot.data;
                 if (snapshot.data != null && snapshot.data != 401)
@@ -222,7 +223,6 @@ class _ContactListScreenState extends State<ContactListScreen> {
                               uVariables.selectedContactsNumber
                                   .add(contact.number);
                               uVariables.onLongPress = true;
-                              // Utils.onLongPress();
                             }),
                           );
                         },

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:skypealike/models/contact.dart';
-import 'package:skypealike/models/message.dart';
 
 class UniversalVariables {
   List<Contact> selectedContacts = [];

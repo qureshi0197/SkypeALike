@@ -40,10 +40,11 @@ class _SkypeAlikeState extends State<SkypeAlike> {
   }
 
   @override
-  void initState() {
-    LocalNotifications localNotifications;
-    localNotifications.firebaseMessageConfiguration();
-  }
+    void initState() {
+      super.initState();
+      LocalNotifications localNotifications = LocalNotifications();
+      localNotifications.firebaseMessageConfiguration();
+    }
 
   @override
   Widget build(BuildContext context) {

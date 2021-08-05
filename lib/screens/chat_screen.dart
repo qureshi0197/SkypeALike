@@ -1,9 +1,7 @@
-import 'package:emoji_picker/emoji_picker.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skypealike/constants/strings.dart';
 import 'package:skypealike/db/database_helper.dart';
-import 'package:skypealike/main.dart';
 import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/message.dart';
 import 'package:skypealike/models/user.dart';
@@ -11,7 +9,6 @@ import 'package:skypealike/screens/home_screen.dart';
 import 'package:skypealike/utils/universal_variables.dart';
 import 'package:skypealike/utils/utilities.dart';
 import 'package:skypealike/widgets/appbar.dart';
-
 import 'edit_contact_screen.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -112,18 +109,43 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   emojiContainer() {
-    return EmojiPicker(
-      bgColor: UniversalVariables.separatorColor,
-      indicatorColor: UniversalVariables.blueColor,
-      rows: 3,
-      columns: 7,
-      onEmojiSelected: (emoji, category) {
-        setState(() {
-          isWriting = true;
-        });
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.40,
+      child: EmojiPicker(
+        onEmojiSelected: (category, emoji) {
+          // Do something when emoji is tapped
+          setState(() {
+            isWriting = true;
+          });
 
-        textFieldController.text = textFieldController.text + emoji.emoji;
-      },
+          textFieldController.text = textFieldController.text + emoji.emoji;
+        },
+        onBackspacePressed: () {
+          hideEmojiContainer();
+          showKeyboard();
+          // Backspace-Button tapped logic
+          // Remove this line to also remove the button in the UI
+        },
+        config: Config(
+          columns: 7,
+          emojiSizeMax: 32.0,
+          verticalSpacing: 0,
+          horizontalSpacing: 0,
+          initCategory: Category.RECENT,
+          bgColor: UniversalVariables.separatorColor,
+          indicatorColor: UniversalVariables.blueColor,
+          iconColor: Colors.grey,
+          iconColorSelected: Colors.blue,
+          progressIndicatorColor: Colors.blue,
+          showRecentsTab: true,
+          recentsLimit: 28,
+          noRecentsText: "No Recents",
+          noRecentsStyle: const TextStyle(fontSize: 20, color: Colors.black26),
+          categoryIcons: const CategoryIcons(),
+          buttonMode: ButtonMode.MATERIAL,
+          backspaceColor: Color(0xFF6CA8F1),
+        ),
+      ),
     );
   }
 
@@ -284,7 +306,6 @@ class _ChatScreenState extends State<ChatScreen> {
             TextField(
               minLines: 1,
               maxLines: 10,
-              maxLengthEnforced: true,
               controller: textFieldController,
               focusNode: textFieldFocus,
               onTap: () => hideEmojiContainer(),

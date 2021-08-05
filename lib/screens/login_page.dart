@@ -112,12 +112,16 @@ class _LoginState extends State<Login> {
         : Container(
             padding: EdgeInsets.symmetric(vertical: 25.0),
             width: double.infinity,
-            child: RaisedButton(
-              elevation: 5.0,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 5.0,
+                padding: EdgeInsets.all(15.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                primary: Colors.white,
+              ),
               onPressed: () async {
-                // LocalNotifications localNotifications = LocalNotifications();
-
-                // localNotifications.showNotification();
                 if ((username.isEmpty) && password.isEmpty) {
                   Fluttertoast.showToast(msg: 'Fields are Empty');
                   return;
@@ -152,11 +156,6 @@ class _LoginState extends State<Login> {
                   loading = false;
                 });
               },
-              padding: EdgeInsets.all(15.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              color: Colors.white,
               child: Text(
                 'LOGIN',
                 style: TextStyle(

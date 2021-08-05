@@ -117,7 +117,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _genericMessage() {
     return customTextRow(
-      // enabled: false,
       icon: Icons.textsms,
       maxLines: 5,
       generalMessage: true,

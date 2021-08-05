@@ -7,7 +7,6 @@ import 'package:skypealike/models/contact.dart';
 import 'package:skypealike/models/message.dart';
 import 'package:skypealike/utils/shared_preferences.dart';
 import 'package:skypealike/utils/utilities.dart';
-
 import '../main.dart';
 import '../models/user.dart';
 
