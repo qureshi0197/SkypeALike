@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:skypealike/screens/add_contact_screen.dart';
 import 'package:skypealike/screens/home_screen.dart';
@@ -12,8 +14,16 @@ import 'utils/shared_preferences.dart';
 GlobalKey mainPageGlobalKey = GlobalKey();
 SharedPreference sharedPreference = SharedPreference();
 User user = User();
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Handling a background message ${message.notification.body}');
+}
 
-void main() => runApp(SkypeAlike());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  runApp(SkypeAlike());
+}
 
 class SkypeAlike extends StatefulWidget {
   @override
@@ -31,10 +41,8 @@ class _SkypeAlikeState extends State<SkypeAlike> {
 
   @override
   void initState() {
-    LocalNotifications localNotifications = LocalNotifications();
+    LocalNotifications localNotifications;
     localNotifications.firebaseMessageConfiguration();
-    localNotifications.initNotification();
-    // localNotifications.showNotification();
   }
 
   @override

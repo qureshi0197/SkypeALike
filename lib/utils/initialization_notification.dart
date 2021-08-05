@@ -8,61 +8,57 @@ class LocalNotifications {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  AndroidNotificationChannel channel;
+  FirebaseMessaging firebaseMessaging;
 
   void firebaseMessageConfiguration() {
-    firebaseMessaging
-        .requestNotificationPermissions(const IosNotificationSettings(
-      sound: true,
-      badge: true,
-      alert: true,
-    ));
-    firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
+    onMessageRecieved();
+    initNotification();
+    createAndroidSpecificChannel();
+  }
 
-    firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage invoked");
-        const AndroidNotificationDetails androidPlatformChannelSpecifics =
-            AndroidNotificationDetails(
-          'your channel id',
-          'your channel name',
-          'your channel description',
-          importance: Importance.max,
-          priority: Priority.high,
-          showWhen: false,
-          enableVibration: true,
-          playSound: true,
-        );
-        var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-          presentBadge: true,
-          presentSound: true,
-          presentAlert: true
-        );
-        NotificationDetails platformChannelSpecifics = NotificationDetails(
-          android: androidPlatformChannelSpecifics,
-          iOS: iOSPlatformChannelSpecifics,
-        );
-
-        flutterLocalNotificationsPlugin.show(0, 'New Message',
-            'There are new messages', platformChannelSpecifics);
-      },
+  Future<void> createAndroidSpecificChannel() async {
+    channel = const AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // title
+      'This channel is used for important notifications.', // description
+      importance: Importance.high,
     );
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+  onMessageRecieved(){
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+        showNotification();
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
   }
 
   // This function is required to run everytime app resumes.
   Future<void> initNotification() async {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
-    final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
-    BehaviorSubject<ReceivedNotification>();
+    final BehaviorSubject<ReceivedNotification>
+        didReceiveLocalNotificationSubject = BehaviorSubject<ReceivedNotification>();
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
-    // var initializationSettingsIOS = IOSInitializationSettings();
     final IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(
             requestAlertPermission: true,
@@ -100,26 +96,6 @@ class LocalNotifications {
         0, 'New Message', 'There are new messages', platformChannelSpecifics,
         payload: 'New Messages');
   }
-  // initializeLocalNotification() async {
-  //   // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-  //   const AndroidInitializationSettings initializationSettingsAndroid =
-  //       AndroidInitializationSettings('app_icon');
-  //   final IOSInitializationSettings initializationSettingsIOS =
-  //       IOSInitializationSettings(
-  //     requestSoundPermission: false,
-  //     requestBadgePermission: false,
-  //     requestAlertPermission: true,
-  //     onDidReceiveLocalNotification: (int id, String title, String body, String payload) async {
-  //       didReceiveLocalNotificationSubject.add(ReceivedNotification(
-  //           id: id, title: title, body: body, payload: payload));
-  //   );
-
-  //   final InitializationSettings initializationSettings =
-  //       InitializationSettings(
-  //           android: initializationSettingsAndroid,
-  //           iOS: initializationSettingsIOS);
-  //   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  // }
 }
 
 class ReceivedNotification {

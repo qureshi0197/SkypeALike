@@ -12,7 +12,7 @@ import '../main.dart';
 import '../models/user.dart';
 
 class HttpService {
-  static String SERVER = 'http://167.172.230.150:4043/';
+  static String SERVER = 'https://smsapp.intrelligent.com:4043/';
   static String LOGIN = SERVER + 'customer/login';
   static String LOGOUT = SERVER + 'customer/logout';
   static String MESSAGES = SERVER + 'message/all';
@@ -30,7 +30,7 @@ class HttpService {
     var head = {
       "Content-Type": "application/json",
     };
-    Response response = await post(MESSAGES, headers: head);
+    Response response = await post(Uri.parse(MESSAGES), headers: head);
     if (response.statusCode == 200) {
       return true;
     }
@@ -39,7 +39,8 @@ class HttpService {
 
   Future<dynamic> login(username, password) async {
     SharedPreference sharedPreference = SharedPreference();
-    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    FirebaseMessaging firebaseMessaging;
+    firebaseMessaging = FirebaseMessaging.instance;
     String firebaseToken = await firebaseMessaging.getToken();
     print("FCM Token:" + " " + firebaseToken);
 
@@ -52,7 +53,8 @@ class HttpService {
       "Content-Type": "application/json",
     };
 
-    Response response = await post(LOGIN, body: body, headers: header);
+    Response response =
+        await post(Uri.parse(LOGIN), body: body, headers: header);
     if (response.statusCode != 200) {
       var responseBody = jsonDecode(response.body);
       return responseBody['resultCode'];
@@ -74,7 +76,7 @@ class HttpService {
     DatabaseHelper databaseHelper = DatabaseHelper();
     String session = await sharedPreference.session();
     var header = {"Cookie": session};
-    Response response = await get(LOGOUT, headers: header);
+    Response response = await get(Uri.parse(LOGOUT), headers: header);
     if (response.statusCode != 200) {
       return false;
     }
@@ -99,10 +101,11 @@ class HttpService {
     List<Message> messages = [];
 
     if (time == null) {
-      response = await post(MESSAGES, headers: header);
+      response = await post(Uri.parse(MESSAGES), headers: header);
     } else {
       header['Content-Type'] = "application/json";
-      response = await post(MESSAGES, headers: header, body: jsonEncode(body));
+      response = await post(Uri.parse(MESSAGES),
+          headers: header, body: jsonEncode(body));
     }
     time = Utils.formatDateTime(DateTime.now().toUtc());
     if (response.statusCode == 401) {
@@ -132,11 +135,11 @@ class HttpService {
     var header = {"Cookie": session};
     Response response;
     if (time == null) {
-      response = await post(GET_CONTACTS, headers: header);
+      response = await post(Uri.parse(GET_CONTACTS), headers: header);
     } else {
       header['Content-Type'] = "application/json";
-      response =
-          await post(GET_CONTACTS, headers: header, body: jsonEncode(body));
+      response = await post(Uri.parse(GET_CONTACTS),
+          headers: header, body: jsonEncode(body));
     }
     time = Utils.formatDateTime(DateTime.now().toUtc());
     if (response.statusCode == 401) {
@@ -170,7 +173,8 @@ class HttpService {
 
     header['Content-Type'] = "application/json";
     try {
-      response = await post(WELCOME_MESSAGE, headers: header, body: body);
+      response =
+          await post(Uri.parse(WELCOME_MESSAGE), headers: header, body: body);
     } catch (ex) {
       Fluttertoast.showToast(msg: 'Internet Error');
       return false;
@@ -208,7 +212,8 @@ class HttpService {
 
     header['Content-Type'] = "application/json";
     try {
-      response = await post(CHANGE_PASSWORD, headers: header, body: body);
+      response =
+          await post(Uri.parse(CHANGE_PASSWORD), headers: header, body: body);
     } catch (ex) {
       Fluttertoast.showToast(msg: 'Server Error');
       return;
@@ -252,7 +257,7 @@ class HttpService {
     Response response;
 
     header['Content-Type'] = "application/json";
-    response = await post(ADD_CONTACT, headers: header, body: body);
+    response = await post(Uri.parse(ADD_CONTACT), headers: header, body: body);
 
     if (response.statusCode == 401) {
       return 401;
@@ -275,7 +280,8 @@ class HttpService {
     Response response;
 
     header['Content-Type'] = "application/json";
-    response = await post(UPDATE_CONTACT, headers: header, body: body);
+    response =
+        await post(Uri.parse(UPDATE_CONTACT), headers: header, body: body);
 
     if (response.statusCode == 401) {
       return 401;
@@ -296,7 +302,8 @@ class HttpService {
     Response response;
 
     header['Content-Type'] = "application/json";
-    response = await post(DELETE_CONTACT, headers: header, body: body);
+    response =
+        await post(Uri.parse(DELETE_CONTACT), headers: header, body: body);
 
     if (response.statusCode == 401) {
       return false;
@@ -317,7 +324,8 @@ class HttpService {
     Response response;
 
     header['Content-Type'] = "application/json";
-    response = await post(DELETE_MESSAGE, headers: header, body: body);
+    response =
+        await post(Uri.parse(DELETE_MESSAGE), headers: header, body: body);
 
     if (response.statusCode == 401) {
       return 401;
@@ -338,7 +346,7 @@ class HttpService {
     Response response;
 
     header['Content-Type'] = "application/json";
-    response = await post(DELETE_CHAT, headers: header, body: body);
+    response = await post(Uri.parse(DELETE_CHAT), headers: header, body: body);
 
     if (response.statusCode == 401) {
       return 401;
@@ -360,7 +368,7 @@ class HttpService {
     Response response;
 
     header['Content-Type'] = "application/json";
-    response = await post(SEND_MESSAGE, headers: header, body: body);
+    response = await post(Uri.parse(SEND_MESSAGE), headers: header, body: body);
 
     if (response.statusCode == 401) {
       Fluttertoast.showToast(msg: 'Session Expired');
