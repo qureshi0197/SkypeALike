@@ -40,9 +40,12 @@ class LocalNotifications {
     );
   }
 
-  onMessageRecieved(){
+  onMessageRecieved() {
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-        showNotification();
+      print("message received");
+      print(event.notification.title);
+      print(event.notification.body);
+      showNotification(event.notification);
     });
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message clicked!');
@@ -54,7 +57,8 @@ class LocalNotifications {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
     final BehaviorSubject<ReceivedNotification>
-        didReceiveLocalNotificationSubject = BehaviorSubject<ReceivedNotification>();
+        didReceiveLocalNotificationSubject =
+        BehaviorSubject<ReceivedNotification>();
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
@@ -75,15 +79,13 @@ class LocalNotifications {
   }
 
   // This Funtion is required to run on every notification received.
-  Future<void> showNotification() async {
+  Future<void> showNotification(RemoteNotification notification) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'your channel id',
-      'your channel name',
-      'your channel description',
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
+        'your channel id', 'your channel name', 'your channel description',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker',
+        playSound: true);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(
       presentAlert: true,
       presentSound: true,
@@ -93,7 +95,7 @@ class LocalNotifications {
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-        0, 'New Message', 'There are new messages', platformChannelSpecifics,
+        0, notification.title, notification.body, platformChannelSpecifics,
         payload: 'New Messages');
   }
 }
